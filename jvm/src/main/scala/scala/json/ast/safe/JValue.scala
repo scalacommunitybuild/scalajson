@@ -96,13 +96,19 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
     if (value.isEmpty) {
       fast.JArray(Array.ofDim[fast.JValue](0))
     } else {
-      val array = Array.ofDim[fast.JField](value.size)
-      var index = 0
-      for ((k, v) <- value) {
-        array(index) = fast.JField(k, v.toFast)
-        index = index + 1
+      import scala.offheap.{Pool, Region}
+      implicit val props = Region.Props(Pool())
+
+      Region { implicit r =>
+        val array = Array.ofDim[fast.JField](value.size)
+        var index = 0
+        for ((k, v) <- value) {
+          array(index) = fast.JField(k, v.toFast)
+          index = index + 1
+        }
+        fast.JObject(array)
       }
-      fast.JObject(array)
+
     }
   }
 }
@@ -117,14 +123,21 @@ case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
     if (length == 0) {
       fast.JArray(Array.ofDim[fast.JValue](0))
     } else {
-      val array = Array.ofDim[fast.JValue](length)
-      val iterator = value.iterator
-      var index = 0
-      while (iterator.hasNext) {
-        array(index) = iterator.next().toFast
-        index = index + 1
+      import scala.offheap.{Pool, Region}
+      implicit val props = Region.Props(Pool())
+
+      Region { implicit r =>
+        val array = Array.ofDim[fast.JValue](length)
+        val iterator = value.iterator
+        var index = 0
+        while (iterator.hasNext) {
+          array(index) = iterator.next().toFast
+          index = index + 1
+        }
+        fast.JArray(array)
       }
-      fast.JArray(array)
+
+
     }
   }
 }

@@ -34,6 +34,7 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
     }
   ).
   jvmSettings(
+    libraryDependencies += "sh.den" % "scala-offheap_2.11" % "0.1"
     // Add JVM-specific settings here
   ).
   jsSettings(

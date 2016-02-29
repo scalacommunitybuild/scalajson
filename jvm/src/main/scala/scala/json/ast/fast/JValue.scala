@@ -98,14 +98,19 @@ case class JObject(value: Array[JField] = Array.empty) extends JValue {
     if (length == 0) {
       safe.JObject(Map[String, safe.JValue]())
     } else {
-      var index = 0
-      val b = Map.newBuilder[String, safe.JValue]
-      while (index < length) {
-        val v = value(index)
-        b += ((v.field, v.value.toSafe))
-        index = index + 1
+      import scala.offheap.{Pool, Region}
+      implicit val props = Region.Props(Pool())
+
+      Region { implicit r =>
+        var index = 0
+        val b = Map.newBuilder[String, safe.JValue]
+        while (index < length) {
+          val v = value(index)
+          b += ((v.field, v.value.toSafe))
+          index = index + 1
+        }
+        safe.JObject(b.result())
       }
-      safe.JObject(b.result())
     }
   }
 }
@@ -121,13 +126,18 @@ case class JArray(value: Array[JValue] = Array.empty) extends JValue {
     if (length == 0) {
       safe.JArray(Vector[safe.JValue]())
     } else {
-      var index = 0
-      val b = Vector.newBuilder[safe.JValue]
-      while (index < length) {
-        b += value(index).toSafe
-        index = index + 1
+      import scala.offheap.{Pool, Region}
+      implicit val props = Region.Props(Pool())
+
+      Region { implicit r =>
+        var index = 0
+        val b = Vector.newBuilder[safe.JValue]
+        while (index < length) {
+          b += value(index).toSafe
+          index = index + 1
+        }
+        safe.JArray(b.result())
       }
-      safe.JArray(b.result())
     }
   }
 }
