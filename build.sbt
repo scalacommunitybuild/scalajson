@@ -38,7 +38,7 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
     testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
     libraryDependencies ++= Seq(
       "sh.den" % "scala-offheap_2.11" % "0.1",
-      "com.storm-enroute" %% "scalameter" % "0.7" % Test
+      "com.storm-enroute" %% "scalameter" % "0.7" % Test,
       "org.specs2" %% "specs2-core" % "3.6.5" % Test,
       "org.specs2" %% "specs2-scalacheck" % "3.6.5" % Test,
       "org.scalacheck" %% "scalacheck" % "1.12.5" % Test
