@@ -11,5 +11,5 @@ object JArray extends Bench.ForkedTime {
       }
     }
   }
-  
+
 }
