@@ -36,7 +36,7 @@ object Generators {
     (0 until size).foreach{index =>
       array(index) = randomJValue
     }
-    JArray(array)
+    scala.json.ast.fast.JArray(array)
   }
   
   def jObject: Gen[JObject] = for {
