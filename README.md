@@ -25,10 +25,12 @@ Implementation is in `scala.json.ast.safe`
     - Number representation for `JNumber` is a `BigDecimal` (http://stackoverflow.com/a/13502497/1519631)
     - `JObject` is an actual `Map[String,JValue]`
     - `JArray` is an `Vector`
-- Strictly pure. Library has no side effects/throwing errors (even when constructing various `JValue`'s), and hence we can
+- Library has no side effects/throwing errors (even when constructing various `JValue`'s) nor does it allow
+invalid JSON in the representation (i.e. duplicate keys in a `JObject`, and hence we can
 guarantee that a `JValue` will always contain a valid structure that can be 
-serialized/rendered into [JSON](https://en.wikipedia.org/wiki/JSON). There is one exception, and that is for `scala.json.ast.safe.JNumber` 
-in `Scala.js` (see `Scala.js` section for more info)
+serialized/rendered into [JSON](https://en.wikipedia.org/wiki/JSON). 
+There is one exception, and that is for `scala.json.ast.safe.JNumber` in `Scala.js` (see `Scala.js` 
+section for more info)
 
 ## Conversion between scala.json.ast.safe and scala.json.ast.fast
 
