@@ -94,14 +94,17 @@ case object JFalse extends JBoolean {
 }
 
 case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
+  // The minimum size to start using offheap due to overhead
+  private[this] val sizeOffset = 12
+  
   def toFast: fast.JValue = {
     if (value.isEmpty) {
       fast.JArray(Array.ofDim[fast.JValue](0))
     } else {
-      import scala.offheap.{Pool, Region}
-      implicit val props = Region.Props(Pool())
-
-      Region { implicit r =>
+      
+      val length = value.size
+      
+      if (length < sizeOffset) {
         val array = Array.ofDim[fast.JField](value.size)
         var index = 0
         for ((k, v) <- value) {
@@ -109,8 +112,36 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
           index = index + 1
         }
         fast.JObject(array)
-      }
+      } else {
 
+        import scala.offheap.{Pool, Region}
+
+        val sizeEstimate = 256
+
+        val tempChunkSize = UNSAFE.pageSize() * length * sizeEstimate
+
+        val chunkSize = if (UNSAFE.pageSize() > tempChunkSize) {
+          sizeEstimate * UNSAFE.pageSize()
+        } else {
+          tempChunkSize
+        }
+
+        implicit val props = Region.Props(new Pool(
+          alloc = malloc,
+          pageSize = UNSAFE.pageSize(),
+          chunkSize = chunkSize
+        ))
+        
+        Region { implicit r =>
+          val array = Array.ofDim[fast.JField](value.size)
+          var index = 0
+          for ((k, v) <- value) {
+            array(index) = fast.JField(k, v.toFast)
+            index = index + 1
+          }
+          fast.JObject(array)
+        }
+      }
     }
   }
 }
@@ -120,30 +151,15 @@ object JArray {
 }
 
 case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
+  // The minimum size to start using offheap due to overhead
+  private[this] val sizeOffset = 8
+  
   def toFast: fast.JValue = {
     val length = value.length
     if (length == 0) {
       fast.JArray(Array.ofDim[fast.JValue](0))
     } else {
-      import scala.offheap.{Pool, Region}
-      
-      val sizeEstimate = 256
-      
-      val tempChunkSize = UNSAFE.pageSize() * length * sizeEstimate
-      
-      val chunkSize = if (UNSAFE.pageSize() > tempChunkSize) {
-        sizeEstimate * UNSAFE.pageSize()
-      } else {
-        tempChunkSize
-      }
-      
-      implicit val props = Region.Props(new Pool(
-        alloc = malloc,
-        pageSize = UNSAFE.pageSize(),
-        chunkSize = chunkSize
-      ))
-
-      val array = Region { implicit r =>
+      if (length < sizeOffset) {
         val array = Array.ofDim[fast.JValue](length)
         val iterator = value.iterator
         var index = 0
@@ -151,10 +167,38 @@ case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
           array(index) = iterator.next().toFast
           index = index + 1
         }
-        array
-      }
-      fast.JArray(array)
+        fast.JArray(array)
+      } else {
+        import scala.offheap.{Pool, Region}
 
+        val sizeEstimate = 256
+
+        val tempChunkSize = UNSAFE.pageSize() * length * sizeEstimate
+
+        val chunkSize = if (UNSAFE.pageSize() > tempChunkSize) {
+          sizeEstimate * UNSAFE.pageSize()
+        } else {
+          tempChunkSize
+        }
+
+        implicit val props = Region.Props(new Pool(
+          alloc = malloc,
+          pageSize = UNSAFE.pageSize(),
+          chunkSize = chunkSize
+        ))
+
+        val array = Region { implicit r =>
+          val array = Array.ofDim[fast.JValue](length)
+          val iterator = value.iterator
+          var index = 0
+          while (iterator.hasNext) {
+            array(index) = iterator.next().toFast
+            index = index + 1
+          }
+          array
+        }
+        fast.JArray(array)
+      }
     }
   }
 }
