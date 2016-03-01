@@ -13,7 +13,7 @@ class JNumber extends Spec {
     read a BigInt $readBigIntJNumber
     read an Int $readIntJNumber
     read a Double $readDoubleJNumber
-    read a Double NAN $readDoubleNANJNumber
+    read a Double NaN $readDoubleNANJNumber
     read a Double Positive Infinity $readDoublePositiveInfinityJNumber
     read a Double Negative Infinity $readDoubleNegativeInfinityJNumber
     read a Float $readFloatJNumber
