@@ -3,7 +3,9 @@ package specs.safe
 import specs.Spec
 import scala.json.ast.safe._
 
-class JNumber extends Spec { def is = s2"""
+class JNumber extends Spec {
+  def is =
+    s2"""
   The JNumber value should
     read a Long $readLongJNumber
     read a Byte $readByteJNumber
@@ -20,47 +22,47 @@ class JNumber extends Spec { def is = s2"""
 
   private[this] final val mc = BigDecimal.defaultMathContext
 
-  def readByteJNumber = prop {b: Byte =>
+  def readByteJNumber = prop { b: Byte =>
     JNumber(b).value must beEqualTo(BigDecimal(b))
   }
 
-  def readLongJNumber = prop {l: Long =>
+  def readLongJNumber = prop { l: Long =>
     JNumber(l).value must beEqualTo(BigDecimal(l))
   }
 
-  def readBigDecimalJNumber = prop {b: BigDecimal =>
+  def readBigDecimalJNumber = prop { b: BigDecimal =>
     JNumber(b).value must beEqualTo(b)
   }
 
-  def readBigIntJNumber = prop {b: BigInt =>
+  def readBigIntJNumber = prop { b: BigInt =>
     JNumber(b).value must beEqualTo(BigDecimal(b))
   }
 
-  def readIntJNumber = prop {i: Int =>
+  def readIntJNumber = prop { i: Int =>
     JNumber(i).value must beEqualTo(BigDecimal(i))
   }
 
-  def readDoubleJNumber = prop {d: Double =>
+  def readDoubleJNumber = prop { d: Double =>
     JNumber(d) match {
       case JNull => JNull must beEqualTo(JNull)
       case JNumber(value) => value must beEqualTo(BigDecimal(d))
     }
   }
-  
+
   def readDoubleNANJNumber = {
     JNumber(Double.NaN) match {
       case JNull => true
       case _ => false
     }
   }
-  
+
   def readDoublePositiveInfinityJNumber = {
     JNumber(Double.PositiveInfinity) match {
       case JNull => true
       case _ => false
     }
   }
-  
+
   def readDoubleNegativeInfinityJNumber = {
     JNumber(Double.NegativeInfinity) match {
       case JNull => true
@@ -68,11 +70,11 @@ class JNumber extends Spec { def is = s2"""
     }
   }
 
-  def readFloatJNumber = prop {f: Float =>
+  def readFloatJNumber = prop { f: Float =>
     JNumber(f).value must beEqualTo(new BigDecimal(new java.math.BigDecimal(java.lang.Float.toString(f), mc), mc))
   }
 
-  def readShortJNumber = prop {s: Short =>
+  def readShortJNumber = prop { s: Short =>
     JNumber(s).value must beEqualTo(BigDecimal(s))
   }
 }

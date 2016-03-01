@@ -3,7 +3,9 @@ package specs.fast
 import specs.Spec
 import scala.json.ast.fast._
 
-class JNumber extends Spec { def is = s2"""
+class JNumber extends Spec {
+  def is =
+    s2"""
   The JNumber value should
     read a Long $readLongJNumber
     read a Byte $readByteJNumber
@@ -17,45 +19,48 @@ class JNumber extends Spec { def is = s2"""
     read a String and detect non numeric numbers $readStringJNumberDetect
   """
 
-  def readByteJNumber = prop {b: Byte =>
+  def readByteJNumber = prop { b: Byte =>
     JNumber(b).value must beEqualTo(b.toInt.toString)
   }
 
-  def readLongJNumber = prop {l: Long =>
+  def readLongJNumber = prop { l: Long =>
     JNumber(l).value must beEqualTo(l.toString)
   }
 
-  def readBigDecimalJNumber = prop {b: BigDecimal =>
+  def readBigDecimalJNumber = prop { b: BigDecimal =>
     JNumber(b).value must beEqualTo(b.toString())
   }
 
-  def readBigIntJNumber = prop {b: BigInt =>
+  def readBigIntJNumber = prop { b: BigInt =>
     JNumber(b).value must beEqualTo(b.toString())
   }
 
-  def readIntJNumber = prop {i: Int =>
+  def readIntJNumber = prop { i: Int =>
     JNumber(i).value must beEqualTo(i.toString)
   }
 
-  def readDoubleJNumber = prop{d: Double =>
+  def readDoubleJNumber = prop { d: Double =>
     JNumber(d).value must beEqualTo(d.toString)
   }
 
-  def readFloatJNumber = prop{f: Float =>
+  def readFloatJNumber = prop { f: Float =>
     JNumber(f).value must beEqualTo(f.toString)
   }
 
-  def readShortJNumber = prop{s: Short =>
+  def readShortJNumber = prop { s: Short =>
     JNumber(s).value must beEqualTo(s.toString)
   }
 
-  def readStringJNumber = prop{s: String =>
+  def readStringJNumber = prop { s: String =>
     JNumber(s).value must beEqualTo(s.toString)
   }
 
-  def readStringJNumberDetect = prop{s: String =>
-    {scala.util.Try{BigDecimal(s)}.toOption.isEmpty} ==> {
-      scala.util.Try(BigDecimal(JNumber(s).value)).toOption.isEmpty must beTrue
-    }
+  def readStringJNumberDetect = prop { s: String => {
+    scala.util.Try {
+      BigDecimal(s)
+    }.toOption.isEmpty
+  } ==> {
+    scala.util.Try(BigDecimal(JNumber(s).value)).toOption.isEmpty must beTrue
+  }
   }
 }

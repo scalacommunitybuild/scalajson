@@ -17,10 +17,10 @@ object Generators {
   } yield JField(string, jValue)
 
   def jArrayGenerator: Gen[JArray] =
-    Gen.containerOf[Array,JValue](jValueGenerator).map(JArray.apply)
+    Gen.containerOf[Array, JValue](jValueGenerator).map(JArray.apply)
 
   def jObjectGenerator: Gen[JObject] =
-    Gen.containerOf[Array,JField](jFieldGenerator).map(JObject.apply)
+    Gen.containerOf[Array, JField](jFieldGenerator).map(JObject.apply)
 
   def jValueGenerator: Gen[JValue] = for {
     jInt <- jIntGenerator

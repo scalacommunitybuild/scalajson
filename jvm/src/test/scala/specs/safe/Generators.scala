@@ -12,7 +12,7 @@ object Generators {
   def jBooleanGenerator = Arbitrary.arbitrary[Boolean].map(JBoolean.apply)
 
   def jArrayGenerator: Gen[JArray] =
-    Gen.containerOf[Vector,JValue](jValueGenerator).map(JArray.apply)
+    Gen.containerOf[Vector, JValue](jValueGenerator).map(JArray.apply)
 
   private def jObjectTypeGenerator: Gen[(String, JValue)] = for {
     string <- Arbitrary.arbitrary[String]
@@ -20,7 +20,7 @@ object Generators {
   } yield (string, jValue)
 
   def jObjectGenerator: Gen[JObject] =
-    Gen.containerOf[List,(String,JValue)](jObjectTypeGenerator).map(data => JObject.apply(data.toMap))
+    Gen.containerOf[List, (String, JValue)](jObjectTypeGenerator).map(data => JObject.apply(data.toMap))
 
   def jValueGenerator: Gen[JValue] = for {
     jInt <- jIntGenerator
