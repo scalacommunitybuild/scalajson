@@ -1,6 +1,8 @@
 package scala.json.ast.fast
 
 import scala.json.ast.safe
+import scala.offheap.internal.SunMisc._
+import scala.offheap.malloc
 
 sealed abstract class JValue extends Serializable with Product {
 
@@ -127,7 +129,22 @@ case class JArray(value: Array[JValue] = Array.empty) extends JValue {
       safe.JArray(Vector[safe.JValue]())
     } else {
       import scala.offheap.{Pool, Region}
-      implicit val props = Region.Props(Pool())
+
+      val sizeEstimate = 256
+
+      val tempChunkSize = UNSAFE.pageSize() * length * sizeEstimate
+
+      val chunkSize = if (UNSAFE.pageSize() > tempChunkSize) {
+        sizeEstimate * UNSAFE.pageSize()
+      } else {
+        tempChunkSize
+      }
+
+      implicit val props = Region.Props(new Pool(
+        alloc = malloc,
+        pageSize = UNSAFE.pageSize(),
+        chunkSize = chunkSize
+      ))
 
       Region { implicit r =>
         var index = 0
