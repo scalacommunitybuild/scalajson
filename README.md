@@ -5,7 +5,7 @@
 Two minimal implementations of a [JSON](https://en.wikipedia.org/wiki/JSON) `AST`, one that is designed for
 performance and another that is designed for correctness/purity.
 
-## json4s Fast AST
+## Fast AST
 Implementation is in `scala.json.ast.fast`
 
 ### Goals
@@ -15,7 +15,7 @@ Implementation is in `scala.json.ast.fast`
     - `JNumber` stored as a `String`
 - Doesn't use `Scala`'s `stdlib` collection's library
 
-## json4s Safe AST
+## Safe AST
 Implementation is in `scala.json.ast.safe`
 
 ### Goals
