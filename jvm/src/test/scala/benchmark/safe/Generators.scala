@@ -1,10 +1,12 @@
-package benchmark.fast
+package benchmark.safe
 
 import org.scalameter._
-import scala.json.ast.fast._
+import scala.json.ast.safe._
 
+/**
+  * Created by matthewdedetrich on 1/03/2016.
+  */
 object Generators {
-  
   def jBoolean: Gen[JBoolean] = for {
     size <- Gen.range("seed")(300000, 1500000, 300000)
   } yield {
@@ -13,13 +15,13 @@ object Generators {
     else
       JBoolean(false)
   }
-  
+
   def jString: Gen[JString] = for {
     size <- Gen.range("seed")(300000, 1500000, 300000)
   } yield {
     JString(size.toString)
   }
-  
+
   def jNumber: Gen[JNumber] = for {
     size <- Gen.range("seed")(300000, 1500000, 300000)
   } yield {
@@ -30,26 +32,32 @@ object Generators {
     size <- Gen.range("seed")(0, 10, 1)
     randomJValue <- jValue
   } yield {
-    
-    val array: Array[JValue] = Array.ofDim(size)
-    (0 until size).foreach{index =>
-      array(index) = randomJValue
-    } 
-    scala.json.ast.fast.JArray(array)
+
+    var index = 0
+    val b = Vector.newBuilder[scala.json.ast.safe.JValue]
+    while (index < size) {
+      b += randomJValue
+      index = index + 1
+    }
+    scala.json.ast.safe.JArray(b.result())
   }
-  
+
   def jObject: Gen[JObject] = for {
     size <- Gen.range("seed")(0, 10, 1)
     string <- Gen.range("seed")(300000, 1500000, 300000).map{_.toString}
     randomJValue <- jValue
   } yield {
-    val array: Array[JField] = Array.ofDim(size)
-    (0 until size).foreach{index =>
-      array(index) = JField(string,randomJValue)
+
+    var index = 0
+    val b = Map.newBuilder[String, scala.json.ast.safe.JValue]
+    
+    (0 until size).foreach {_ =>
+      b += ((string, randomJValue))
     }
-    scala.json.ast.fast.JObject(array)
+
+    scala.json.ast.safe.JObject(b.result())
   }
-  
+
   def jValue: Gen[JValue] = Gen.range("JValue type")(300000, 1500000, 300000).flatMap{ randomSeed =>
     randomSeed %5 match {
       case 0 => jBoolean.asInstanceOf[Gen[JValue]]
@@ -59,7 +67,5 @@ object Generators {
       case 4 => JArray.asInstanceOf[Gen[JValue]]
     }
   }
-  
 
-  
 }
