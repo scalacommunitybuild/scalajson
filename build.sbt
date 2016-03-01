@@ -36,6 +36,7 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
   jvmSettings(
     // Add JVM-specific settings here
     testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
+    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
     libraryDependencies ++= Seq(
       "sh.den" % "scala-offheap_2.11" % "0.1",
       "com.storm-enroute" %% "scalameter" % "0.7" % Test,
