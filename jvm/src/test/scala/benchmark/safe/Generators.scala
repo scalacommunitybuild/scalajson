@@ -22,7 +22,7 @@ object Generators {
   def jNumber: Gen[JNumber] = for {
     size <- Gen.range("seed")(300000, 1500000, 300000)
   } yield {
-    JNumber(size)
+    scala.json.ast.safe.JNumber(size)
   }
 
   def jArray: Gen[JArray] = for {
