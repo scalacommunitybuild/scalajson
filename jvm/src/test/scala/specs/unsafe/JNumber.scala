@@ -1,14 +1,13 @@
-package specs.fast
+package specs.unsafe
 
 import specs.Spec
-import scala.json.ast.fast._
+import scala.json.ast.unsafe._
 
 class JNumber extends Spec {
   def is =
     s2"""
   The JNumber value should
     read a Long $readLongJNumber
-    read a Byte $readByteJNumber
     read a BigDecimal $readBigDecimalJNumber
     read a BigInt $readBigIntJNumber
     read an Int $readIntJNumber
@@ -21,10 +20,6 @@ class JNumber extends Spec {
     read a String and not fail $readStringJNumber
     read a String and detect non numeric numbers $readStringJNumberDetect
   """
-
-  def readByteJNumber = prop { b: Byte =>
-    JNumber(b).value must beEqualTo(b.toInt.toString)
-  }
 
   def readLongJNumber = prop { l: Long =>
     JNumber(l).value must beEqualTo(l.toString)

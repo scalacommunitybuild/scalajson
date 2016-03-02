@@ -1,4 +1,4 @@
-package scala.json.ast.safe
+package scala.json.ast
 
 abstract class JNumberConverter[T] {
   def apply(b: BigDecimal): T

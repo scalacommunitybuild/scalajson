@@ -1,14 +1,12 @@
-package specs.safe
+package specs
 
-import specs.Spec
-import scala.json.ast.safe._
+import scala.json.ast.{JNull, JNumber}
 
 class JNumber extends Spec {
   def is =
     s2"""
   The JNumber value should
     read a Long $readLongJNumber
-    read a Byte $readByteJNumber
     read a BigDecimal $readBigDecimalJNumber
     read a BigInt $readBigIntJNumber
     read an Int $readIntJNumber
@@ -21,10 +19,6 @@ class JNumber extends Spec {
   """
 
   private[this] final val mc = BigDecimal.defaultMathContext
-
-  def readByteJNumber = prop { b: Byte =>
-    JNumber(b).value must beEqualTo(BigDecimal(b))
-  }
 
   def readLongJNumber = prop { l: Long =>
     JNumber(l).value must beEqualTo(BigDecimal(l))

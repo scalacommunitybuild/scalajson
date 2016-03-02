@@ -1,7 +1,6 @@
-package specs.fast
+package specs
 
-import specs.Spec
-import scala.json.ast.fast._
+import scala.json.ast.{JBoolean, JFalse, JTrue}
 
 class JBoolean extends Spec {
   def is =
@@ -121,4 +120,3 @@ class JBoolean extends Spec {
     }
   }
 }
-

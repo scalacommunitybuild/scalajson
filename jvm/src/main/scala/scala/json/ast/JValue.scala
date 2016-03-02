@@ -1,12 +1,10 @@
-package scala.json.ast.safe
-
-import scala.json.ast.fast
+package scala.json.ast
 
 sealed abstract class JValue extends Product with Serializable {
 
   /**
-    * Converts a [[scala.json.ast.safe.JValue]] to a [[scala.json.ast.fast.JValue]]. Note that
-    * when converting [[scala.json.ast.safe.JObject]], this can produce [[scala.json.ast.fast.JObject]] of
+    * Converts a [[JValue]] to a [[unsafe.JValue]]. Note that
+    * when converting [[JObject]], this can produce [[unsafe.JObject]] of
     * unknown ordering, since ordering on a [[scala.collection.Map]] isn't defined. Duplicate keys will also
     * be removed in an undefined manner.
     *
@@ -14,15 +12,15 @@ sealed abstract class JValue extends Product with Serializable {
     * @return
     */
 
-  def toFast: fast.JValue
+  def toUnsafe: unsafe.JValue
 }
 
 case object JNull extends JValue {
-  def toFast: fast.JValue = fast.JNull
+  def toUnsafe: unsafe.JValue = unsafe.JNull
 }
 
 case class JString(value: String) extends JValue {
-  def toFast: fast.JValue = fast.JString(value)
+  def toUnsafe: unsafe.JValue = unsafe.JString(value)
 }
 
 /**
@@ -65,7 +63,7 @@ object JNumber {
 case class JNumber(value: BigDecimal) extends JValue {
   def to[B](implicit bigDecimalConverter: JNumberConverter[B]) = bigDecimalConverter(value)
 
-  def toFast: fast.JValue = fast.JNumber(value)
+  def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 }
 
 // Implements named extractors so we can avoid boxing
@@ -82,27 +80,27 @@ object JBoolean {
 case object JTrue extends JBoolean {
   def get = true
 
-  def toFast: fast.JValue = fast.JTrue
+  def toUnsafe: unsafe.JValue = unsafe.JTrue
 }
 
 case object JFalse extends JBoolean {
   def get = false
 
-  def toFast: fast.JValue = fast.JFalse
+  def toUnsafe: unsafe.JValue = unsafe.JFalse
 }
 
 case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
-  def toFast: fast.JValue = {
+  def toUnsafe: unsafe.JValue = {
     if (value.isEmpty) {
-      fast.JArray(Array.ofDim[fast.JValue](0))
+      unsafe.JArray(Array.ofDim[unsafe.JValue](0))
     } else {
-      val array = Array.ofDim[fast.JField](value.size)
+      val array = Array.ofDim[unsafe.JField](value.size)
       var index = 0
       for ((k, v) <- value) {
-        array(index) = fast.JField(k, v.toFast)
+        array(index) = unsafe.JField(k, v.toUnsafe)
         index = index + 1
       }
-      fast.JObject(array)
+      unsafe.JObject(array)
     }
   }
 }
@@ -112,19 +110,19 @@ object JArray {
 }
 
 case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
-  def toFast: fast.JValue = {
+  def toUnsafe: unsafe.JValue = {
     val length = value.length
     if (length == 0) {
-      fast.JArray(Array.ofDim[fast.JValue](0))
+      unsafe.JArray(Array.ofDim[unsafe.JValue](0))
     } else {
-      val array = Array.ofDim[fast.JValue](length)
+      val array = Array.ofDim[unsafe.JValue](length)
       val iterator = value.iterator
       var index = 0
       while (iterator.hasNext) {
-        array(index) = iterator.next().toFast
+        array(index) = iterator.next().toUnsafe
         index = index + 1
       }
-      fast.JArray(array)
+      unsafe.JArray(array)
     }
   }
 }
