@@ -48,7 +48,6 @@ object Generators {
     randomJValue <- jValue
   } yield {
 
-    var index = 0
     val b = Map.newBuilder[String, ast.JValue]
 
     (0 until size).foreach { _ =>

@@ -38,12 +38,16 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
     testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
     libraryDependencies ++= Seq(
       "com.storm-enroute" %% "scalameter" % "0.7" % Test,
-      "org.specs2" %% "specs2-core" % "3.6.5" % Test,
-      "org.specs2" %% "specs2-scalacheck" % "3.6.5" % Test,
-      "org.scalacheck" %% "scalacheck" % "1.12.5" % Test
-    )
+      "org.specs2" %% "specs2-core" % "3.7.2" % Test,
+      "org.specs2" %% "specs2-scalacheck" % "3.7.2" % Test,
+      "org.scalacheck" %% "scalacheck" % "1.13.0" % Test
+    ),
+    scalacOptions in Test ++= Seq("-Yrangepos")
   ).
   jsSettings(
+    libraryDependencies ++= Seq(
+      "org.scalacheck" %%% "scalacheck" % "1.13.0" % Test
+    )
     // Add JS-specific settings here
   )
 
