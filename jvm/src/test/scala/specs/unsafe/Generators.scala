@@ -1,8 +1,8 @@
-package specs.fast
+package specs.unsafe
 
 import org.scalacheck.{Arbitrary, Gen}
 import scala.util.Random
-import scala.json.ast.fast._
+import scala.json.ast.unsafe._
 
 object Generators {
   def jIntGenerator = Arbitrary.arbitrary[BigInt].map(JNumber.apply)

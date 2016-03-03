@@ -1,14 +1,13 @@
-package scala.json.ast.safe
+package scala.json.ast
 
-import scala.json.ast.fast
 import scala.scalajs.js
-import scala.scalajs.js.annotation.{JSExportAll, JSExport}
+import scala.scalajs.js.annotation.{JSExport, JSExportAll}
 
 sealed abstract class JValue extends Product with Serializable {
 
   /**
-    * Converts a [[scala.json.ast.safe.JValue]] to a [[scala.json.ast.fast.JValue]]. Note that
-    * when converting [[scala.json.ast.safe.JObject]], this can produce [[scala.json.ast.fast.JObject]] of
+    * Converts a [[JValue]] to a [[unsafe.JValue]]. Note that
+    * when converting [[JObject]], this can produce [[unsafe.JObject]] of
     * unknown ordering, since ordering on a [[scala.collection.Map]] isn't defined. Duplicate keys will also
     * be removed in an undefined manner.
     *
@@ -16,10 +15,10 @@ sealed abstract class JValue extends Product with Serializable {
     * @return
     */
 
-  def toFast: fast.JValue
+  def toUnsafe: unsafe.JValue
 
   /**
-    * Converts a [[scala.json.ast.safe.JValue]] to a Javascript object/value that can be used within
+    * Converts a [[JValue]] to a Javascript object/value that can be used within
     * Javascript
     *
     * @return
@@ -30,14 +29,14 @@ sealed abstract class JValue extends Product with Serializable {
 
 @JSExportAll
 case object JNull extends JValue {
-  def toFast: fast.JValue = fast.JNull
+  def toUnsafe: unsafe.JValue = unsafe.JNull
 
   def toJsAny: js.Any = null
 }
 
 @JSExportAll
 case class JString(value: String) extends JValue {
-  def toFast: fast.JValue = fast.JString(value)
+  def toUnsafe: unsafe.JValue = unsafe.JString(value)
 
   def toJsAny: js.Any = value
 }
@@ -97,7 +96,7 @@ case class JNumber(value: BigDecimal) extends JValue {
     this(BigDecimal(value))
   }
 
-  def toFast: fast.JValue = fast.JNumber(value)
+  def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
   def toJsAny: js.Any = value.toDouble
 }
@@ -120,7 +119,7 @@ case object JTrue extends JBoolean {
   def get = true
 
   @JSExport
-  def toFast: fast.JValue = fast.JTrue
+  def toUnsafe: unsafe.JValue = unsafe.JTrue
 }
 
 @JSExport
@@ -128,7 +127,7 @@ case object JFalse extends JBoolean {
   def get = false
 
   @JSExport
-  def toFast: fast.JValue = fast.JFalse
+  def toUnsafe: unsafe.JValue = unsafe.JFalse
 }
 
 case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
@@ -142,17 +141,17 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
     this(value.toMap)
   }
 
-  def toFast: fast.JValue = {
+  def toUnsafe: unsafe.JValue = {
     if (value.isEmpty) {
-      fast.JObject(js.Array[fast.JField]())
+      unsafe.JObject(js.Array[unsafe.JField]())
     } else {
       val iterator = value.iterator
-      val array = js.Array[fast.JField]()
+      val array = js.Array[unsafe.JField]()
       while (iterator.hasNext) {
         val (k, v) = iterator.next()
-        array.push(fast.JField(k, v.toFast))
+        array.push(unsafe.JField(k, v.toUnsafe))
       }
-      fast.JObject(array)
+      unsafe.JObject(array)
     }
   }
 
@@ -185,16 +184,16 @@ case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
     this(value.to[Vector])
   }
 
-  def toFast: fast.JValue = {
+  def toUnsafe: unsafe.JValue = {
     if (value.isEmpty) {
-      fast.JArray(js.Array[fast.JValue]())
+      unsafe.JArray(js.Array[unsafe.JValue]())
     } else {
       val iterator = value.iterator
-      val array = js.Array[fast.JValue]()
+      val array = js.Array[unsafe.JValue]()
       while (iterator.hasNext) {
-        array.push(iterator.next().toFast)
+        array.push(iterator.next().toUnsafe)
       }
-      fast.JArray(array)
+      unsafe.JArray(array)
     }
   }
 

@@ -1,7 +1,6 @@
-package specs.safe
+package specs
 
-import specs.Spec
-import scala.json.ast.safe._
+import scala.json.ast.JString
 
 class JString extends Spec {
   def is =

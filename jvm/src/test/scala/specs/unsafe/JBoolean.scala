@@ -1,7 +1,7 @@
-package specs.safe
+package specs.unsafe
 
 import specs.Spec
-import scala.json.ast.safe._
+import scala.json.ast.unsafe._
 
 class JBoolean extends Spec {
   def is =
@@ -121,3 +121,4 @@ class JBoolean extends Spec {
     }
   }
 }
+

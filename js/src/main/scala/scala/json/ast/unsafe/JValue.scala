@@ -1,25 +1,25 @@
-package scala.json.ast.fast
+package scala.json.ast.unsafe
 
+import scala.json.ast
+import scala.json.ast._
 import scala.scalajs.js
-import scala.json.ast.safe
 import scala.scalajs.js.annotation.JSExportAll
 
 sealed abstract class JValue extends Serializable with Product {
   /**
-    * Converts a [[scala.json.ast.fast.JValue]] to a [[scala.json.ast.safe.JValue]]. Note that
-    * when converting [[scala.json.ast.fast.JString]], this can throw runtime error if the underlying
-    * string representation is not a correct number. Also when converting a [[scala.json.ast.fast.JObject]]
-    * to a [[scala.json.ast.safe.JObject]], its possible to lose data if you have duplicate keys. Duplicate
-    * keys are not allowed in JSON
+    * Converts a [[unsafe.JValue]] to a [[ast.JValue]]. Note that
+    * when converting [[unsafe.JNumber]], this can throw runtime error if the underlying
+    * string representation is not a correct number. Also when converting a [[ast.JObject]]
+    * to a [[ast.JObject]], its possible to lose data if you have duplicate keys.
     *
     * @see https://www.ietf.org/rfc/rfc4627.txt
     * @return
     */
 
-  def toSafe: safe.JValue
+  def toStandard: ast.JValue
 
   /**
-    * Converts a [[scala.json.ast.fast.JValue]] to a Javascript object/value that can be used within
+    * Converts a [[unsafe.JValue]] to a Javascript object/value that can be used within
     * Javascript
     *
     * @return
@@ -29,14 +29,14 @@ sealed abstract class JValue extends Serializable with Product {
 
 @JSExportAll
 case object JNull extends JValue {
-  def toSafe: safe.JValue = safe.JNull
+  def toStandard: ast.JValue = ast.JNull
 
   def toJsAny: js.Any = null
 }
 
 @JSExportAll
 case class JString(value: String) extends JValue {
-  def toSafe: safe.JValue = safe.JString(value)
+  def toStandard: ast.JValue = ast.JString(value)
 
   def toJsAny: js.Any = value
 }
@@ -45,7 +45,7 @@ case class JString(value: String) extends JValue {
   * If you are passing in a NaN or Infinity as a Double, JNumber
   * will contain "NaN" or "Infinity" as a String which means it will cause
   * issues for users when they use the value at runtime. You need to
-  * check values yourself when constructing [[scala.json.ast.fast.JValue]]
+  * check values yourself when constructing [[unsafe.JValue]]
   * to prevent this. This isn't checked by default for performance reasons.
   */
 
@@ -69,17 +69,12 @@ object JNumber {
   def apply(value: Integer): JNumber = JNumber(value.toString)
 }
 
-/**
-  * JNumber is internally represented as a string, to improve performance
-  *
-  * @param value
-  */
-
+// JNumber is internally represented as a string, to improve performance
 @JSExportAll
 case class JNumber(value: String) extends JValue {
   def to[B](implicit jNumberConverter: JNumberConverter[B]) = jNumberConverter(value)
 
-  def toSafe: safe.JValue = safe.JNumber(BigDecimal(value))
+  def toStandard: ast.JValue = ast.JNumber(BigDecimal(value))
 
   @JSExportAll def this(value: Double) = {
     this(value.toString)
@@ -105,24 +100,20 @@ object JBoolean {
 case object JTrue extends JBoolean {
   def get = true
 
-  def toSafe: safe.JValue = safe.JTrue
+  def toStandard: ast.JValue = ast.JTrue
 }
 
 @JSExportAll
 case object JFalse extends JBoolean {
   def get = false
 
-  def toSafe: safe.JValue = safe.JTrue
+  def toStandard: ast.JValue = ast.JTrue
 }
 
 @JSExportAll
 case class JField(field: String, value: JValue)
 
-/**
-  * JObject is internally represented as a mutable Array, to improve sequential performance
-  *
-  * @param value
-  */
+// JObject is internally represented as a mutable Array, to improve sequential performance
 @JSExportAll
 case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
   @JSExportAll def this(value: js.Dictionary[JValue]) = {
@@ -135,22 +126,22 @@ case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
     })
   }
 
-  def toSafe: safe.JValue = {
+  def toStandard: ast.JValue = {
     // Javascript array.length across all major browsers has near constant cost, so we
     // use this to build the array http://jsperf.com/length-comparisons
     val length = value.length
 
     if (length == 0) {
-      safe.JObject(Map.newBuilder[String, safe.JValue].result())
+      ast.JObject(Map.newBuilder[String, ast.JValue].result())
     } else {
-      val b = Map.newBuilder[String, safe.JValue].result()
+      val b = Map.newBuilder[String, ast.JValue].result()
       var index = 0
       while (index < length) {
         val v = value(index)
-        b + ((v.field, v.value.toSafe))
+        b + ((v.field, v.value.toStandard))
         index = index + 1
       }
-      safe.JObject(b)
+      ast.JObject(b)
     }
   }
 
@@ -173,27 +164,23 @@ case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
   }
 }
 
-/**
-  * JArray is internally represented as a mutable Array, to improve sequential performance
-  *
-  * @param value
-  */
+// JArray is internally represented as a mutable js.Array, to improve sequential performance
 @JSExportAll
 case class JArray(value: js.Array[JValue] = js.Array()) extends JValue {
-  def toSafe: safe.JValue = {
+  def toStandard: ast.JValue = {
     // Javascript array.length across all major browsers has near constant cost, so we
     // use this to build the array http://jsperf.com/length-comparisons
     val length = value.length
     if (length == 0) {
-      safe.JArray(Vector.newBuilder[safe.JValue].result())
+      ast.JArray(Vector.newBuilder[ast.JValue].result())
     } else {
-      val b = Vector.newBuilder[safe.JValue]
+      val b = Vector.newBuilder[ast.JValue]
       var index = 0
       while (index < length) {
-        b += value(index).toSafe
+        b += value(index).toStandard
         index = index + 1
       }
-      safe.JArray(b.result())
+      ast.JArray(b.result())
     }
   }
 
