@@ -1,5 +1,7 @@
 package scala.json.ast
 
+import scala.offheap.data
+
 sealed abstract class JValue extends Product with Serializable {
 
   /**
@@ -109,8 +111,8 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
         }
         unsafe.JObject(array)
       } else {
-
-        import scala.offheap.{Pool, Region}
+        import scala.offheap._
+        import scala.offheap.internal.SunMisc._
 
         val sizeEstimate = 256
 
@@ -129,13 +131,13 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
         ))
         
         Region { implicit r =>
-          val array = Array.ofDim[unsafe.JField](value.size)
+          val array = Array.empty[unsafe.JField]
           var index = 0
           for ((k, v) <- value) {
             array(index) = unsafe.JField(k, v.toUnsafe)
             index = index + 1
           }
-          unsafe.JObject(array)
+          unsafe.JObject(array.toArray)
         }
       }
     }
@@ -165,7 +167,8 @@ case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
         }
         unsafe.JArray(array)
       } else {
-        import scala.offheap.{Pool, Region}
+        import scala.offheap._
+        import scala.offheap.internal.SunMisc._
 
         val sizeEstimate = 256
 
@@ -184,7 +187,7 @@ case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
         ))
 
         val array = Region { implicit r =>
-          val array = Array.ofDim[unsafe.JValue](length)
+          val array = Array.empty[unsafe.JValue]
           val iterator = value.iterator
           var index = 0
           while (iterator.hasNext) {
@@ -193,7 +196,7 @@ case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
           }
           array
         }
-        unsafe.JArray(array)
+        unsafe.JArray(array.toArray)
       }
     }
   }

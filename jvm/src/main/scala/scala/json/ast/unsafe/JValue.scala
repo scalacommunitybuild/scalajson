@@ -121,7 +121,8 @@ case class JArray(value: Array[JValue] = Array.empty) extends JValue {
     if (length == 0) {
       ast.JArray(Vector[ast.JValue]())
     } else {
-      import scala.offheap.{Pool, Region}
+      import scala.offheap._
+      import scala.offheap.internal.SunMisc._
 
       val sizeEstimate = 256
 
