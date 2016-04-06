@@ -29,41 +29,56 @@ case class JString(value: String) extends JValue {
   */
 
 object JNumber {
-  private[this] final val mc = BigDecimal.defaultMathContext
+  def apply(value: Int): JNumber = JNumber(value.toString)
 
-  def apply(value: Int): JNumber = JNumber(BigDecimal(value))
+  def apply(value: Short): JNumber = JNumber(value.toString)
 
-  def apply(value: Short): JNumber = JNumber(BigDecimal(value))
+  def apply(value: Long): JNumber = JNumber(value.toString)
 
-  def apply(value: Long): JNumber = JNumber(BigDecimal(value))
+  def apply(value: BigInt): JNumber = JNumber(value.toString)
 
-  def apply(value: BigInt): JNumber = JNumber(BigDecimal(value))
+  def apply(value: Float): JNumber = JNumber(value.toString)
 
-  def apply(value: Float): JNumber = JNumber({
-    // BigDecimal.decimal doesn't exist on 2.10, so this is just the Scala 2.11 implementation
-    new BigDecimal(new java.math.BigDecimal(java.lang.Float.toString(value), mc), mc)
-  })
+  def apply(value: BigDecimal): JNumber = JNumber(value.toString())
 
   /**
     * @param value
-    * @return Will return a JNull if value is a Nan or Infinity
+    * @return Will return a [[JNull]] if value is a Nan or Infinity
     */
 
   def apply(value: Double): JValue = value match {
     case n if n.isNaN => JNull
     case n if n.isInfinity => JNull
-    case _ => JNumber(BigDecimal(value))
+    case _ => JNumber(value.toString)
   }
 
-  def apply(value: Integer): JNumber = JNumber(BigDecimal(value))
+  def apply(value: Integer): JNumber = JNumber(value.toString)
 
-  def apply(value: Array[Char]): JNumber = JNumber(BigDecimal(value))
+  def apply(value: Array[Char]): JNumber = JNumber(value.toString)
 }
 
-case class JNumber(value: BigDecimal) extends JValue {
+/**
+  *
+  * @param value
+  * @throws NumberFormatException If the value is not a valid JSON Number
+  */
+
+case class JNumber(value: String) extends JValue {
+
+  if (!value.matches(jNumberRegex)) {
+    throw new NumberFormatException(value)
+  }
+
   def to[B](implicit bigDecimalConverter: JNumberConverter[B]) = bigDecimalConverter(value)
 
   def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
+
+  override def equals(a: Any) =
+    numericStringEquals(value, a.toString)
+
+  override lazy val hashCode =
+    numericStringHashcode(value)
+
 }
 
 // Implements named extractors so we can avoid boxing

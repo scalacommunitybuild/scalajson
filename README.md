@@ -12,10 +12,15 @@ Implementation is in `scala.json.ast.JValue`
 - Fully immutable (all underlying collections/types used are immutable)
 - `constant`/`effective constant` lookup time for `JArray`/`JObject`
 - Adherence to the typical use for the [JSON](https://en.wikipedia.org/wiki/JSON) standard.
-    - Number representation for `JNumber` is a `BigDecimal` (http://stackoverflow.com/a/13502497/1519631)
+    - Number representation for `JNumber` is a `String` which checks that for a valid JSON representation
+      of a number (http://stackoverflow.com/a/13502497/1519631)
+      - Equals will properly detect if two numbers are equal, i.e. `JNumber("34.0") == JNumber("34")`
+      - Haschode has been designed to provide highest performance for typical numbers (i.e. numbers that fit in
+      a `Double`) else it will manually compute the hashcode for larger numbers. Since this can be expensive, the
+      hashcode is cached.
     - `JObject` is an actual `Map[String,JValue]`. This means that it doesn't handle duplicate keys for a `JObject`,
     nor does it handle key ordering.
-    - `JArray` is an `Vector`
+    - `JArray` is an `Vector`.
 - Library does not allow invalid JSON in the representation and hence we can guarantee that a `JValue` will 
 always contain a valid structure that can be serialized/rendered into [JSON](https://en.wikipedia.org/wiki/JSON). 
 There is one exception, and that is for `scala.json.ast.JNumber` in `Scala.js` (see `Scala.js` 

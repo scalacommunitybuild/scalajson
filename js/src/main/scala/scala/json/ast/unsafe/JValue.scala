@@ -74,7 +74,7 @@ object JNumber {
 case class JNumber(value: String) extends JValue {
   def to[B](implicit jNumberConverter: JNumberConverter[B]) = jNumberConverter(value)
 
-  def toStandard: ast.JValue = ast.JNumber(BigDecimal(value))
+  def toStandard: ast.JValue = ast.JNumber(value)
 
   @JSExportAll def this(value: Double) = {
     this(value.toString)

@@ -1,6 +1,8 @@
 name := "Scala Json AST"
 
 val currentScalaVersion = "2.11.8"
+val scalaCheckVersion = "1.13.0"
+val specs2Version = "3.7.2"
 
 lazy val root = project.in(file(".")).
   aggregate(scalaJsonASTJS, scalaJsonASTJVM).
@@ -40,15 +42,16 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
     testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
     libraryDependencies ++= Seq(
       "com.storm-enroute" %% "scalameter" % "0.7" % Test,
-      "org.specs2" %% "specs2-core" % "3.7.2" % Test,
-      "org.specs2" %% "specs2-scalacheck" % "3.7.2" % Test,
-      "org.scalacheck" %% "scalacheck" % "1.13.0" % Test
+      "org.specs2" %% "specs2-core" % specs2Version % Test,
+      "org.specs2" %% "specs2-scalacheck" % specs2Version % Test,
+      "org.scalacheck" %% "scalacheck" % scalaCheckVersion % Test
     ),
     scalacOptions in Test ++= Seq("-Yrangepos")
   ).
   jsSettings(
     libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % "1.13.0" % Test
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test
+
     )
     // Add JS-specific settings here
   )

@@ -47,15 +47,15 @@ case class JString(value: String) extends JValue {
   */
 
 object JNumber {
-  def apply(value: Int): JNumber = JNumber(BigDecimal(value))
+  def apply(value: Int): JNumber = JNumber(value.toString)
 
-  def apply(value: Integer): JNumber = JNumber(BigDecimal(value))
+  def apply(value: Integer): JNumber = JNumber(value.toString)
 
-  def apply(value: Short): JNumber = JNumber(BigDecimal(value))
+  def apply(value: Short): JNumber = JNumber(value.toString)
 
-  def apply(value: Long): JNumber = JNumber(BigDecimal(value))
+  def apply(value: Long): JNumber = JNumber(value.toString)
 
-  def apply(value: BigInt): JNumber = JNumber(BigDecimal(value))
+  def apply(value: BigInt): JNumber = JNumber(value.toString())
 
   /**
     * @param value
@@ -66,39 +66,40 @@ object JNumber {
   def apply(value: Double): JValue = value match {
     case n if n.isNaN => JNull
     case n if n.isInfinity => JNull
-    case _ => JNumber(BigDecimal(value))
+    case _ => JNumber(value.toString)
   }
 
-  def apply(value: Float): JNumber = JNumber(BigDecimal(value.toDouble)) // In Scala.js, float has the same representation as double
+  def apply(value: Float): JNumber = JNumber(value.toString) // In Scala.js, float has the same representation as double
 }
 
 @JSExportAll
-case class JNumber(value: BigDecimal) extends JValue {
+case class JNumber(value: String) extends JValue {
+
+  if (!value.matches(jNumberRegex)) {
+    throw new NumberFormatException(value)
+  }
+
   def to[B](implicit bigDecimalConverter: JNumberConverter[B]) = bigDecimalConverter(value)
 
   /**
     * Javascript specification for numbers specify a `Double`, so this is the default export method to `Javascript`
     *
     * @param value
+    * @throws NumberFormatException If the value is not a valid JSON Number
     */
   def this(value: Double) = {
-    this(BigDecimal(value))
-  }
-
-  /**
-    * String constructor, so its possible to construct a [[JNumber]] with a larger precision
-    * than the one defined by the IEEE 754. Note that when using it in Scala.js, it is possible for this to throw an
-    * exception at runtime if you don't put in a correct number format for a [[scala.math.BigDecimal]].
-    *
-    * @param value
-    */
-  def this(value: String) = {
-    this(BigDecimal(value))
+    this(value.toString)
   }
 
   def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
   def toJsAny: js.Any = value.toDouble
+  
+  override def equals(a: Any) =
+    numericStringEquals(value,a.toString)
+
+  override lazy val hashCode =
+    numericStringHashcode(value)
 }
 
 // Implements named extractors so we can avoid boxing

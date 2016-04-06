@@ -1,6 +1,6 @@
 package specs
 
-import scala.json.ast.{JNull, JNumber}
+import scala.json.ast._
 
 class JNumber extends Spec {
   def is =
@@ -18,28 +18,26 @@ class JNumber extends Spec {
     read a Short $readShortJNumber
   """
 
-  private[this] final val mc = BigDecimal.defaultMathContext
-
   def readLongJNumber = prop { l: Long =>
-    JNumber(l).value must beEqualTo(BigDecimal(l))
+    JNumber(l).value must beEqualTo(l.toString)
   }
 
   def readBigDecimalJNumber = prop { b: BigDecimal =>
-    JNumber(b).value must beEqualTo(b)
+    JNumber(b).value must beEqualTo(b.toString())
   }
 
   def readBigIntJNumber = prop { b: BigInt =>
-    JNumber(b).value must beEqualTo(BigDecimal(b))
+    JNumber(b).value must beEqualTo(b.toString)
   }
 
   def readIntJNumber = prop { i: Int =>
-    JNumber(i).value must beEqualTo(BigDecimal(i))
+    JNumber(i).value must beEqualTo(i.toString)
   }
 
   def readDoubleJNumber = prop { d: Double =>
     JNumber(d) match {
       case JNull => JNull must beEqualTo(JNull)
-      case JNumber(value) => value must beEqualTo(BigDecimal(d))
+      case JNumber(value) => value must beEqualTo(d.toString)
     }
   }
 
@@ -65,10 +63,11 @@ class JNumber extends Spec {
   }
 
   def readFloatJNumber = prop { f: Float =>
-    JNumber(f).value must beEqualTo(new BigDecimal(new java.math.BigDecimal(java.lang.Float.toString(f), mc), mc))
+    JNumber(f).value must beEqualTo(f.toString)
   }
 
   def readShortJNumber = prop { s: Short =>
-    JNumber(s).value must beEqualTo(BigDecimal(s))
+    JNumber(s).value must beEqualTo(s.toString)
   }
+
 }
