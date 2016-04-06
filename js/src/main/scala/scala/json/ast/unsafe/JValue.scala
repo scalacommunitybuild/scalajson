@@ -80,7 +80,7 @@ case class JNumber(value: String) extends JValue {
     this(value.toString)
   }
 
-  def toJsAny: js.Any = value.toInt
+  def toJsAny: js.Any = value.toDouble
 }
 
 // Implements named extractors so we can avoid boxing
