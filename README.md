@@ -10,39 +10,42 @@ Implementation is in `scala.json.ast.JValue`
 
 ### Goals
 - Fully immutable (all underlying collections/types used are immutable)
-- `constant`/`effective constant` lookup time for `JArray`/`JObject`
+- `constant`/`effective constant` lookup time for `scala.json.ast.JArray`/`scala.json.ast.JObject`
 - Adherence to the typical use for the [JSON](https://en.wikipedia.org/wiki/JSON) standard.
-    - Number representation for `JNumber` is a `String` which checks that for a valid JSON representation
+    - Number representation for `scala.json.ast.JNumber` is a `String` which checks if its a valid JSON representation
       of a number (http://stackoverflow.com/a/13502497/1519631)
-      - Equals will properly detect if two numbers are equal, i.e. `JNumber("34.0") == JNumber("34")`
-      - Haschode has been designed to provide highest performance for typical numbers (i.e. numbers that fit in
+      - Equals will properly detect if two numbers are equal, i.e. `scala.json.ast.JNumber("34.00") == scala.json.ast.JNumber("34")`
+      - Hashcode has been designed to provide highest performance for typical numbers (i.e. numbers that fit in
       a `Double`) else it will manually compute the hashcode for larger numbers. Since this can be expensive, the
       hashcode is cached.
-    - `JObject` is an actual `Map[String,JValue]`. This means that it doesn't handle duplicate keys for a `JObject`,
+    - `scala.json.ast.JObject` is an actual `Map[String,JValue]`. This means that it doesn't handle duplicate keys for a `scala.json.ast.JObject`,
     nor does it handle key ordering.
-    - `JArray` is an `Vector`.
-- Library does not allow invalid JSON in the representation and hence we can guarantee that a `JValue` will 
+    - `scala.json.ast.JArray` is an `Vector`.
+- Library does not allow invalid JSON in the representation and hence we can guarantee that a `scala.json.ast.JValue` will 
 always contain a valid structure that can be serialized/rendered into [JSON](https://en.wikipedia.org/wiki/JSON). 
-There is one exception, and that is for `scala.json.ast.JNumber` in `Scala.js` (see `Scala.js` 
-section for more info). Note that this does not mean that we can represent all forms of JSON that can be considered valid
-(i.e. duplicate/ordered keys for a `JObject`)
+  - Note that you can lose precision when using `scala.json.ast.JNumber` in `Scala.js` (see `Scala.js` 
+section for more info).
 
 ## Unsafe AST
 Implementation is in `scala.json.unsafe.JValue`
 
 ### Goals
 - Uses the best performing datastructure's for high performance/low memory usage in construction of a `unsafe.JValue`
-    - `unsafe.JArray` stored as an `Array`
-    - `unsafe.JObject` stored as an `Array`
-    - `unsafe.JNumber` stored as a `String`
+    - `scala.json.ast.unsafe.JArray` stored as an `Array`
+    - `scala.json.ast.unsafe.JObject` stored as an `Array`
+    - `scala.json.ast.unsafe.JNumber` stored as a `String`
 - Doesn't use `Scala`'s `stdlib` collection's library
-- Defer all runtime errors. We don't throw errors if you happen to provide Infinity/NaN
-- Allow duplicate and ordered keys for a `unsafe.JObject`.
-- Allow any length/precision of numbers for `unsafe.JNumber` since its represented as a `String`
-- This means that `unsafe.JValue` can represent everything that can
-can be considered valid under the official [JSON spec](https://www.ietf.org/rfc/rfc4627.txt), even if its not considered sane
-- Is referentially transparent in regards to `String` -> `unsafe.JValue` -> `String` since `unsafe.JObject` preserves ordering/duplicate
-keys
+- Defer all runtime errors. We don't throw errors if you happen to provide Infinity/NaN or other invalid data.
+- Allow duplicate and ordered keys for a `scala.json.ast.unsafe.JObject`.
+- Allow any length/precision of numbers for `scala.json.ast.unsafe.JNumber` since its represented as a `String`
+  - Equals/hashcode only checks for `String` equality, not number equality.
+    - Means that `scala.json.ast.unsafe.JNumber("34.00")` is not equal to `scala.json.ast.unsafe.JNumber("34")`
+- This means that `scala.json.ast.unsafe.JValue` can represent everything that can
+can be considered valid under the official [JSON spec](https://www.ietf.org/rfc/rfc4627.txt), even if its not considered sane (i.e.
+duplicate keys for a `scala.json.ast.unsafe.JObject`).
+  - Also means it can hold invalid data, due to not doing runtime checks
+- Is referentially transparent in regards to `String` -> `scala.json.ast.unsafe.JValue` -> `String` since `unsafe.JObject` 
+  preserves ordering/duplicate keys
 
 ## Conversion between scala.json.JValue and scala.json.ast.unsafe.JValue
 
@@ -51,7 +54,7 @@ Any `scala.json.ast.JValue` implements a conversion to `scala.json.ast.unsafe.JV
 
 There are some peculiarities when converting between the two AST's. When converting a `scala.json.ast.unsafe.JNumber` to a 
 `scala.json.ast.JNumber`, it is possible for this to fail at runtime (since the internal representation of 
-`scala.json.ast.unsafe.JNumber` is a string). It is up to the caller on how to handle this error (and when), 
+`scala.json.ast.unsafe.JNumber` is a `String`). It is up to the caller on how to handle this error (and when), 
 a runtime check is deliberately avoided on our end for performance reasons.
 
 Converting from a `scala.json.ast.JObject` to a `scala.json.ast.unsafe.JObject` will produce 
