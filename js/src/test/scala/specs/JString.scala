@@ -8,7 +8,7 @@ object JString extends TestSuite with UTestScalaCheck {
   val tests = TestSuite {
     "The JString value should" - {
       "read a String" - readStringJString
-      "convert To jsAny" - toJsAny
+      "convert to jsAny" - toJsAny
     }
 
     def readStringJString = forAll { s: String =>

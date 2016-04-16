@@ -39,15 +39,12 @@ class JBoolean extends Spec {
   }
   }
 
-  def readBooleanJBooleanPatternMatchJBooleanTrueFail = prop { b: Boolean => {
-    b == true
-  } ==> {
+  def readBooleanJBooleanPatternMatchJBooleanTrueFail = {
     {
-      JBoolean(b) match {
+      JBoolean(true) match {
         case f@JBoolean(false) => f
       }
-    } must throwAn[MatchError]
-  }
+    } must throwA[MatchError]
   }
 
   def readBooleanJBooleanPatternMatchJBooleanFalse = prop { b: Boolean => {
@@ -60,15 +57,12 @@ class JBoolean extends Spec {
   }
   }
 
-  def readBooleanJBooleanPatternMatchJBooleanFalseFail = prop { b: Boolean => {
-    b == false
-  } ==> {
+  def readBooleanJBooleanPatternMatchJBooleanFalseFail = {
     {
-      JBoolean(b) match {
+      JBoolean(false) match {
         case f@JBoolean(true) => f
       }
     } must throwAn[MatchError]
-  }
   }
 
   def readBooleanJBooleanPatternMatchJTrue = prop { b: Boolean =>
@@ -80,14 +74,12 @@ class JBoolean extends Spec {
     }
   }
 
-  def readBooleanJBooleanPatternMatchJTrueFail = prop { b: Boolean =>
-    (b == true) ==> {
-      {
-        JBoolean(b) match {
-          case f@JFalse => f
-        }
-      } must throwAn[MatchError]
-    }
+  def readBooleanJBooleanPatternMatchJTrueFail = {
+    {
+      JBoolean(true) match {
+        case f@JFalse => f
+      }
+    } must throwAn[MatchError]
   }
 
   def readBooleanJBooleanPatternMatchJFalse = prop { b: Boolean =>
@@ -99,14 +91,12 @@ class JBoolean extends Spec {
     }
   }
 
-  def readBooleanJBooleanPatternMatchJFalseFail = prop { b: Boolean =>
-    (b == false) ==> {
-      {
-        JBoolean(b) match {
-          case f@JTrue => f
-        }
-      } must throwAn[MatchError]
-    }
+  def readBooleanJBooleanPatternMatchJFalseFail = {
+    {
+      JBoolean(false) match {
+        case f@JTrue => f
+      }
+    } must throwAn[MatchError]
   }
 
   def readBooleanJTrue = prop { b: Boolean =>

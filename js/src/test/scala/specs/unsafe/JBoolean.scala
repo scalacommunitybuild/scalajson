@@ -1,14 +1,15 @@
-package specs
+package specs.unsafe
 
 import org.scalacheck.Prop._
+import specs.UTestScalaCheck
 import utest._
 
 object JBoolean extends TestSuite with UTestScalaCheck {
   val tests = TestSuite {
-    "The JBoolean value should" - {
+    "The unsafe.JBoolean value should" - {
       "read a Boolean" - readBooleanJBoolean
-      "pattern match with JTrue" - readBooleanJBooleanPatternMatchJBooleanTrue
-      "pattern match with JTrue and fail with scala.MatchError" - readBooleanJBooleanPatternMatchJBooleanTrueFail
+      "pattern match with JTrue" - readBooleanJBooleanPatternMatchJTrue
+      "pattern match with JTrue and fail with scala.MatchError" - readBooleanJBooleanPatternMatchJTrueFail
       "pattern match with JFalse" - readBooleanJBooleanPatternMatchJFalse
       "pattern match with JFalse and fail with scala.MatchError" - readBooleanJBooleanPatternMatchJFalseFail
       "pattern match with JBoolean as true" - readBooleanJBooleanPatternMatchJBooleanTrue
@@ -22,14 +23,14 @@ object JBoolean extends TestSuite with UTestScalaCheck {
   }
 
   def readBooleanJBoolean = forAll { b: Boolean =>
-    scala.json.ast.JBoolean(b).get == b
+    scala.json.ast.unsafe.JBoolean(b).get == b
   }.checkUTest()
 
   def readBooleanJBooleanPatternMatchJBooleanTrue = forAll { b: Boolean => {
     b == true
   } ==> {
-    val result = scala.json.ast.JBoolean(b) match {
-      case f@scala.json.ast.JBoolean(true) => f
+    val result = scala.json.ast.unsafe.JBoolean(b) match {
+      case f@scala.json.ast.unsafe.JBoolean(true) => f
     }
     result.get == b
   }
@@ -37,8 +38,8 @@ object JBoolean extends TestSuite with UTestScalaCheck {
 
   def readBooleanJBooleanPatternMatchJBooleanTrueFail = {
     try {
-      scala.json.ast.JBoolean(true) match {
-        case f@scala.json.ast.JBoolean(false) => f
+      scala.json.ast.unsafe.JBoolean(true) match {
+        case f@scala.json.ast.unsafe.JBoolean(false) => f
       }
     } catch {
       case _: MatchError => true
@@ -49,8 +50,8 @@ object JBoolean extends TestSuite with UTestScalaCheck {
   def readBooleanJBooleanPatternMatchJBooleanFalse = forAll { b: Boolean => {
     b == false
   } ==> {
-    val result = scala.json.ast.JBoolean(b) match {
-      case f@scala.json.ast.JBoolean(false) => f
+    val result = scala.json.ast.unsafe.JBoolean(b) match {
+      case f@scala.json.ast.unsafe.JBoolean(false) => f
     }
     result.get == b
   }
@@ -58,8 +59,8 @@ object JBoolean extends TestSuite with UTestScalaCheck {
 
   def readBooleanJBooleanPatternMatchJBooleanFalseFail = {
     try {
-      scala.json.ast.JBoolean(false) match {
-        case f@scala.json.ast.JBoolean(true) => f
+      scala.json.ast.unsafe.JBoolean(false) match {
+        case f@scala.json.ast.unsafe.JBoolean(true) => f
       }
     } catch {
       case _: MatchError => true
@@ -69,8 +70,8 @@ object JBoolean extends TestSuite with UTestScalaCheck {
 
   def readBooleanJBooleanPatternMatchJTrue = forAll { b: Boolean =>
     (b == true) ==> {
-      val result = scala.json.ast.JBoolean(b) match {
-        case f@scala.json.ast.JTrue => f
+      val result = scala.json.ast.unsafe.JBoolean(b) match {
+        case f@scala.json.ast.unsafe.JTrue => f
       }
       result.get == b
     }
@@ -78,8 +79,8 @@ object JBoolean extends TestSuite with UTestScalaCheck {
 
   def readBooleanJBooleanPatternMatchJTrueFail = {
     try {
-      scala.json.ast.JBoolean(true) match {
-        case f@scala.json.ast.JFalse => f
+      scala.json.ast.unsafe.JBoolean(true) match {
+        case f@scala.json.ast.unsafe.JFalse => f
       }
     } catch {
       case _: MatchError => true
@@ -89,8 +90,8 @@ object JBoolean extends TestSuite with UTestScalaCheck {
 
   def readBooleanJBooleanPatternMatchJFalse = forAll { b: Boolean =>
     (b == false) ==> {
-      val result = scala.json.ast.JBoolean(b) match {
-        case f@scala.json.ast.JFalse => f
+      val result = scala.json.ast.unsafe.JBoolean(b) match {
+        case f@scala.json.ast.unsafe.JFalse => f
       }
       result.get == b
     }
@@ -98,8 +99,8 @@ object JBoolean extends TestSuite with UTestScalaCheck {
 
   def readBooleanJBooleanPatternMatchJFalseFail = {
     try {
-      scala.json.ast.JBoolean(false) match {
-        case f@scala.json.ast.JTrue => f
+      scala.json.ast.unsafe.JBoolean(false) match {
+        case f@scala.json.ast.unsafe.JTrue => f
       }
     } catch {
       case _: MatchError => true
@@ -109,20 +110,18 @@ object JBoolean extends TestSuite with UTestScalaCheck {
 
   def readBooleanJTrue = forAll { b: Boolean =>
     (b == true) ==> {
-      scala.json.ast.JTrue.get == b
+      scala.json.ast.unsafe.JTrue.get == b
     }
-  }.checkUTest()
+  }
 
   def readBooleanJFalse = forAll { b: Boolean =>
     (b == false) ==> {
-      scala.json.ast.JFalse.get == b
+      scala.json.ast.unsafe.JFalse.get == b
     }
-  }.checkUTest()
+  }
 
   def toJsAny = forAll {b: Boolean =>
-    scala.json.ast.JBoolean(b).toJsAny == b
+    scala.json.ast.unsafe.JBoolean(b).toJsAny == b
   }.checkUTest()
-
-
 
 }

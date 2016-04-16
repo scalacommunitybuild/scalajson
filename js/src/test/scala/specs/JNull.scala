@@ -5,7 +5,7 @@ import utest._
 object JNull extends TestSuite with UTestScalaCheck {
   val tests = TestSuite {
     "The JNull value should" - {
-      "convert To jsAny" - toJsAny
+      "convert to jsAny" - toJsAny
     }
   }
 

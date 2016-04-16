@@ -16,7 +16,7 @@ object JNumber extends TestSuite with UTestScalaCheck {
       "read a Double Negative Infinity" - readDoubleNegativeInfinityJNumber
       "read a Float" - readFloatJNumber
       "read a Short" - readShortJNumber
-      "convert To jsAny" - toJsAny
+      "convert to jsAny" - toJsAny
     }
 
     def readLongJNumber = forAll { l: Long =>
