@@ -16,9 +16,7 @@ Implementation is in `scala.json.ast.JValue`
     - Number representation for `scala.json.ast.JNumber` is a `String` which checks if its a valid JSON representation
       of a number (http://stackoverflow.com/a/13502497/1519631)
       - Equals will properly detect if two numbers are equal, i.e. `scala.json.ast.JNumber("34.00") == scala.json.ast.JNumber("34")`
-      - Hashcode has been designed to provide highest performance for typical numbers (i.e. numbers that fit in
-      a `Double`) else it will manually compute the hashcode for larger numbers. Since this can be expensive, the
-      hashcode is cached.
+      - Hashcode has been designed to provide consistent hash for numbers of unlimited precision.
     - `scala.json.ast.JObject` is an actual `Map[String,JValue]`. This means that it doesn't handle duplicate keys for a `scala.json.ast.JObject`,
     nor does it handle key ordering.
     - `scala.json.ast.JArray` is an `Vector`.
@@ -114,4 +112,17 @@ var jObjectWithBoolAndNumberAndNull = new scala.json.ast.JObject({
     "someNumber" : new scala.json.ast.JNumber(324324.324),
     "nullValue": scala.json.ast.JNull()
 });
+```
+
+## jNumberRegex
+`scala.json.JNumber` uses `jNumberRegex` to validate whether a number is a valid
+JSON number. One can use `jNumberRegex` explicitly if you want to use the validation that
+is used by `scala.json.JNumber` (for example, you may want to validate proper numbers
+using `scala.json.unsafe.JNumber`).
+
+```scala
+import scala.json.jNumberRegex
+
+"3535353".matches(jNumberRegex) // true
+
 ```
