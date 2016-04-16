@@ -74,9 +74,12 @@ case class JNumber(value: String) extends JValue {
   def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
   override def equals(a: Any) =
-    numericStringEquals(value, a.toString)
+    a match {
+      case jNumber: JNumber => numericStringEquals(value,jNumber.value)
+      case _ => false
+    }
 
-  override lazy val hashCode =
+  override def hashCode =
     numericStringHashcode(value)
 
 }

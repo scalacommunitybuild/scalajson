@@ -36,18 +36,13 @@ object Misc extends Bench.ForkedTime {
           val length = value.length
           var i = 0
 
-          if (value(0) == '-') { // Found a negative, increment by one
+          if (value(0) == '-') {
+            // Found a negative, increment by one
             result = result * 31 + '-': Int
             i = 1
           }
 
           var char = value(i)
-
-          // First lets skip all leading zeroes
-          while (char == '0') {
-            i += 1
-            char = value(i)
-          }
 
           // From now on, we can just traverse all the chars
 
@@ -58,7 +53,8 @@ object Misc extends Bench.ForkedTime {
 
               result = 31 * result + 'e': Int
 
-              if (value(i + 1) == '-') { // Found a negative or positive, increment by one
+              if (value(i + 1) == '-') {
+                // Found a negative or positive, increment by one
                 i += 1
                 char = value(i)
                 result = result * 31 + value(i): Int
@@ -70,7 +66,7 @@ object Misc extends Bench.ForkedTime {
               i += 1
               char = value(i)
 
-              // Same as before, need to skip all leading zeroes
+              // Need to skip all leading zeroes, possible with e
               while (char == '0') {
                 i += 1
                 char = value(i)

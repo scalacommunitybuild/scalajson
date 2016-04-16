@@ -21,58 +21,54 @@ package object ast {
     */
 
   private[ast] def numericStringHashcode(value: String): Int = {
-      var result = 31
-      val length = value.length
-      var i = 0
+    var result = 31
+    val length = value.length
+    var i = 0
 
-      if (value(0) == '-') { // Found a negative, increment by one
-        result = result * 31 + '-': Int
-        i = 1
-      }
+    if (value(0) == '-') {
+      // Found a negative, increment by one
+      result = result * 31 + '-': Int
+      i = 1
+    }
 
-      var char = value(i)
+    var char = value(i)
 
-      // First lets skip all leading zeroes
-      while (char == '0') {
-        i += 1
-        char = value(i)
-      }
+    // From now on, we can just traverse all the chars
 
-      // From now on, we can just traverse all the chars
+    while (i < length) {
+      char = value(i)
+      // if char is e, lowercase it
+      if ((char | 0x20) == 'e') {
 
-      while (i < length) {
-        char = value(i)
-        // if char is e, lowercase it
-        if ((char | 0x20) == 'e') {
+        result = 31 * result + 'e': Int
 
-          result = 31 * result + 'e': Int
-
-          if (value(i + 1) == '-') { // Found a negative or positive, increment by one
-            i += 1
-            char = value(i)
-            result = result * 31 + value(i): Int
-          } else if (value(i + 1) == '+') {
-            i += 1
-            char = value(i)
-          }
-
+        if (value(i + 1) == '-') {
+          // Found a negative or positive, increment by one
           i += 1
           char = value(i)
-
-          // Same as before, need to skip all leading zeroes
-          while (char == '0') {
-            i += 1
-            char = value(i)
-          }
-
-        } else {
-          result = 31 * result + char: Int
+          result = result * 31 + value(i): Int
+        } else if (value(i + 1) == '+') {
+          i += 1
+          char = value(i)
         }
 
         i += 1
+        char = value(i)
 
+        // Need to skip all leading zeroes, possible with e
+        while (char == '0') {
+          i += 1
+          char = value(i)
+        }
+
+      } else {
+        result = 31 * result + char: Int
       }
-      result
+
+      i += 1
+
+    }
+    result
   }
 
   /** Tests two non-empty strings for equality, assuming both are decimal representations of numbers.
