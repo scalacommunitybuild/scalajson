@@ -28,7 +28,6 @@ object Misc extends Bench.ForkedTime {
       }
     }
 
-
     measure method "manualHashcode" in {
       using (doubleAsString) in {
         value => {
