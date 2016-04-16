@@ -7,7 +7,7 @@ package object ast {
     * precision
     */
 
-  protected[ast] val jNumberRegex: String =
+  @inline protected[ast] val jNumberRegex: String =
     """-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?"""
 
   /**
