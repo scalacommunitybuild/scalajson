@@ -50,9 +50,10 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
   ).
   jsSettings(
     libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test
-
-    )
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
+      "com.lihaoyi" %%% "utest" % "0.4.3" % Test
+    ),
+    testFrameworks += new TestFramework("utest.runner.Framework")
     // Add JS-specific settings here
   )
 

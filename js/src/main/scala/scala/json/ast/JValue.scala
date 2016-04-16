@@ -57,6 +57,8 @@ object JNumber {
 
   def apply(value: BigInt): JNumber = JNumber(value.toString())
 
+  def apply(value: BigDecimal): JNumber = JNumber(value.toString())
+
   /**
     * @param value
     * @return Will return a JNull if value is a Nan or Infinity
