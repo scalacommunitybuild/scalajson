@@ -16,7 +16,21 @@ object JNumber extends TestSuite with UTestScalaCheck {
       "read a Double Negative Infinity" - readDoubleNegativeInfinityJNumber
       "read a Float" - readFloatJNumber
       "read a Short" - readShortJNumber
+      "hashCode equals decimal" - hashCodeEqualsDecimal
+      "hashCode equals decimal #2" - hashCodeEqualsDecimal2
+      "hashCode not equals decimal" - hashCodeNotEqualsDecimal
+      "hashCode not equals decimal #2" - hashCodeNotEqualsDecimal2
+      "hashCode equals e" - hashCodeEqualsE
+      "hashCode equals e #2" - hashCodeEqualsE2
       "convert to jsAny" - toJsAny
+      "hashCode equals e negative" - hashCodeEqualsENegative
+      "hashCode equals e negative" - hashCodeEqualsENegative2
+      "hashCode not equals e negative" - hashCodeNotEqualsENegative
+      "hashCode not equals e negative #2" - hashCodeNotEqualsENegative2
+      "hashCode equals e positive" - hashCodeEqualsEPositive
+      "hashCode equals e positive #2" - hashCodeEqualsEPositive2
+      "hashCode not equals e positive" - hashCodeNotEqualsEPositive
+      "hashCode not equals e positive #2" - hashCodeNotEqualsEPositive2
     }
 
     def readLongJNumber = forAll { l: Long =>
@@ -70,6 +84,62 @@ object JNumber extends TestSuite with UTestScalaCheck {
     def readShortJNumber = forAll { s: Short =>
       scala.json.ast.JNumber(s).value == s.toString
     }.checkUTest()
+
+    def hashCodeEqualsDecimal = {
+      scala.json.ast.JNumber("34").## == scala.json.ast.JNumber("34.0").##
+    }
+
+    def hashCodeEqualsDecimal2 = {
+      scala.json.ast.JNumber("34").## == scala.json.ast.JNumber("34.00").##
+    }
+
+    def hashCodeNotEqualsDecimal = {
+      scala.json.ast.JNumber("34").## == scala.json.ast.JNumber("34.01").##
+    }
+
+    def hashCodeNotEqualsDecimal2 = {
+      scala.json.ast.JNumber("34").## == scala.json.ast.JNumber("34.001").##
+    }
+
+    def hashCodeEqualsE = {
+      scala.json.ast.JNumber("34e34").## != scala.json.ast.JNumber("34e034").##
+    }
+
+    def hashCodeEqualsE2 = {
+      scala.json.ast.JNumber("34e34").## != scala.json.ast.JNumber("34e0034").##
+    }
+
+    def hashCodeEqualsENegative = {
+      JNumber("34e-0").## == JNumber("34").##
+    }
+
+    def hashCodeEqualsENegative2 = {
+      JNumber("34e-00").## == JNumber("34").##
+    }
+
+    def hashCodeNotEqualsENegative = {
+      JNumber("34e-01").## != JNumber("34").##
+    }
+
+    def hashCodeNotEqualsENegative2 = {
+      JNumber("34e-001").## != JNumber("34").##
+    }
+
+    def hashCodeEqualsEPositive = {
+      JNumber("34e+0").## == JNumber("34").##
+    }
+
+    def hashCodeEqualsEPositive2 = {
+      JNumber("34e+00").## == JNumber("34").##
+    }
+
+    def hashCodeNotEqualsEPositive = {
+      JNumber("34e+01").## != JNumber("34").##
+    }
+
+    def hashCodeNotEqualsEPositive2 = {
+      JNumber("34e+001").## != JNumber("34").##
+    }
 
     def toJsAny = forAll {d: Double =>
       scala.json.ast.JNumber(d).toJsAny == d

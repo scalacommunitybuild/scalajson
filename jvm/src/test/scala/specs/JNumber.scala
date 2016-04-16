@@ -16,6 +16,20 @@ class JNumber extends Spec {
     read a Double Negative Infinity $readDoubleNegativeInfinityJNumber
     read a Float $readFloatJNumber
     read a Short $readShortJNumber
+    hashCode equals decimal $hashCodeEqualsDecimal
+    hashCode equals decimal #2 $hashCodeEqualsDecimal2
+    hashCode not equals decimal $hashCodeNotEqualsDecimal
+    hashCode not equals decimal #2 $hashCodeNotEqualsDecimal2
+    hashCode equals e $hashCodeEqualsE
+    hashCode equals e #2 $hashCodeEqualsE2
+    hashCode equals e negative $hashCodeEqualsENegative
+    hashCode equals e negative #2 $hashCodeEqualsENegative2
+    hashCode not equals e negative $hashCodeNotEqualsENegative
+    hashCode not equals e negative #2 $hashCodeNotEqualsENegative2
+    hashCode equals e positive $hashCodeEqualsEPositive
+    hashCode equals e positive #2 $hashCodeEqualsEPositive2
+    hashCode not equals e positive $hashCodeNotEqualsEPositive
+    hashCode not equals e positive #2 $hashCodeNotEqualsEPositive2
   """
 
   def readLongJNumber = prop { l: Long =>
@@ -68,6 +82,62 @@ class JNumber extends Spec {
 
   def readShortJNumber = prop { s: Short =>
     JNumber(s).value must beEqualTo(s.toString)
+  }
+
+  def hashCodeEqualsDecimal = {
+    JNumber("34").## must beEqualTo(JNumber("34.0").##)
+  }
+
+  def hashCodeEqualsDecimal2 = {
+    JNumber("34").## must beEqualTo(JNumber("34.00").##)
+  }
+
+  def hashCodeNotEqualsDecimal = {
+    JNumber("34").## mustNotEqual JNumber("34.01").##
+  }
+
+  def hashCodeNotEqualsDecimal2 = {
+    JNumber("34").## mustNotEqual JNumber("34.001").##
+  }
+
+  def hashCodeEqualsE = {
+    JNumber("34e34").## must beEqualTo(JNumber("34e034").##)
+  }
+
+  def hashCodeEqualsE2 = {
+    JNumber("34e34").## must beEqualTo(JNumber("34e0034").##)
+  }
+
+  def hashCodeEqualsENegative = {
+    JNumber("34e-0").## must beEqualTo(JNumber("34").##)
+  }
+
+  def hashCodeEqualsENegative2 = {
+    JNumber("34e-00").## must beEqualTo(JNumber("34").##)
+  }
+
+  def hashCodeNotEqualsENegative = {
+    JNumber("34e-01").## mustNotEqual JNumber("34").##
+  }
+
+  def hashCodeNotEqualsENegative2 = {
+    JNumber("34e-001").## mustNotEqual JNumber("34").##
+  }
+
+  def hashCodeEqualsEPositive = {
+    JNumber("34e+0").## must beEqualTo(JNumber("34").##)
+  }
+
+  def hashCodeEqualsEPositive2 = {
+    JNumber("34e+00").## must beEqualTo(JNumber("34").##)
+  }
+
+  def hashCodeNotEqualsEPositive = {
+    JNumber("34e+01").## mustNotEqual JNumber("34").##
+  }
+
+  def hashCodeNotEqualsEPositive2 = {
+    JNumber("34e+001").## mustNotEqual JNumber("34").##
   }
 
 }

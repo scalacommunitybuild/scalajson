@@ -46,18 +46,18 @@ object Misc extends Bench.ForkedTime {
 
           // From now on, we can just traverse all the chars
 
+          var negativeFlag = false
+
           while (i < length) {
             char = value(i)
             // if char is e, lowercase it
             if ((char | 0x20) == 'e') {
 
-              result = 31 * result + 'e': Int
-
               if (value(i + 1) == '-') {
                 // Found a negative or positive, increment by one
                 i += 1
                 char = value(i)
-                result = result * 31 + value(i): Int
+                negativeFlag = true
               } else if (value(i + 1) == '+') {
                 i += 1
                 char = value(i)
@@ -67,9 +67,35 @@ object Misc extends Bench.ForkedTime {
               char = value(i)
 
               // Need to skip all leading zeroes, possible with e
-              while (char == '0') {
+              while (char == '0' && i < length) {
                 i += 1
-                char = value(i)
+                if (i != length)
+                  char = value(i) // Fencepost, possible that this can be last character
+              }
+
+              if (i < length) {
+                if (negativeFlag) {
+                  result = result * 31 + '-': Int
+                }
+
+                result = 31 * result + 'e': Int
+
+              }
+
+            } else if (char == '.') {
+
+              i += 1
+              char = value(i)
+
+              while (char == '0' && i < length) {
+                i += 1
+                if (i != length)
+                  char = value(i) // Fencepost, possible that this can be last character
+
+              }
+
+              if (i < length) {
+                result = 31 * result + '.': Int // The decimal is not finishing with a 0
               }
 
             } else {
