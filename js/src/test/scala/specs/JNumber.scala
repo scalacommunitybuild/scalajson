@@ -2,7 +2,6 @@ package specs
 
 import org.scalacheck.Prop.forAll
 import utest._
-import scala.json.ast._
 
 object JNumber extends TestSuite with UTestScalaCheck {
   val tests = TestSuite {
