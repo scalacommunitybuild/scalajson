@@ -6,7 +6,7 @@ import scala.json.ast.unsafe._
 class JBoolean extends Spec {
   def is =
     s2"""
-  The JBoolean value should
+  The unsafe.JBoolean value should
    read a Boolean $readBooleanJBoolean
    pattern match with JTrue $readBooleanJBooleanPatternMatchJTrue
    pattern match with JTrue and fail with scala.MatchError $readBooleanJBooleanPatternMatchJTrueFail

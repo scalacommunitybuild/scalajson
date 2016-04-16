@@ -6,7 +6,7 @@ import scala.json.ast.unsafe._
 class JString extends Spec {
   def is =
     s2"""
-  The JString value should
+  The unsafe.JString value should
     read a String $readStringJString
   """
 

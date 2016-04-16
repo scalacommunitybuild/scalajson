@@ -6,7 +6,7 @@ import scala.json.ast.unsafe._
 class JNumber extends Spec {
   def is =
     s2"""
-  The JNumber value should
+  The unsafe.JNumber value should
     read a Long $readLongJNumber
     read a BigDecimal $readBigDecimalJNumber
     read a BigInt $readBigIntJNumber
