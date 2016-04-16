@@ -21,43 +21,58 @@ package object ast {
     */
 
   private[ast] def numericStringHashcode(value: String): Int = {
-    var result = 31
+      var result = 31
+      val length = value.length
+      var i = 0
 
-    val asDouble = value.toDouble
+      if (value(0) == '-') { // Found a negative, increment by one
+        result = result * 31 + '-': Int
+        i = 1
+      }
 
-    if (asDouble.isInfinity) {
-      {
-        var i = 0
-        val length = value.length
+      var char = value(i)
 
-        if (value(0) == '-') { //Found a negative, lets shift it
-          result = result * 31
-        }
+      // First lets skip all leading zeroes
+      while (char == '0') {
+        i += 1
+        char = value(i)
+      }
 
-        while (i < length) {
-          val char = value(i)
-          if (!((char | 0x20) == 'e')) {
-            if (char == '.') {
-              result = 31 * result
-            } else {
-              if (char != '0') {
-                result = 31 * result + char: Int
-              }
-            }
-          } else {
-            result = 31 * result
-            if (value(i + 1) == '-') { //Found a negative, lets shift it
-              result = result * 31
-            }
+      // From now on, we can just traverse all the chars
+
+      while (i < length) {
+        char = value(i)
+        // if char is e, lowercase it
+        if ((char | 0x20) == 'e') {
+
+          result = 31 * result + 'e': Int
+
+          if (value(i + 1) == '-') { // Found a negative or positive, increment by one
+            i += 1
+            char = value(i)
+            result = result * 31 + value(i): Int
+          } else if (value(i + 1) == '+') {
+            i += 1
+            char = value(i)
           }
-          i = i + 1
+
+          i += 1
+          char = value(i)
+
+          // Same as before, need to skip all leading zeroes
+          while (char == '0') {
+            i += 1
+            char = value(i)
+          }
+
+        } else {
+          result = 31 * result + char: Int
         }
+
+        i += 1
+
       }
       result
-    } else {
-      val long = java.lang.Double.doubleToLongBits(asDouble)
-      (long^ (long >>> 32)).toInt
-    }
   }
 
   /** Tests two non-empty strings for equality, assuming both are decimal representations of numbers.
