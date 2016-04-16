@@ -38,28 +38,28 @@ object JNumber extends TestSuite with UTestScalaCheck {
 
     def readDoubleJNumber = forAll {d: Double =>
       scala.json.ast.JNumber(d) match {
-        case JNull => JNull == JNull
+        case scala.json.ast.JNull => JNull == JNull
         case scala.json.ast.JNumber(value) => value == d.toString
       }
     }.checkUTest()
 
     def readDoubleNANJNumber = {
       scala.json.ast.JNumber(Double.NaN) match {
-        case JNull => true
+        case scala.json.ast.JNull => true
         case _ => false
       }
     }
 
     def readDoublePositiveInfinityJNumber = {
       scala.json.ast.JNumber(Double.PositiveInfinity) match {
-        case JNull => true
+        case scala.json.ast.JNull => true
         case _ => false
       }
     }
 
     def readDoubleNegativeInfinityJNumber = {
       scala.json.ast.JNumber(Double.NegativeInfinity) match {
-        case JNull => true
+        case scala.json.ast.JNull => true
         case _ => false
       }
     }
