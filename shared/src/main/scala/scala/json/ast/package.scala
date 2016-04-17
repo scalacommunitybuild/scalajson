@@ -16,6 +16,7 @@ package object ast {
     * performance reasons, else it will calculate hashcode manually
     * by digits
     *
+    * @author Matthew de Detrich
     * @param value
     * @return
     */
@@ -43,11 +44,12 @@ package object ast {
       if ((char | 0x20) == 'e') {
 
         if (value(i + 1) == '-') {
-          // Found a negative or positive, increment by one
+          // Found a negative, increment by one
           i += 1
           char = value(i)
           negativeFlag = true
         } else if (value(i + 1) == '+') {
+          // Found a positive, ignore
           i += 1
           char = value(i)
         }
@@ -103,7 +105,8 @@ package object ast {
     * (It is likely but not guaranteed that the method will return `false` even if the two strings are identical.)
     *
     * Many thanks for @Ichoran (https://github.com/Ichoran) for the implementation
-    *
+
+    * @author Rex Kerr
     * @see https://github.com/Ichoran/kse/blob/master/src/main/scala/jsonal/Jast.scala#L683-L917
     */
 

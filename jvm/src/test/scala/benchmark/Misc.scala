@@ -52,11 +52,12 @@ object Misc extends Bench.ForkedTime {
             if ((char | 0x20) == 'e') {
 
               if (value(i + 1) == '-') {
-                // Found a negative or positive, increment by one
+                // Found a negative, increment by one
                 i += 1
                 char = value(i)
                 negativeFlag = true
               } else if (value(i + 1) == '+') {
+                // Found a positive, ignore
                 i += 1
                 char = value(i)
               }
