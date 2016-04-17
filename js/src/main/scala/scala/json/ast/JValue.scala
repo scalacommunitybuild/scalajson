@@ -228,7 +228,7 @@ object JArray {
 case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
   /**
     *
-    * Construct a JArray using Javascript's array type, i.e. `[]` or `new Array``
+    * Construct a JArray using Javascript's array type, i.e. `[]` or `new Array`
     *
     * @param value
     */
