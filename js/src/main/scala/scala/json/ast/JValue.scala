@@ -3,13 +3,19 @@ package scala.json.ast
 import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, JSExportAll}
 
+/** Represents a valid JSON Value
+  *
+  * @author Matthew de Detrich
+  * @see https://www.ietf.org/rfc/rfc4627.txt
+  */
+
 sealed abstract class JValue extends Product with Serializable {
 
   /**
     * Converts a [[JValue]] to a [[unsafe.JValue]]. Note that
     * when converting [[JObject]], this can produce [[unsafe.JObject]] of
-    * unknown ordering, since ordering on a [[scala.collection.Map]] isn't defined. Duplicate keys will also
-    * be removed in an undefined manner.
+    * unknown ordering, since ordering on a [[scala.collection.Map]] isn't defined.
+    * Duplicate keys will also be removed in an undefined manner.
     *
     * @see https://www.ietf.org/rfc/rfc4627.txt
     * @return
@@ -27,6 +33,11 @@ sealed abstract class JValue extends Product with Serializable {
   def toJsAny: js.Any
 }
 
+/** Represents a JSON null value
+  *
+  * @author Matthew de Detrich
+  */
+
 @JSExportAll
 case object JNull extends JValue {
   def toUnsafe: unsafe.JValue = unsafe.JNull
@@ -34,17 +45,17 @@ case object JNull extends JValue {
   def toJsAny: js.Any = null
 }
 
+/** Represents a JSON string value
+  *
+  * @author Matthew de Detrich
+  */
+
 @JSExportAll
 case class JString(value: String) extends JValue {
   def toUnsafe: unsafe.JValue = unsafe.JString(value)
 
   def toJsAny: js.Any = value
 }
-
-/**
-  * If you are passing in a NaN or Infinity as a Double, JNumber will
-  * return a JNull
-  */
 
 object JNumber {
   def apply(value: Int): JNumber = JNumber(value.toString)
@@ -74,6 +85,14 @@ object JNumber {
   def apply(value: Float): JNumber = JNumber(value.toString) // In Scala.js, float has the same representation as double
 }
 
+/** Represents a JSON number value. If you are passing in a
+  * NaN or Infinity as a [[Double]], [[JNumber]] will
+  * return a [[JNull]].
+  *
+  * @author Matthew de Detrich
+  * @throws NumberFormatException - If the value is not a valid JSON Number
+  */
+
 @JSExportAll
 case class JNumber(value: String) extends JValue {
 
@@ -87,7 +106,6 @@ case class JNumber(value: String) extends JValue {
     * Javascript specification for numbers specify a `Double`, so this is the default export method to `Javascript`
     *
     * @param value
-    * @throws NumberFormatException If the value is not a valid JSON Number
     */
   def this(value: Double) = {
     this(value.toString)
@@ -96,16 +114,22 @@ case class JNumber(value: String) extends JValue {
   def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
   def toJsAny: js.Any = value.toDouble
-  
+
   override def equals(a: Any) =
     a match {
-      case jNumber: JNumber => numericStringEquals(value,jNumber.value)
+      case jNumber: JNumber => numericStringEquals(value, jNumber.value)
       case _ => false
     }
 
   override def hashCode =
     numericStringHashcode(value)
 }
+
+/** Represents a JSON Boolean value, which can either be a
+  * [[JTrue]] or a [[JFalse]]
+  *
+  * @author Matthew de Detrich
+  */
 
 // Implements named extractors so we can avoid boxing
 sealed abstract class JBoolean extends JValue {
@@ -120,6 +144,11 @@ object JBoolean {
   def unapply(x: JBoolean): Some[Boolean] = Some(x.get)
 }
 
+/** Represents a JSON Boolean true value
+  *
+  * @author Matthew de Detrich
+  */
+
 @JSExport
 case object JTrue extends JBoolean {
   def get = true
@@ -128,6 +157,11 @@ case object JTrue extends JBoolean {
   def toUnsafe: unsafe.JValue = unsafe.JTrue
 }
 
+/** Represents a JSON Boolean false value
+  *
+  * @author Matthew de Detrich
+  */
+
 @JSExport
 case object JFalse extends JBoolean {
   def get = false
@@ -135,6 +169,12 @@ case object JFalse extends JBoolean {
   @JSExport
   def toUnsafe: unsafe.JValue = unsafe.JFalse
 }
+
+/** Represents a JSON Object value. Keys must be unique
+  * and are unordered
+  *
+  * @author Matthew de Detrich
+  */
 
 case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
 
@@ -176,13 +216,19 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
   }
 }
 
+/** Represents a JSON Array value
+  *
+  * @author Matthew de Detrich
+  */
+
 object JArray {
   def apply(value: JValue, values: JValue*): JArray = JArray(value +: values.to[Vector])
 }
 
 case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
   /**
-    * Construct a JArray using Javascript's array type, i.e. [] or new Array
+    *
+    * Construct a JArray using Javascript's array type, i.e. `[]` or `new Array``
     *
     * @param value
     */

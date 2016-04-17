@@ -2,7 +2,6 @@ package benchmark
 
 import org.scalameter.{Bench, Gen}
 
-
 /**
   * Misc benchmarks that are used to determine performance of various functions
   */

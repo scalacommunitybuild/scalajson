@@ -3,8 +3,16 @@ package scala.json.ast.unsafe
 import scala.json.ast
 import scala.json.ast._
 
+/** Represents a JSON Value which may be invalid. Internally uses mutable
+  * collections when its desirable to do so, for performance and other reasons
+  * (such as ordering and duplicate keys)
+  *
+  * @author Matthew de Detrich
+  * @see https://www.ietf.org/rfc/rfc4627.txt
+  */
+
 sealed abstract class JValue extends Serializable with Product {
-  
+
   /**
     * Converts a [[unsafe.JValue]] to a [[ast.JValue]]. Note that
     * when converting [[unsafe.JNumber]], this can throw runtime error if the underlying
@@ -14,30 +22,30 @@ sealed abstract class JValue extends Serializable with Product {
     * @see https://www.ietf.org/rfc/rfc4627.txt
     * @return
     */
-  
+
   def toStandard: ast.JValue
 }
+
+/** Represents a JSON null value
+  *
+  * @author Matthew de Detrich
+  */
 
 case object JNull extends JValue {
   def toStandard: ast.JValue = ast.JNull
 }
 
+/** Represents a JSON string value
+  *
+  * @author Matthew de Detrich
+  */
+
 case class JString(value: String) extends JValue {
   def toStandard: ast.JValue = ast.JString(value)
 }
 
-/**
-  * If you are passing in a NaN or Infinity as a Double, JNumber
-  * will contain "NaN" or "Infinity" as a String which means it will cause
-  * issues for users when they use the value at runtime. You need to
-  * check values yourself when constructing [[scala.json.ast.unsafe.JValue]]
-  * to prevent this. This isn't checked by default for performance reasons.
-  */
-
 object JNumber {
   def apply(value: Int): JNumber = JNumber(value.toInt.toString)
-
-  def apply(value: Integer): JNumber = JNumber(value.toString)
 
   def apply(value: Short): JNumber = JNumber(value.toString)
 
@@ -51,8 +59,21 @@ object JNumber {
 
   def apply(value: Double): JNumber = JNumber(value.toString)
 
+  def apply(value: Integer): JNumber = JNumber(value.toString)
+
   def apply(value: Array[Char]): JNumber = JNumber(value.mkString)
 }
+
+/** Represents a JSON number value.
+  *
+  * If you are passing in a NaN or Infinity as a [[Double]], [[unsafe.JNumber]]
+  * will contain "NaN" or "Infinity" as a String which means it will cause
+  * issues for users when they use the value at runtime. It may be
+  * preferable to check values yourself when constructing [[unsafe.JValue]]
+  * to prevent this. This isn't checked by default for performance reasons.
+  *
+  * @author Matthew de Detrich
+  */
 
 // JNumber is internally represented as a string, to improve performance
 case class JNumber(value: String) extends JValue {
@@ -60,6 +81,12 @@ case class JNumber(value: String) extends JValue {
 
   def toStandard: ast.JValue = ast.JNumber(BigDecimal(value))
 }
+
+/** Represents a JSON Boolean value, which can either be a
+  * [[JTrue]] or a [[JFalse]]
+  *
+  * @author Matthew de Detrich
+  */
 
 // Implements named extractors so we can avoid boxing
 sealed abstract class JBoolean extends JValue {
@@ -72,11 +99,21 @@ object JBoolean {
   def unapply(x: JBoolean): Some[Boolean] = Some(x.get)
 }
 
+/** Represents a JSON Boolean true value
+  *
+  * @author Matthew de Detrich
+  */
+
 case object JTrue extends JBoolean {
   def get = true
 
   def toStandard: ast.JValue = ast.JTrue
 }
+
+/** Represents a JSON Boolean false value
+  *
+  * @author Matthew de Detrich
+  */
 
 case object JFalse extends JBoolean {
   def get = false
@@ -85,6 +122,12 @@ case object JFalse extends JBoolean {
 }
 
 case class JField(field: String, value: JValue)
+
+/** Represents a JSON Object value. Duplicate keys
+  * are allowed and ordering is respected
+  *
+  * @author Matthew de Detrich
+  */
 
 // JObject is internally represented as a mutable Array, to improve sequential performance
 case class JObject(value: Array[JField] = Array.empty) extends JValue {
@@ -98,12 +141,17 @@ case class JObject(value: Array[JField] = Array.empty) extends JValue {
       while (index < length) {
         val v = value(index)
         b += ((v.field, v.value.toStandard))
-        index = index + 1
+        index += 1
       }
       ast.JObject(b.result())
     }
   }
 }
+
+/** Represents a JSON Array value
+  *
+  * @author Matthew de Detrich
+  */
 
 // JArray is internally represented as a mutable Array, to improve sequential performance
 case class JArray(value: Array[JValue] = Array.empty) extends JValue {
@@ -116,7 +164,7 @@ case class JArray(value: Array[JValue] = Array.empty) extends JValue {
       val b = Vector.newBuilder[ast.JValue]
       while (index < length) {
         b += value(index).toStandard
-        index = index + 1
+        index += 1
       }
       ast.JArray(b.result())
     }
