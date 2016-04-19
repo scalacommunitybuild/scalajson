@@ -35,7 +35,7 @@ object Generators {
     val b = Vector.newBuilder[ast.JValue]
     while (index < size) {
       b += randomJValue
-      index = index + 1
+      index += 1
     }
     ast.JArray(b.result())
   }
