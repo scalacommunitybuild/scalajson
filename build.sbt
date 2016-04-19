@@ -1,6 +1,7 @@
 name := "Scala Json AST"
 
 val currentScalaVersion = "2.11.8"
+val scala210Version = "2.10.6"
 val scalaCheckVersion = "1.13.0"
 val specs2Version = "3.7.2"
 
@@ -16,7 +17,7 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
     name := "scala-json-ast",
     version := "1.0.0-SNAPSHOT",
     scalaVersion := currentScalaVersion,
-    crossScalaVersions := Seq(currentScalaVersion,"2.10.6"),
+    crossScalaVersions := Seq(currentScalaVersion,scala210Version),
     scalacOptions ++= Seq(
       "-encoding", "UTF-8",
       "-deprecation", // warning and location for usages of deprecated APIs
