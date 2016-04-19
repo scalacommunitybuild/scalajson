@@ -32,7 +32,7 @@ sealed abstract class JValue extends Serializable with Product {
   */
 
 case object JNull extends JValue {
-  def toStandard: ast.JValue = ast.JNull
+  override def toStandard: ast.JValue = ast.JNull
 }
 
 /** Represents a JSON string value
@@ -41,7 +41,7 @@ case object JNull extends JValue {
   */
 
 case class JString(value: String) extends JValue {
-  def toStandard: ast.JValue = ast.JString(value)
+  override def toStandard: ast.JValue = ast.JString(value)
 }
 
 object JNumber {
@@ -79,7 +79,7 @@ object JNumber {
 case class JNumber(value: String) extends JValue {
   def to[B](implicit jNumberConverter: JNumberConverter[B]) = jNumberConverter(value)
 
-  def toStandard: ast.JValue = ast.JNumber(BigDecimal(value))
+  override def toStandard: ast.JValue = ast.JNumber(BigDecimal(value))
 }
 
 /** Represents a JSON Boolean value, which can either be a
@@ -105,9 +105,9 @@ object JBoolean {
   */
 
 case object JTrue extends JBoolean {
-  def get = true
+  override def get = true
 
-  def toStandard: ast.JValue = ast.JTrue
+  override def toStandard: ast.JValue = ast.JTrue
 }
 
 /** Represents a JSON Boolean false value
@@ -116,9 +116,9 @@ case object JTrue extends JBoolean {
   */
 
 case object JFalse extends JBoolean {
-  def get = false
+  override def get = false
 
-  def toStandard: ast.JValue = ast.JFalse
+  override def toStandard: ast.JValue = ast.JFalse
 }
 
 case class JField(field: String, value: JValue)
@@ -131,7 +131,7 @@ case class JField(field: String, value: JValue)
 
 // JObject is internally represented as a mutable Array, to improve sequential performance
 case class JObject(value: Array[JField] = Array.empty) extends JValue {
-  def toStandard: ast.JValue = {
+  override def toStandard: ast.JValue = {
     val length = value.length
     if (length == 0) {
       ast.JObject(Map[String, ast.JValue]())
@@ -155,7 +155,7 @@ case class JObject(value: Array[JField] = Array.empty) extends JValue {
 
 // JArray is internally represented as a mutable Array, to improve sequential performance
 case class JArray(value: Array[JValue] = Array.empty) extends JValue {
-  def toStandard: ast.JValue = {
+  override def toStandard: ast.JValue = {
     val length = value.length
     if (length == 0) {
       ast.JArray(Vector[ast.JValue]())

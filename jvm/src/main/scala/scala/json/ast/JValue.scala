@@ -27,7 +27,7 @@ sealed abstract class JValue extends Product with Serializable {
   */
 
 case object JNull extends JValue {
-  def toUnsafe: unsafe.JValue = unsafe.JNull
+  override def toUnsafe: unsafe.JValue = unsafe.JNull
 }
 
 /** Represents a JSON string value
@@ -36,7 +36,7 @@ case object JNull extends JValue {
   */
 
 case class JString(value: String) extends JValue {
-  def toUnsafe: unsafe.JValue = unsafe.JString(value)
+  override def toUnsafe: unsafe.JValue = unsafe.JString(value)
 }
 
 /**
@@ -89,7 +89,7 @@ case class JNumber(value: String) extends JValue {
 
   def to[B](implicit bigDecimalConverter: JNumberConverter[B]) = bigDecimalConverter(value)
 
-  def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
+  override def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
   override def equals(a: Any) =
     a match {
@@ -125,9 +125,9 @@ object JBoolean {
   */
 
 case object JTrue extends JBoolean {
-  def get = true
+  override def get = true
 
-  def toUnsafe: unsafe.JValue = unsafe.JTrue
+  override def toUnsafe: unsafe.JValue = unsafe.JTrue
 }
 
 /** Represents a JSON Boolean false value
@@ -136,9 +136,9 @@ case object JTrue extends JBoolean {
   */
 
 case object JFalse extends JBoolean {
-  def get = false
+  override def get = false
 
-  def toUnsafe: unsafe.JValue = unsafe.JFalse
+  override def toUnsafe: unsafe.JValue = unsafe.JFalse
 }
 
 /** Represents a JSON Object value. Keys must be unique
@@ -148,7 +148,7 @@ case object JFalse extends JBoolean {
   */
 
 case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
-  def toUnsafe: unsafe.JValue = {
+  override def toUnsafe: unsafe.JValue = {
     if (value.isEmpty) {
       unsafe.JArray(Array.ofDim[unsafe.JValue](0))
     } else {
@@ -173,7 +173,7 @@ object JArray {
 }
 
 case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
-  def toUnsafe: unsafe.JValue = {
+  override def toUnsafe: unsafe.JValue = {
     val length = value.length
     if (length == 0) {
       unsafe.JArray(Array.ofDim[unsafe.JValue](0))

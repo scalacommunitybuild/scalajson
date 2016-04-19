@@ -42,9 +42,9 @@ sealed abstract class JValue extends Serializable with Product {
 
 @JSExportAll
 case object JNull extends JValue {
-  def toStandard: ast.JValue = ast.JNull
+  override def toStandard: ast.JValue = ast.JNull
 
-  def toJsAny: js.Any = null
+  override def toJsAny: js.Any = null
 }
 
 /** Represents a JSON string value
@@ -54,9 +54,9 @@ case object JNull extends JValue {
 
 @JSExportAll
 case class JString(value: String) extends JValue {
-  def toStandard: ast.JValue = ast.JString(value)
+  override def toStandard: ast.JValue = ast.JString(value)
 
-  def toJsAny: js.Any = value
+  override def toJsAny: js.Any = value
 }
 
 object JNumber {
@@ -95,13 +95,13 @@ object JNumber {
 case class JNumber(value: String) extends JValue {
   def to[B](implicit jNumberConverter: JNumberConverter[B]) = jNumberConverter(value)
 
-  def toStandard: ast.JValue = ast.JNumber(value)
+  override def toStandard: ast.JValue = ast.JNumber(value)
 
   @JSExportAll def this(value: Double) = {
     this(value.toString)
   }
 
-  def toJsAny: js.Any = value.toDouble
+  override def toJsAny: js.Any = value.toDouble
 }
 
 /** Represents a JSON Boolean value, which can either be a
@@ -114,7 +114,7 @@ case class JNumber(value: String) extends JValue {
 sealed abstract class JBoolean extends JValue {
   def get: Boolean
 
-  def toJsAny: js.Any = get
+  override def toJsAny: js.Any = get
 }
 
 object JBoolean {
@@ -130,9 +130,9 @@ object JBoolean {
 
 @JSExportAll
 case object JTrue extends JBoolean {
-  def get = true
+  override def get = true
 
-  def toStandard: ast.JValue = ast.JTrue
+  override def toStandard: ast.JValue = ast.JTrue
 }
 
 /** Represents a JSON Boolean false value
@@ -142,9 +142,9 @@ case object JTrue extends JBoolean {
 
 @JSExportAll
 case object JFalse extends JBoolean {
-  def get = false
+  override def get = false
 
-  def toStandard: ast.JValue = ast.JFalse
+  override def toStandard: ast.JValue = ast.JFalse
 }
 
 @JSExportAll
@@ -169,7 +169,7 @@ case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
     })
   }
 
-  def toStandard: ast.JValue = {
+  override def toStandard: ast.JValue = {
     // Javascript array.length across all major browsers has near constant cost, so we
     // use this to build the array http://jsperf.com/length-comparisons
     val length = value.length
@@ -188,7 +188,7 @@ case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
     }
   }
 
-  def toJsAny: js.Any = {
+  override def toJsAny: js.Any = {
     val length = value.length
 
     if (length == 0) {
@@ -215,7 +215,7 @@ case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
 // JArray is internally represented as a mutable js.Array, to improve sequential performance
 @JSExportAll
 case class JArray(value: js.Array[JValue] = js.Array()) extends JValue {
-  def toStandard: ast.JValue = {
+  override def toStandard: ast.JValue = {
     // Javascript array.length across all major browsers has near constant cost, so we
     // use this to build the array http://jsperf.com/length-comparisons
     val length = value.length
@@ -232,5 +232,5 @@ case class JArray(value: js.Array[JValue] = js.Array()) extends JValue {
     }
   }
 
-  def toJsAny: js.Any = value
+  override def toJsAny: js.Any = value
 }

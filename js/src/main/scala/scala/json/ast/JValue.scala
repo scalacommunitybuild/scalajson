@@ -40,9 +40,9 @@ sealed abstract class JValue extends Product with Serializable {
 
 @JSExportAll
 case object JNull extends JValue {
-  def toUnsafe: unsafe.JValue = unsafe.JNull
+  override def toUnsafe: unsafe.JValue = unsafe.JNull
 
-  def toJsAny: js.Any = null
+  override def toJsAny: js.Any = null
 }
 
 /** Represents a JSON string value
@@ -52,9 +52,9 @@ case object JNull extends JValue {
 
 @JSExportAll
 case class JString(value: String) extends JValue {
-  def toUnsafe: unsafe.JValue = unsafe.JString(value)
+  override def toUnsafe: unsafe.JValue = unsafe.JString(value)
 
-  def toJsAny: js.Any = value
+  override def toJsAny: js.Any = value
 }
 
 object JNumber {
@@ -111,9 +111,9 @@ case class JNumber(value: String) extends JValue {
     this(value.toString)
   }
 
-  def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
+  override def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
-  def toJsAny: js.Any = value.toDouble
+  override def toJsAny: js.Any = value.toDouble
 
   override def equals(a: Any) =
     a match {
@@ -135,7 +135,7 @@ case class JNumber(value: String) extends JValue {
 sealed abstract class JBoolean extends JValue {
   def get: Boolean
 
-  def toJsAny: js.Any = get
+  override def toJsAny: js.Any = get
 }
 
 object JBoolean {
@@ -151,10 +151,10 @@ object JBoolean {
 
 @JSExport
 case object JTrue extends JBoolean {
-  def get = true
+  override def get = true
 
   @JSExport
-  def toUnsafe: unsafe.JValue = unsafe.JTrue
+  override def toUnsafe: unsafe.JValue = unsafe.JTrue
 }
 
 /** Represents a JSON Boolean false value
@@ -164,10 +164,10 @@ case object JTrue extends JBoolean {
 
 @JSExport
 case object JFalse extends JBoolean {
-  def get = false
+  override def get = false
 
   @JSExport
-  def toUnsafe: unsafe.JValue = unsafe.JFalse
+  override def toUnsafe: unsafe.JValue = unsafe.JFalse
 }
 
 /** Represents a JSON Object value. Keys must be unique
@@ -187,7 +187,7 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
     this(value.toMap)
   }
 
-  def toUnsafe: unsafe.JValue = {
+  override def toUnsafe: unsafe.JValue = {
     if (value.isEmpty) {
       unsafe.JObject(js.Array[unsafe.JField]())
     } else {
@@ -201,7 +201,7 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
     }
   }
 
-  def toJsAny: js.Any = {
+  override def toJsAny: js.Any = {
     if (value.isEmpty) {
       js.Dictionary[js.Any]().empty
     } else {
@@ -236,7 +236,7 @@ case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
     this(value.to[Vector])
   }
 
-  def toUnsafe: unsafe.JValue = {
+  override def toUnsafe: unsafe.JValue = {
     if (value.isEmpty) {
       unsafe.JArray(js.Array[unsafe.JValue]())
     } else {
@@ -249,7 +249,7 @@ case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
     }
   }
 
-  def toJsAny: js.Any = {
+  override def toJsAny: js.Any = {
     if (value.isEmpty) {
       js.Array[js.Any]()
     } else {
