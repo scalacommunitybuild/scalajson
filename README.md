@@ -91,7 +91,7 @@ object with `JValue` as keys (i.e. `{}`).
 Examples of constructing various `JValue`'s are given below.
 
 ```javascript
-var jArray = new scala.json.ast.JArray([new JString("test")]);
+var jArray = new scala.json.ast.JArray([new scala.json.ast.JString("test")]);
 
 var jObject = new scala.json.ast.JObject({"someString" : jArray});
 
@@ -113,6 +113,30 @@ var jObjectWithBoolAndNumberAndNull = new scala.json.ast.JObject({
     "nullValue": scala.json.ast.JNull()
 });
 ```
+
+The `.value`, `.toJsAny` and `.toStandard`/`.toUnsafe` are also exposed in the Javascript environment.
+Note that `value` may give undefined values if the underlying datastructure doesn't have a Javascript
+equivalent
+
+```scala
+var jArray = new scala.json.ast.JArray([new scala.json.ast.JString("test")]);
+console.log(jArray.value); // will print gibberish
+```
+
+This is because internally `scala.json.ast.JArray` uses the Scala `Vector` data structure, which has
+no Javascript equivalent. A typical use of `.value` is to get the raw value of a `JNumber`
+incase its too large to fit in a double, i.e.
+
+```scala
+var toJsAny = new scala.json.ast.unsafe.JNumber("3432523523e29532958").toJsAny;
+var value = new scala.json.ast.unsafe.JNumber("3432523523e29532958").value;
+console.log(toJsAny); // will print null
+console.log(value); // will print "3432523523e29532958"
+```
+
+For more examples of the Javascript interopt for Scala.js, please see the unit tests at
+[https://github.com/mdedetrich/scala-json-ast/tree/master/js/src/test/javascript/jsValue.spec.js] and
+[https://github.com/mdedetrich/scala-json-ast/tree/master/js/src/test/javascript/unsafe.jsValue.spec.js]
 
 ## jNumberRegex
 `scala.json.JNumber` uses `jNumberRegex` to validate whether a number is a valid

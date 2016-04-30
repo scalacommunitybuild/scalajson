@@ -50,13 +50,19 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
     scalacOptions in Test ++= Seq("-Yrangepos")
   ).
   jsSettings(
+    // Add JS-specific settings here
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
       "com.lihaoyi" %%% "utest" % "0.4.3" % Test
     ),
-    testFrameworks += new TestFramework("utest.runner.Framework")
-    // Add JS-specific settings here
+    testFrameworks += new TestFramework("utest.runner.Framework"),
+    jsTest <<= (jsTest dependsOn (fullOptJS in Compile)),
+    jsTestResources := {
+      val test = (sourceDirectory in Test).value
+      val targetFolder = (artifactPath in fullOptJS in Compile).value
+      ((test / "javascript") ** "**.spec.js").get ++ (targetFolder ** "*opt.js").get
+    }
   )
 
 lazy val scalaJsonASTJVM = scalaJsonAST.jvm
-lazy val scalaJsonASTJS = scalaJsonAST.js
+lazy val scalaJsonASTJS = scalaJsonAST.js.enablePlugins(SbtJsTestPlugin)

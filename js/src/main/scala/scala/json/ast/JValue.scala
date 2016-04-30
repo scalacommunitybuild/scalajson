@@ -1,7 +1,8 @@
 package scala.json.ast
 
+import scala.annotation.meta.field
 import scala.scalajs.js
-import scala.scalajs.js.annotation.{JSExport, JSExportAll}
+import scala.scalajs.js.annotation.JSExport
 
 /** Represents a valid JSON Value
   *
@@ -38,11 +39,11 @@ sealed abstract class JValue extends Product with Serializable {
   * @author Matthew de Detrich
   */
 
-@JSExportAll
+@JSExport
 case object JNull extends JValue {
-  override def toUnsafe: unsafe.JValue = unsafe.JNull
+  @JSExport override def toUnsafe: unsafe.JValue = unsafe.JNull
 
-  override def toJsAny: js.Any = null
+  @JSExport override def toJsAny: js.Any = null
 }
 
 /** Represents a JSON string value
@@ -50,11 +51,11 @@ case object JNull extends JValue {
   * @author Matthew de Detrich
   */
 
-@JSExportAll
-case class JString(value: String) extends JValue {
-  override def toUnsafe: unsafe.JValue = unsafe.JString(value)
+@JSExport
+case class JString(@(JSExport @field) value: String) extends JValue {
+  @JSExport override def toUnsafe: unsafe.JValue = unsafe.JString(value)
 
-  override def toJsAny: js.Any = value
+  @JSExport override def toJsAny: js.Any = value
 }
 
 object JNumber {
@@ -75,7 +76,6 @@ object JNumber {
     * @return Will return a JNull if value is a Nan or Infinity
     */
 
-  @JSExportAll
   def apply(value: Double): JValue = value match {
     case n if n.isNaN => JNull
     case n if n.isInfinity => JNull
@@ -93,8 +93,8 @@ object JNumber {
   * @throws NumberFormatException - If the value is not a valid JSON Number
   */
 
-@JSExportAll
-case class JNumber(value: String) extends JValue {
+@JSExport
+case class JNumber(@(JSExport @field) value: String) extends JValue {
 
   if (!value.matches(jNumberRegex)) {
     throw new NumberFormatException(value)
@@ -107,13 +107,15 @@ case class JNumber(value: String) extends JValue {
     *
     * @param value
     */
-  def this(value: Double) = {
-    this(value.toString)
+  @JSExport def this(value: Double) = this(value.toString)
+
+  @JSExport override def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
+
+  @JSExport override def toJsAny: js.Any = value.toDouble match {
+    case n if n.isNaN => null
+    case n if n.isInfinity => null
+    case n => n
   }
-
-  override def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
-
-  override def toJsAny: js.Any = value.toDouble
 
   override def equals(a: Any) =
     a match {
@@ -135,7 +137,7 @@ case class JNumber(value: String) extends JValue {
 sealed abstract class JBoolean extends JValue {
   def get: Boolean
 
-  override def toJsAny: js.Any = get
+  @JSExport override def toJsAny: js.Any = get
 }
 
 object JBoolean {
@@ -153,8 +155,7 @@ object JBoolean {
 case object JTrue extends JBoolean {
   override def get = true
 
-  @JSExport
-  override def toUnsafe: unsafe.JValue = unsafe.JTrue
+  @JSExport override def toUnsafe: unsafe.JValue = unsafe.JTrue
 }
 
 /** Represents a JSON Boolean false value
@@ -166,8 +167,7 @@ case object JTrue extends JBoolean {
 case object JFalse extends JBoolean {
   override def get = false
 
-  @JSExport
-  override def toUnsafe: unsafe.JValue = unsafe.JFalse
+  @JSExport override def toUnsafe: unsafe.JValue = unsafe.JFalse
 }
 
 /** Represents a JSON Object value. Keys must be unique
@@ -176,7 +176,7 @@ case object JFalse extends JBoolean {
   * @author Matthew de Detrich
   */
 
-case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
+case class JObject(@(JSExport @field) value: Map[String, JValue] = Map.empty) extends JValue {
 
   /**
     * Construct a JObject using Javascript's object type, i.e. {} or new Object
@@ -187,7 +187,7 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
     this(value.toMap)
   }
 
-  override def toUnsafe: unsafe.JValue = {
+  @JSExport override def toUnsafe: unsafe.JValue = {
     if (value.isEmpty) {
       unsafe.JObject(js.Array[unsafe.JField]())
     } else {
@@ -201,9 +201,9 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
     }
   }
 
-  override def toJsAny: js.Any = {
+  @JSExport override def toJsAny: js.Any = {
     if (value.isEmpty) {
-      js.Dictionary[js.Any]().empty
+      js.Dictionary[js.Any]().asInstanceOf[js.Object]
     } else {
       val iterator = value.iterator
       val dict = js.Dictionary[js.Any]()
@@ -211,7 +211,7 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
         val (k, v) = iterator.next()
         dict(k) = v.toJsAny
       }
-      dict
+      dict.asInstanceOf[js.Object]
     }
   }
 }
@@ -225,7 +225,7 @@ object JArray {
   def apply(value: JValue, values: JValue*): JArray = JArray(value +: values.to[Vector])
 }
 
-case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
+case class JArray(@(JSExport @field) value: Vector[JValue] = Vector.empty) extends JValue {
   /**
     *
     * Construct a JArray using Javascript's array type, i.e. `[]` or `new Array`
@@ -236,7 +236,7 @@ case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
     this(value.to[Vector])
   }
 
-  override def toUnsafe: unsafe.JValue = {
+  @JSExport override def toUnsafe: unsafe.JValue = {
     if (value.isEmpty) {
       unsafe.JArray(js.Array[unsafe.JValue]())
     } else {
@@ -249,7 +249,7 @@ case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
     }
   }
 
-  override def toJsAny: js.Any = {
+  @JSExport override def toJsAny: js.Any = {
     if (value.isEmpty) {
       js.Array[js.Any]()
     } else {
