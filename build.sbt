@@ -60,7 +60,7 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
     jsTestResources := {
       val test = (sourceDirectory in Test).value
       val targetFolder = (artifactPath in fullOptJS in Compile).value
-      (targetFolder ** "**.js").get ++ ((test / "javascript") ** "**.spec.js").get
+      (targetFolder / "scala-json-ast-opt.js").get ++ ((test / "javascript") ** "**.spec.js").get
     }
   )
 
