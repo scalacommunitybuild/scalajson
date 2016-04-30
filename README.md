@@ -115,7 +115,7 @@ var jObjectWithBoolAndNumberAndNull = new scala.json.ast.JObject({
 ```
 
 The `.value`, `.toJsAny` and `.toStandard`/`.toUnsafe` are also exposed in the Javascript environment.
-Note that `value` may give undefined values if the underlying datastructure doesn't have a Javascript
+Note that `.value` may give undefined values if the underlying datastructure doesn't have a Javascript
 equivalent
 
 ```scala
@@ -135,8 +135,8 @@ console.log(value); // will print "3432523523e29532958"
 ```
 
 For more examples of the Javascript interopt for Scala.js, please see the unit tests at
-[https://github.com/mdedetrich/scala-json-ast/tree/master/js/src/test/javascript/jsValue.spec.js] and
-[https://github.com/mdedetrich/scala-json-ast/tree/master/js/src/test/javascript/unsafe.jsValue.spec.js]
+https://github.com/mdedetrich/scala-json-ast/tree/master/js/src/test/javascript/jsValue.spec.js and
+https://github.com/mdedetrich/scala-json-ast/tree/master/js/src/test/javascript/unsafe.jsValue.spec.js
 
 ## jNumberRegex
 `scala.json.JNumber` uses `jNumberRegex` to validate whether a number is a valid
