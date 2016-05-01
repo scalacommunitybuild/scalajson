@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/mdedetrich/scala-json-ast](https://badges.gitter.im/mdedetrich/scala-json-ast.svg)](https://gitter.im/mdedetrich/scala-json-ast?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/mdedetrich/scala-json-ast.svg?branch=master)](https://travis-ci.org/mdedetrich/scala-json-ast)
 
-Two minimal implementations of a [JSON](https://en.wikipedia.org/wiki/JSON) `AST`, one that is designed for
+Two minimal implementations of a [JSON](https://en.wikipedia.org/wiki/JSON) AST, one that is designed for
 typical use and another that is designed for performance.
 
 ## Standard AST
