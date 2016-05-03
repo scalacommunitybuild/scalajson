@@ -216,14 +216,15 @@ case class JObject(@(JSExport @field) value: Map[String, JValue] = Map.empty) ex
   }
 }
 
+object JArray {
+  def apply(value: JValue, values: JValue*): JArray = JArray(value +: values.to[Vector])
+}
+
+
 /** Represents a JSON Array value
   *
   * @author Matthew de Detrich
   */
-
-object JArray {
-  def apply(value: JValue, values: JValue*): JArray = JArray(value +: values.to[Vector])
-}
 
 case class JArray(@(JSExport @field) value: Vector[JValue] = Vector.empty) extends JValue {
   /**

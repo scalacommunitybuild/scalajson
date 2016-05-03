@@ -18,6 +18,7 @@ object JBoolean extends TestSuite with UTestScalaCheck {
       "The JTrue value should read a Boolean as true" - readBooleanJTrue
       "The JFalse value should read a Boolean as false" - readBooleanJFalse
       "convert to jsAny" - toJsAny
+      "convert toUnsafe" - toUnsafe
     }
   }
 
@@ -123,6 +124,7 @@ object JBoolean extends TestSuite with UTestScalaCheck {
     scala.json.ast.JBoolean(b).toJsAny == b
   }.checkUTest()
 
-
-
+  def toUnsafe = forAll { b: Boolean =>
+    scala.json.ast.JBoolean(b).toUnsafe == scala.json.ast.unsafe.JBoolean(b)
+  }.checkUTest()
 }

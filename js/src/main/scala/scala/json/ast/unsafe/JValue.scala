@@ -209,6 +209,11 @@ case class JObject(@(JSExport @field) value: js.Array[JField] = js.Array()) exte
   }
 }
 
+object JArray {
+  import js.JSConverters._
+  def apply(value: JValue, values: JValue*): JArray = JArray(js.Array(value) ++ values.toJSArray)
+}
+
 /** Represents a JSON Array value
   *
   * @author Matthew de Detrich

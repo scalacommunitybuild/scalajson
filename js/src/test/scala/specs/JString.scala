@@ -9,6 +9,7 @@ object JString extends TestSuite with UTestScalaCheck {
     "The JString value should" - {
       "read a String" - readStringJString
       "convert to jsAny" - toJsAny
+      "convert toUnsafe" - toUnsafe
     }
 
     def readStringJString = forAll { s: String =>
@@ -17,6 +18,10 @@ object JString extends TestSuite with UTestScalaCheck {
 
     def toJsAny = forAll {s: String =>
       scala.json.ast.JString(s).toJsAny == s
+    }.checkUTest()
+
+    def toUnsafe = forAll {b: Boolean =>
+      scala.json.ast.JBoolean(b).toUnsafe == scala.json.ast.unsafe.JBoolean(b)
     }.checkUTest()
   }
 }

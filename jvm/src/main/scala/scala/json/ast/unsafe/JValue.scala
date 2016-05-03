@@ -148,6 +148,10 @@ case class JObject(value: Array[JField] = Array.empty) extends JValue {
   }
 }
 
+object JArray {
+  def apply(value: JValue, values: JValue*): JArray = JArray(Array(value) ++ values.to[Array])
+}
+
 /** Represents a JSON Array value
   *
   * @author Matthew de Detrich
