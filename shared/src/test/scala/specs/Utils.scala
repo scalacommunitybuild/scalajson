@@ -1,6 +1,14 @@
 package specs
 
 object Utils {
+  /**
+    * Since [[scala.json.ast.unsafe.JValue]] has mutable data-structures, it doesn't do structural equality
+    * by default. Also takes care of the [[scala.json.unsafe.JObject]] special case with duplicate keys/ordering
+    * @param left
+    * @param right
+    * @return
+    */
+
   def unsafeJValueEquals(left: scala.json.ast.unsafe.JValue, right: scala.json.ast.unsafe.JValue): Boolean = {
     (left, right) match {
       case (l: scala.json.ast.unsafe.JString, r: scala.json.ast.unsafe.JString) =>
@@ -15,7 +23,7 @@ object Utils {
           unsafeJValueEquals(value,rValue(index))
         }
       case (l: scala.json.ast.unsafe.JBoolean, r: scala.json.ast.unsafe.JBoolean) =>
-        l.get == r.get
+        l == r
       case (l: scala.json.ast.unsafe.JObject, r: scala.json.ast.unsafe.JObject) =>
         val rAsMap = r.value.map{field => (field.field,field.value)}.toMap
         val lAsMap = l.value.map{field => (field.field,field.value)}.toMap
@@ -29,4 +37,5 @@ object Utils {
       case _ => false
     }
   }
+
 }

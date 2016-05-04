@@ -154,6 +154,13 @@ case object JFalse extends JBoolean {
 
 case class JField(field: String, value: JValue)
 
+object JObject {
+  import js.JSConverters._
+  def apply(value: JField, values: JField*): JObject = JObject(js.Array(value) ++ values.toJSArray)
+
+  def apply(value: Array[JField]): JObject = JObject(value.toJSArray)
+}
+
 /** Represents a JSON Object value. Duplicate keys
   * are allowed and ordering is respected
   *
@@ -180,14 +187,14 @@ case class JObject(@(JSExport @field) value: js.Array[JField] = js.Array()) exte
     if (length == 0) {
       ast.JObject(Map.newBuilder[String, ast.JValue].result())
     } else {
-      val b = Map.newBuilder[String, ast.JValue].result()
+      val b = Map.newBuilder[String, ast.JValue]
       var index = 0
       while (index < length) {
         val v = value(index)
-        b + ((v.field, v.value.toStandard))
+        b += ((v.field, v.value.toStandard))
         index += 1
       }
-      ast.JObject(b)
+      ast.JObject(b.result())
     }
   }
 
@@ -212,6 +219,8 @@ case class JObject(@(JSExport @field) value: js.Array[JField] = js.Array()) exte
 object JArray {
   import js.JSConverters._
   def apply(value: JValue, values: JValue*): JArray = JArray(js.Array(value) ++ values.toJSArray)
+
+  def apply(value: Array[JValue]): JArray = JArray(value.toJSArray)
 }
 
 /** Represents a JSON Array value

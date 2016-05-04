@@ -24,6 +24,7 @@ Implementation is in `scala.json.ast.JValue`
 always contain a valid structure that can be serialized/rendered into [JSON](https://en.wikipedia.org/wiki/JSON). 
   - Note that you can lose precision when using `scala.json.ast.JNumber` in `Scala.js` (see `Scala.js` 
 section for more info).
+- Due to the above, has properly implemented deep equality for all types of `scala.json.ast.JValue`
 
 ## Unsafe AST
 Implementation is in `scala.json.unsafe.JValue`

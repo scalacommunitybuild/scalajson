@@ -10,6 +10,7 @@ object JString extends TestSuite with UTestScalaCheck {
       "read a String" - readStringJString
       "convert to jsAny" - toJsAny
       "convert toUnsafe" - toUnsafe
+      "equals" - testEquals
     }
 
     def readStringJString = forAll { s: String =>
@@ -22,6 +23,10 @@ object JString extends TestSuite with UTestScalaCheck {
 
     def toUnsafe = forAll {b: Boolean =>
       scala.json.ast.JBoolean(b).toUnsafe == scala.json.ast.unsafe.JBoolean(b)
+    }.checkUTest()
+
+    def testEquals = forAll {s: String =>
+      scala.json.ast.JString(s) == scala.json.ast.JString(s)
     }.checkUTest()
   }
 }

@@ -111,63 +111,67 @@ package object ast {
     */
 
   private[ast] def numericStringEquals(a: String, b: String): Boolean = {
-    var i = 0 // Index for a
-    var j = 0 // Index for b
+    var i = 0  // Index for a
+    var j = 0  // Index for b
     if (a.length < 1 || b.length < 1) return false
     if (a.charAt(0) == '-') i += 1
     if (b.charAt(0) == '-') j += 1
     if (i >= a.length || j >= b.length) return false
-    var ca = a.charAt(i) // Character at index of a
-    var cb = b.charAt(j) // Character at index of b
+    var ca = a.charAt(i)  // Character at index of a
+    var cb = b.charAt(j)  // Character at index of b
     if (i != j) {
       // Different signs.  They'd better both be zero
       return {
         if (ca == '0' && cb == '0') {
-          while (i < a.length - 1 && (ca == '0' || ca == '.')) {
-            i += 1; ca = a.charAt(i)
-          }
-          while (j < b.length - 1 && (cb == '0' || cb == '.')) {
-            j += 1; cb = b.charAt(j)
-          }
-          (i == a.length - 1 || (ca | 0x20) == 'e') && (j == b.length - 1 || (cb | 0x20) == 'e')
+          while (i < a.length - 1 && (ca == '0' || ca == '.')) { i += 1; ca = a.charAt(i) }
+          while (j < b.length - 1 && (cb == '0' || cb == '.')) { j += 1; cb = b.charAt(j) }
+          ((i == a.length - 1 && ca == '0') || (ca | 0x20) == 'e') && ((j == b.length - 1 && cb == '0') || (cb | 0x20) == 'e')
         }
         else false
       }
     }
-    var pa = 0 // Decimal point position for a
-    var pb = 0 // Decimal point position for b
+    var pa = 0  // Decimal point position for a
+    var pb = 0  // Decimal point position for b
     if (ca == '0') {
       pa = -1
-      if (i < a.length - 1 && a.charAt(i + 1) != '.') return false
-      else if (i < a.length - 2) {
-        i += 2
-        ca = a.charAt(i)
-        while (ca == '0' && i < a.length - 1) {
-          i += 1; ca = a.charAt(i); pa -= 1
+      if (i < a.length - 1) {
+        val x = a.charAt(i+1)
+        if ((x | 0x20) != 'e') {
+          if (x != '.') return false
+          else if (i < a.length - 2) {
+            i += 2
+            ca = a.charAt(i)
+            while (ca == '0' && i < a.length-1) { i += 1; ca = a.charAt(i); pa -= 1 }
+          }
         }
       }
     }
     if (cb == '0') {
       pb = -1
-      if (j < b.length - 1 && b.charAt(j + 1) != '.') return false
-      else if (j < b.length - 2) {
-        j += 2
-        cb = b.charAt(j)
-        while (cb == '0' && j < b.length - 1) {
-          j += 1; cb = b.charAt(j); pb -= 1
+      if (j < b.length - 1) {
+        val y = b.charAt(j+1)
+        if ((y | 0x20) != 'e') {
+          if (y != '.') return false
+          else if (j < b.length - 2) {
+            j += 2
+            cb = b.charAt(j)
+            while (cb == '0' && j < b.length-1) { j += 1; cb = b.charAt(j); pb -= 1 }
+          }
         }
       }
+      // Might both be zero.  Check!  (Can ignore exponents when both values are zero.)
+      if (ca < '1' || ca > '9') return cb < '1' || cb > '9'
     }
-    var fa = pa < 0 // Found a's decimal point?
-    var fb = pb < 0 // Found b's decimal point?
-    while (ca == cb && (ca | 0x20) != 'e' && i < a.length - 1 && j < b.length - 1) {
+    var fa = pa < 0  // Found a's decimal point?
+    var fb = pb < 0  // Found b's decimal point?
+    while (ca == cb && (ca | 0x20) != 'e' && i < a.length-1 && j < b.length-1) {
       i += 1
       ca = a.charAt(i)
       if (!fa) {
         pa += 1
         if (ca == '.') {
           fa = true
-          if (i < a.length - 1) {
+          if (i < a.length-1) {
             i += 1
             ca = a.charAt(i)
           }
@@ -179,16 +183,16 @@ package object ast {
         pb += 1
         if (cb == '.') {
           fb = true
-          if (j < b.length - 1) {
+          if (j < b.length-1) {
             j += 1
             cb = b.charAt(j)
           }
         }
       }
     }
-    if (ca != cb && (ca | 0x20) != 'e' && (cb | 0x20) != 'e') return false // Digits simply disagree
+    if (ca != cb && (ca | 0x20) != 'e' && (cb | 0x20) != 'e') return false  // Digits simply disagree
     // Capture any trailing zeros
-    if (!(i >= a.length - 1 && j >= b.length - 1)) {
+    if (!(i >= a.length -1 && j >= b.length - 1)) {
       if (j >= b.length - 1 || (cb | 0x20) == 'e') {
         if (j >= b.length - 1) {
           if (!fb) pb += 1
@@ -206,7 +210,7 @@ package object ast {
             }
           }
         }
-        while (i < a.length - 1 && ca == '0') {
+        while (i < a.length -1 && ca == '0') {
           i += 1
           ca = a.charAt(i)
           if (!fa) {
@@ -220,7 +224,7 @@ package object ast {
             }
           }
         }
-        if (ca >= '1' && ca <= '9') return false // Extra digits on a
+        if (ca >= '1' && ca <= '9') return false  // Extra digits on a
       }
       else if (i >= a.length - 1 || (ca | 0x20) == 'e') {
         if (i >= a.length - 1) {
@@ -239,7 +243,7 @@ package object ast {
             }
           }
         }
-        while (j < b.length - 1 && cb == '0') {
+        while (j < b.length -1 && cb == '0') {
           j += 1
           cb = b.charAt(j)
           if (!fb) {
@@ -253,7 +257,7 @@ package object ast {
             }
           }
         }
-        if (cb >= '1' && cb <= '9') return false // Extra digits on b
+        if (cb >= '1' && cb <= '9') return false  // Extra digits on b
       }
     }
     if (pa > 0) pa -= 1

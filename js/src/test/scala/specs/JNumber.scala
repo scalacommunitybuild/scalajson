@@ -32,6 +32,7 @@ object JNumber extends TestSuite with UTestScalaCheck {
       "hashCode not equals e positive" - hashCodeNotEqualsEPositive
       "hashCode not equals e positive #2" - hashCodeNotEqualsEPositive2
       "convert toUnsafe" - toUnsafe
+      "equals" - testEquals
     }
 
     def readLongJNumber = forAll { l: Long =>
@@ -148,6 +149,10 @@ object JNumber extends TestSuite with UTestScalaCheck {
 
     def toUnsafe = forAll { b: BigDecimal =>
       scala.json.ast.JNumber(b).toUnsafe == scala.json.ast.unsafe.JNumber(b)
+    }.checkUTest()
+
+    def testEquals = forAll {b: BigDecimal =>
+      scala.json.ast.JNumber(b) == scala.json.ast.JNumber(b)
     }.checkUTest()
   }
 }

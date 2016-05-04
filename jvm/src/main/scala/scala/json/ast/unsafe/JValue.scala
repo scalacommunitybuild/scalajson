@@ -123,6 +123,10 @@ case object JFalse extends JBoolean {
 
 case class JField(field: String, value: JValue)
 
+object JObject {
+  def apply(value: JField, values: JField*): JObject = JObject(Array(value) ++ values)
+}
+
 /** Represents a JSON Object value. Duplicate keys
   * are allowed and ordering is respected
   *

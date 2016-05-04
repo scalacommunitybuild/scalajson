@@ -2,23 +2,28 @@ package specs
 
 import org.scalacheck.Prop._
 import utest._
-
-import scala.json.ast.JValue
 import Generators._
+
+import scala.json.ast.JArray
 import scala.scalajs.js
 import js.JSConverters._
 
 object JArray extends TestSuite with UTestScalaCheck {
   val tests = TestSuite {
-//    "convert toUnsafe" - toUnsafe
-//    "convert toUnsafe #2" - toUnsafe2
+    "convert toUnsafe" - toUnsafe
+    "equals" - testEquals
   }
 
-  def toUnsafe = forAll {jValue: JValue =>
-    scala.json.ast.JArray(jValue).toUnsafe == scala.json.ast.unsafe.JArray(jValue.toUnsafe)
+  def toUnsafe = forAll{jArray: JArray =>
+    val values = jArray.value.map(_.toUnsafe).toJSArray
+
+    Utils.unsafeJValueEquals(
+      jArray.toUnsafe,
+      scala.json.ast.unsafe.JArray(values)
+    )
   }.checkUTest()
 
-  def toUnsafe2 = forAll{jValues: Seq[JValue] =>
-    scala.json.ast.JArray(jValues.to[Vector]).toUnsafe == scala.json.ast.unsafe.JArray(jValues.map(_.toUnsafe).toJSArray)
+  def testEquals = forAll{jArray: JArray =>
+    scala.json.ast.JArray(jArray.value) == scala.json.ast.JArray(jArray.value)
   }.checkUTest()
 }
