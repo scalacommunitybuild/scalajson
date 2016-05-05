@@ -9,9 +9,12 @@ import scala.scalajs.js
 import js.JSConverters._
 
 object JArray extends TestSuite with UTestScalaCheck {
+
   val tests = TestSuite {
-    "convert toUnsafe" - toUnsafe
-    "equals" - testEquals
+    "The JString value should" - {
+      "convert toUnsafe" - toUnsafe
+      "equals" - testEquals
+    }
   }
 
   def toUnsafe = forAll{jArray: JArray =>

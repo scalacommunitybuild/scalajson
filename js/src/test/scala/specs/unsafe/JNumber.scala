@@ -5,6 +5,7 @@ import utest._
 import org.scalacheck.Prop._
 
 object JNumber extends TestSuite with UTestScalaCheck {
+
   val tests = TestSuite {
     "The unsafe.JNumber value should" - {
       "read a Long" - readLongJNumber
@@ -20,6 +21,7 @@ object JNumber extends TestSuite with UTestScalaCheck {
       "read a String and not fail" - readStringJNumber
       "read a String and detect non numeric numbers" - readStringJNumberDetect
       "convert to jsAny" - toJsAny
+      "convert toStandard" - toStandard
     }
   }
 
@@ -87,5 +89,9 @@ object JNumber extends TestSuite with UTestScalaCheck {
 
   def toJsAny = forAll {d: Double =>
     scala.json.ast.unsafe.JNumber(d).toJsAny == d
+  }.checkUTest()
+
+  def toStandard = forAll {b: BigDecimal =>
+    scala.json.ast.unsafe.JNumber(b).toStandard == scala.json.ast.JNumber(b)
   }.checkUTest()
 }

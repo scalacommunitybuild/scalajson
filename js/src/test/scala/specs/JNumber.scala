@@ -4,6 +4,7 @@ import org.scalacheck.Prop.forAll
 import utest._
 
 object JNumber extends TestSuite with UTestScalaCheck {
+
   val tests = TestSuite {
     "The JNumber value should" - {
       "read a Long" - readLongJNumber

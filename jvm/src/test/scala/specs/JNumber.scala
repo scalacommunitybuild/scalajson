@@ -30,6 +30,8 @@ class JNumber extends Spec {
     hashCode equals e positive #2 $hashCodeEqualsEPositive2
     hashCode not equals e positive $hashCodeNotEqualsEPositive
     hashCode not equals e positive #2 $hashCodeNotEqualsEPositive2
+    convert toUnsafe $toUnsafe
+    equals $testEquals
   """
 
   def readLongJNumber = prop { l: Long =>
@@ -138,6 +140,14 @@ class JNumber extends Spec {
 
   def hashCodeNotEqualsEPositive2 = {
     JNumber("34e+001").## mustNotEqual JNumber("34").##
+  }
+
+  def toUnsafe = prop { b: BigDecimal =>
+    scala.json.ast.JNumber(b).toUnsafe must beEqualTo(scala.json.ast.unsafe.JNumber(b))
+  }
+
+  def testEquals = prop {b: BigDecimal =>
+    scala.json.ast.JNumber(b) must beEqualTo(scala.json.ast.JNumber(b))
   }
 
 }

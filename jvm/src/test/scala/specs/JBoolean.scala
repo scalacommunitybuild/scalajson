@@ -21,7 +21,9 @@ class JBoolean extends Spec {
 
   The JFalse value should
     read a Boolean as false $readBooleanJFalse
-    
+
+  convert toUnsafe $toUnsafe
+  equals $testEquals
   """
 
   def readBooleanJBoolean = prop { b: Boolean =>
@@ -108,5 +110,13 @@ class JBoolean extends Spec {
     (b == false) ==> {
       JFalse.get must beEqualTo(b)
     }
+  }
+
+  def testEquals = prop { b: Boolean =>
+    scala.json.ast.JBoolean(b) must beEqualTo(scala.json.ast.JBoolean(b))
+  }
+
+  def toUnsafe = prop { b: Boolean =>
+    scala.json.ast.JBoolean(b).toUnsafe must beEqualTo(scala.json.ast.unsafe.JBoolean(b))
   }
 }

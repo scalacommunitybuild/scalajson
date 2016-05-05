@@ -5,6 +5,7 @@ import specs.UTestScalaCheck
 import utest._
 
 object JBoolean extends TestSuite with UTestScalaCheck {
+
   val tests = TestSuite {
     "The unsafe.JBoolean value should" - {
       "read a Boolean" - readBooleanJBoolean
@@ -19,6 +20,7 @@ object JBoolean extends TestSuite with UTestScalaCheck {
       "The JTrue value should read a Boolean as true" - readBooleanJTrue
       "The JFalse value should read a Boolean as false" - readBooleanJFalse
       "convert to jsAny" - toJsAny
+      "convert toStandard" - toStandard
     }
   }
 
@@ -122,6 +124,10 @@ object JBoolean extends TestSuite with UTestScalaCheck {
 
   def toJsAny = forAll {b: Boolean =>
     scala.json.ast.unsafe.JBoolean(b).toJsAny == b
+  }.checkUTest()
+
+  def toStandard = forAll {b: Boolean =>
+    scala.json.ast.unsafe.JBoolean(b).toStandard == scala.json.ast.JBoolean(b)
   }.checkUTest()
 
 }

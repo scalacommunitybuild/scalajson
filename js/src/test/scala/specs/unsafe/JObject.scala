@@ -11,8 +11,11 @@ import scala.scalajs.js
 import js.JSConverters._
 
 object JObject extends TestSuite with UTestScalaCheck {
+
   val tests = TestSuite {
-    "convert toStandard" - toStandard
+    "The unsafe.JObject value should" - {
+      "convert toStandard" - toStandard
+    }
   }
 
   def toStandard = forAll { jObject: scala.json.ast.unsafe.JObject =>

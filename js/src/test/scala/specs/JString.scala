@@ -5,6 +5,7 @@ import utest._
 import org.scalacheck.Prop.forAll
 
 object JString extends TestSuite with UTestScalaCheck {
+
   val tests = TestSuite {
     "The JString value should" - {
       "read a String" - readStringJString

@@ -4,6 +4,7 @@ import org.scalacheck.Prop._
 import utest._
 
 object JBoolean extends TestSuite with UTestScalaCheck {
+
   val tests = TestSuite {
     "The JBoolean value should" - {
       "read a Boolean" - readBooleanJBoolean
@@ -17,9 +18,9 @@ object JBoolean extends TestSuite with UTestScalaCheck {
       "pattern match with JBoolean as false and fail with scala.MatchError" - readBooleanJBooleanPatternMatchJBooleanFalseFail
       "The JTrue value should read a Boolean as true" - readBooleanJTrue
       "The JFalse value should read a Boolean as false" - readBooleanJFalse
-      "equals" - testEquals
       "convert to jsAny" - toJsAny
       "convert toUnsafe" - toUnsafe
+      "equals" - testEquals
     }
   }
 

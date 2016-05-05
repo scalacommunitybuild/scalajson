@@ -1,23 +1,15 @@
 package specs
 
-
-import org.scalacheck.Prop._
-import utest._
-
-import scala.json.ast._
 import Generators._
 
-import scala.scalajs.js
+class JValue extends Spec {
+  def is =
+    s2"""
+  The JArray value should
+   equals $testEquals
+  """
 
-object JValue extends TestSuite with UTestScalaCheck {
-
-  val tests = TestSuite {
-    "The JString value should" - {
-      "equals" - testEquals
-    }
-  }
-
-  def testEquals = forAll {jValue: scala.json.ast.JValue =>
+  def testEquals = prop {jValue: scala.json.ast.JValue =>
     // Is there a better way to do this?
     val cloned = jValue match {
       case scala.json.ast.JNull => scala.json.ast.JNull
@@ -27,7 +19,7 @@ object JValue extends TestSuite with UTestScalaCheck {
       case jObject: scala.json.ast.JObject => scala.json.ast.JObject(jObject.value)
       case jBoolean: scala.json.ast.JBoolean => scala.json.ast.JBoolean(jBoolean.get)
     }
-    jValue == cloned
-  }.checkUTest()
+    jValue must beEqualTo(cloned)
+  }
 
 }

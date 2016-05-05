@@ -12,8 +12,10 @@ import js.JSConverters._
 object JObject extends TestSuite with UTestScalaCheck {
 
   val tests = TestSuite {
-    "convert toUnsafe" - toUnsafe
-    "equals" - testEquals
+    "The JObject value should" - {
+      "convert toUnsafe" - toUnsafe
+      "equals" - testEquals
+    }
   }
 
   def toUnsafe = forAll {jObject: scala.json.ast.JObject =>

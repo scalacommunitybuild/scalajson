@@ -19,6 +19,7 @@ class JNumber extends Spec {
     read a Short $readShortJNumber
     read a String and not fail $readStringJNumber
     read a String and detect non numeric numbers $readStringJNumberDetect
+    convert toStandard $toStandard
   """
 
   def readLongJNumber = prop { l: Long =>
@@ -81,5 +82,9 @@ class JNumber extends Spec {
   } ==> {
     scala.util.Try(BigDecimal(JNumber(s).value)).toOption.isEmpty must beTrue
   }
+  }
+
+  def toStandard = prop { b: BigDecimal =>
+    JNumber(b).toStandard must beEqualTo(scala.json.ast.JNumber(b))
   }
 }

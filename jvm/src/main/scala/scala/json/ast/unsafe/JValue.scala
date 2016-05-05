@@ -79,7 +79,7 @@ object JNumber {
 case class JNumber(value: String) extends JValue {
   def to[B](implicit jNumberConverter: JNumberConverter[B]) = jNumberConverter(value)
 
-  override def toStandard: ast.JValue = ast.JNumber(BigDecimal(value))
+  override def toStandard: ast.JValue = ast.JNumber(value)
 }
 
 /** Represents a JSON Boolean value, which can either be a

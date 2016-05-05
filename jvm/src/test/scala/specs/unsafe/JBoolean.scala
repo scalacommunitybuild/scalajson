@@ -22,7 +22,8 @@ class JBoolean extends Spec {
 
   The JFalse value should
     read a Boolean as false $readBooleanJFalse
-    
+
+  convert toStandard $toStandard
   """
 
   def readBooleanJBoolean = prop { b: Boolean =>
@@ -109,6 +110,10 @@ class JBoolean extends Spec {
     (b == false) ==> {
       JFalse.get must beEqualTo(b)
     }
+  }
+
+  def toStandard = prop { b: Boolean =>
+    JBoolean(b).toStandard must beEqualTo(scala.json.ast.JBoolean(b))
   }
 }
 
