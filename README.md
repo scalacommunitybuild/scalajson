@@ -119,7 +119,7 @@ The `.value`, `.toJsAny` and `.toStandard`/`.toUnsafe` are also exposed in the J
 Note that `.value` may give undefined values if the underlying datastructure doesn't have a Javascript
 equivalent
 
-```scala
+```javascript
 var jArray = new scala.json.ast.JArray([new scala.json.ast.JString("test")]);
 console.log(jArray.value); // will print gibberish
 ```
@@ -128,7 +128,7 @@ This is because internally `scala.json.ast.JArray` uses the Scala `Vector` data 
 no Javascript equivalent. A typical use of `.value` is to get the raw value of a `JNumber`
 incase its too large to fit in a double, i.e.
 
-```scala
+```javascript
 var toJsAny = new scala.json.ast.unsafe.JNumber("3432523523e29532958").toJsAny;
 var value = new scala.json.ast.unsafe.JNumber("3432523523e29532958").value;
 console.log(toJsAny); // will print null
