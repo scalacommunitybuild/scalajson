@@ -31,8 +31,8 @@ Implementation is in `scala.json.unsafe.JValue`
 
 ### Goals
 - Uses the best performing datastructure's for high performance/low memory usage in construction of a `unsafe.JValue`
-    - `scala.json.ast.unsafe.JArray` stored as an `Array`
-    - `scala.json.ast.unsafe.JObject` stored as an `Array`
+    - `scala.json.ast.unsafe.JArray` stored as an `Array` for JVM, and `js.Array` for Scala.js
+    - `scala.json.ast.unsafe.JObject` stored as an `Array` for JVM, and `js.Array` for Scala.js
     - `scala.json.ast.unsafe.JNumber` stored as a `String`
 - Doesn't use `Scala`'s `stdlib` collection's library
 - Defer all runtime errors. We don't throw errors if you happen to provide Infinity/NaN or other invalid data.
