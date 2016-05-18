@@ -13,16 +13,17 @@ class JArray extends Spec {
    equals $testEquals
   """
 
-  def toUnsafe = prop {jArray: scala.json.ast.JArray =>
+  def toUnsafe = prop { jArray: scala.json.ast.JArray =>
     val values = jArray.value.map(_.toUnsafe).toArray
 
     Utils.unsafeJValueEquals(
-      jArray.toUnsafe,
-      scala.json.ast.unsafe.JArray(values)
+        jArray.toUnsafe,
+        scala.json.ast.unsafe.JArray(values)
     ) must beTrue
   }
 
-  def testEquals = prop {jArray: scala.json.ast.JArray =>
-    scala.json.ast.JArray(jArray.value) must beEqualTo(scala.json.ast.JArray(jArray.value))
+  def testEquals = prop { jArray: scala.json.ast.JArray =>
+    scala.json.ast.JArray(jArray.value) must beEqualTo(
+        scala.json.ast.JArray(jArray.value))
   }
 }

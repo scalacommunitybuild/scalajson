@@ -10,7 +10,6 @@ import utest._
 import scala.scalajs.js
 import js.JSConverters._
 
-
 object JArray extends TestSuite with UTestScalaCheck {
 
   val tests = TestSuite {
@@ -19,9 +18,9 @@ object JArray extends TestSuite with UTestScalaCheck {
     }
   }
 
-  def toStandard = forAll { jArray: scala.json.ast.unsafe.JArray =>
-    val values = jArray.value.map(_.toStandard).to[Vector]
-    jArray.toStandard == scala.json.ast.JArray(values)
-  }.checkUTest()
-
+  def toStandard =
+    forAll { jArray: scala.json.ast.unsafe.JArray =>
+      val values = jArray.value.map(_.toStandard).to[Vector]
+      jArray.toStandard == scala.json.ast.JArray(values)
+    }.checkUTest()
 }

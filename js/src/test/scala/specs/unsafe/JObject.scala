@@ -18,12 +18,12 @@ object JObject extends TestSuite with UTestScalaCheck {
     }
   }
 
-  def toStandard = forAll { jObject: scala.json.ast.unsafe.JObject =>
-    val values = jObject.value.map{x =>
-      (x.field,x.value.toStandard)
-    }.toMap
+  def toStandard =
+    forAll { jObject: scala.json.ast.unsafe.JObject =>
+      val values = jObject.value.map { x =>
+        (x.field, x.value.toStandard)
+      }.toMap
 
-   jObject.toStandard == scala.json.ast.JObject(values)
-  }.checkUTest()
-
+      jObject.toStandard == scala.json.ast.JObject(values)
+    }.checkUTest()
 }

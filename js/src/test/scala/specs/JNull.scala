@@ -23,5 +23,4 @@ object JNull extends TestSuite with UTestScalaCheck {
   def testEquals = {
     scala.json.ast.JNull == scala.json.ast.JNull
   }
-
 }

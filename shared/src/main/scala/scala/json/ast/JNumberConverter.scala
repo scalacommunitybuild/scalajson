@@ -40,5 +40,4 @@ object JNumberConverter {
   implicit val JNumberString2CharArray = new JNumberConverter[Array[Char]] {
     @inline def apply(string: String): Array[Char] = string.toCharArray
   }
-
 }

@@ -13,8 +13,8 @@ import scala.scalajs.js.annotation.JSExport
   * @author Matthew de Detrich
   * @see https://www.ietf.org/rfc/rfc4627.txt
   */
-
 sealed abstract class JValue extends Serializable with Product {
+
   /**
     * Converts a [[unsafe.JValue]] to a [[ast.JValue]]. Note that
     * when converting [[unsafe.JNumber]], this can throw runtime error if the underlying
@@ -24,7 +24,6 @@ sealed abstract class JValue extends Serializable with Product {
     * @see https://www.ietf.org/rfc/rfc4627.txt
     * @return
     */
-
   def toStandard: ast.JValue
 
   /**
@@ -40,7 +39,6 @@ sealed abstract class JValue extends Serializable with Product {
   *
   * @author Matthew de Detrich
   */
-
 @JSExport
 case object JNull extends JValue {
   @JSExport override def toStandard: ast.JValue = ast.JNull
@@ -52,7 +50,6 @@ case object JNull extends JValue {
   *
   * @author Matthew de Detrich
   */
-
 @JSExport
 case class JString(@(JSExport @field) value: String) extends JValue {
   @JSExport override def toStandard: ast.JValue = ast.JString(value)
@@ -90,11 +87,11 @@ object JNumber {
   *
   * @author Matthew de Detrich
   */
-
 // JNumber is internally represented as a string, to improve performance
 @JSExport
 case class JNumber(@(JSExport @field) value: String) extends JValue {
-  def to[B](implicit jNumberConverter: JNumberConverter[B]) = jNumberConverter(value)
+  def to[B](implicit jNumberConverter: JNumberConverter[B]) =
+    jNumberConverter(value)
 
   override def toStandard: ast.JValue = ast.JNumber(value)
 
@@ -114,7 +111,6 @@ case class JNumber(@(JSExport @field) value: String) extends JValue {
   *
   * @author Matthew de Detrich
   */
-
 // Implements named extractors so we can avoid boxing
 sealed abstract class JBoolean extends JValue {
   def get: Boolean
@@ -132,7 +128,6 @@ object JBoolean {
   *
   * @author Matthew de Detrich
   */
-
 @JSExport
 case object JTrue extends JBoolean {
   override def get = true
@@ -144,7 +139,6 @@ case object JTrue extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-
 @JSExport
 case object JFalse extends JBoolean {
   override def get = false
@@ -156,7 +150,8 @@ case class JField(field: String, value: JValue)
 
 object JObject {
   import js.JSConverters._
-  def apply(value: JField, values: JField*): JObject = JObject(js.Array(value) ++ values.toJSArray)
+  def apply(value: JField, values: JField*): JObject =
+    JObject(js.Array(value) ++ values.toJSArray)
 
   def apply(value: Array[JField]): JObject = JObject(value.toJSArray)
 }
@@ -166,9 +161,9 @@ object JObject {
   *
   * @author Matthew de Detrich
   */
-
 // JObject is internally represented as a mutable Array, to improve sequential performance
-case class JObject(@(JSExport @field) value: js.Array[JField] = js.Array()) extends JValue {
+case class JObject(@(JSExport @field) value: js.Array[JField] = js.Array())
+    extends JValue {
   @JSExport def this(value: js.Dictionary[JValue]) = {
     this({
       val array: js.Array[JField] = new js.Array()
@@ -218,7 +213,8 @@ case class JObject(@(JSExport @field) value: js.Array[JField] = js.Array()) exte
 
 object JArray {
   import js.JSConverters._
-  def apply(value: JValue, values: JValue*): JArray = JArray(js.Array(value) ++ values.toJSArray)
+  def apply(value: JValue, values: JValue*): JArray =
+    JArray(js.Array(value) ++ values.toJSArray)
 
   def apply(value: Array[JValue]): JArray = JArray(value.toJSArray)
 }
@@ -227,10 +223,10 @@ object JArray {
   *
   * @author Matthew de Detrich
   */
-
 // JArray is internally represented as a mutable js.Array, to improve sequential performance
 @JSExport
-case class JArray(@(JSExport @field) value: js.Array[JValue] = js.Array()) extends JValue {
+case class JArray(@(JSExport @field) value: js.Array[JValue] = js.Array())
+    extends JValue {
   @JSExport override def toStandard: ast.JValue = {
     // Javascript array.length across all major browsers has near constant cost, so we
     // use this to build the array http://jsperf.com/length-comparisons

@@ -18,15 +18,19 @@ object JObject extends TestSuite with UTestScalaCheck {
     }
   }
 
-  def toUnsafe = forAll {jObject: scala.json.ast.JObject =>
-    val values = jObject.value.map{case (k,v) =>
-      scala.json.ast.unsafe.JField(k,v.toUnsafe)
-    }
-    Utils.unsafeJValueEquals(jObject.toUnsafe,scala.json.ast.unsafe.JObject(values.toJSArray))
-  }.checkUTest()
+  def toUnsafe =
+    forAll { jObject: scala.json.ast.JObject =>
+      val values = jObject.value.map {
+        case (k, v) =>
+          scala.json.ast.unsafe.JField(k, v.toUnsafe)
+      }
+      Utils.unsafeJValueEquals(jObject.toUnsafe,
+                               scala.json.ast.unsafe.JObject(values.toJSArray))
+    }.checkUTest()
 
-  def testEquals = forAll {jObject: scala.json.ast.JObject =>
-    scala.json.ast.JObject(jObject.value) == scala.json.ast.JObject(jObject.value)
-  }.checkUTest()
-
+  def testEquals =
+    forAll { jObject: scala.json.ast.JObject =>
+      scala.json.ast.JObject(jObject.value) == scala.json.ast.JObject(
+          jObject.value)
+    }.checkUTest()
 }

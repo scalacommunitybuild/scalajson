@@ -15,11 +15,11 @@ class JString extends Spec {
     JString(s).value must beEqualTo(s)
   }
 
-  def toUnsafe = prop {b: Boolean =>
+  def toUnsafe = prop { b: Boolean =>
     scala.json.ast.JBoolean(b).toUnsafe == scala.json.ast.unsafe.JBoolean(b)
   }
 
-  def testEquals = prop {s: String =>
+  def testEquals = prop { s: String =>
     scala.json.ast.JString(s) == scala.json.ast.JString(s)
   }
 }

@@ -10,7 +10,6 @@ import scala.json.ast._
   * @author Matthew de Detrich
   * @see https://www.ietf.org/rfc/rfc4627.txt
   */
-
 sealed abstract class JValue extends Serializable with Product {
 
   /**
@@ -22,7 +21,6 @@ sealed abstract class JValue extends Serializable with Product {
     * @see https://www.ietf.org/rfc/rfc4627.txt
     * @return
     */
-
   def toStandard: ast.JValue
 }
 
@@ -30,7 +28,6 @@ sealed abstract class JValue extends Serializable with Product {
   *
   * @author Matthew de Detrich
   */
-
 case object JNull extends JValue {
   override def toStandard: ast.JValue = ast.JNull
 }
@@ -39,7 +36,6 @@ case object JNull extends JValue {
   *
   * @author Matthew de Detrich
   */
-
 case class JString(value: String) extends JValue {
   override def toStandard: ast.JValue = ast.JString(value)
 }
@@ -74,10 +70,10 @@ object JNumber {
   *
   * @author Matthew de Detrich
   */
-
 // JNumber is internally represented as a string, to improve performance
 case class JNumber(value: String) extends JValue {
-  def to[B](implicit jNumberConverter: JNumberConverter[B]) = jNumberConverter(value)
+  def to[B](implicit jNumberConverter: JNumberConverter[B]) =
+    jNumberConverter(value)
 
   override def toStandard: ast.JValue = ast.JNumber(value)
 }
@@ -87,7 +83,6 @@ case class JNumber(value: String) extends JValue {
   *
   * @author Matthew de Detrich
   */
-
 // Implements named extractors so we can avoid boxing
 sealed abstract class JBoolean extends JValue {
   def get: Boolean
@@ -103,7 +98,6 @@ object JBoolean {
   *
   * @author Matthew de Detrich
   */
-
 case object JTrue extends JBoolean {
   override def get = true
 
@@ -114,7 +108,6 @@ case object JTrue extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-
 case object JFalse extends JBoolean {
   override def get = false
 
@@ -124,7 +117,8 @@ case object JFalse extends JBoolean {
 case class JField(field: String, value: JValue)
 
 object JObject {
-  def apply(value: JField, values: JField*): JObject = JObject(Array(value) ++ values)
+  def apply(value: JField, values: JField*): JObject =
+    JObject(Array(value) ++ values)
 }
 
 /** Represents a JSON Object value. Duplicate keys
@@ -132,7 +126,6 @@ object JObject {
   *
   * @author Matthew de Detrich
   */
-
 // JObject is internally represented as a mutable Array, to improve sequential performance
 case class JObject(value: Array[JField] = Array.empty) extends JValue {
   override def toStandard: ast.JValue = {
@@ -153,14 +146,14 @@ case class JObject(value: Array[JField] = Array.empty) extends JValue {
 }
 
 object JArray {
-  def apply(value: JValue, values: JValue*): JArray = JArray(Array(value) ++ values.to[Array])
+  def apply(value: JValue, values: JValue*): JArray =
+    JArray(Array(value) ++ values.to[Array])
 }
 
 /** Represents a JSON Array value
   *
   * @author Matthew de Detrich
   */
-
 // JArray is internally represented as a mutable Array, to improve sequential performance
 case class JArray(value: Array[JValue] = Array.empty) extends JValue {
   override def toStandard: ast.JValue = {

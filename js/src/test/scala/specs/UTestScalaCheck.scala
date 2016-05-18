@@ -11,7 +11,8 @@ trait UTestScalaCheck {
     private val prettyParams = Pretty.defaultParams
 
     override def onTestResult(name: String, res: org.scalacheck.Test.Result) = {
-      val scalaCheckResult = if (res.passed) "" else Pretty.pretty(res, prettyParams)
+      val scalaCheckResult =
+        if (res.passed) "" else Pretty.pretty(res, prettyParams)
       assert(scalaCheckResult.isEmpty)
     }
   }
@@ -21,5 +22,4 @@ trait UTestScalaCheck {
       prop.check(Test.Parameters.default.withTestCallback(UTestReporter))
     }
   }
-
 }

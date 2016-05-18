@@ -12,24 +12,21 @@ class PrivateTest extends Spec {
     s2"""
 
   """
-
 }
-
 
 object PrivateBenchmark extends Bench.ForkedTime {
 
   performance of "privateMethods" in {
     measure method "hashcode" in {
-      using(Generators.jNumber) in {
-        jNumber: JNumber => jNumber.##
+      using(Generators.jNumber) in { jNumber: JNumber =>
+        jNumber.##
       }
     }
 
     measure method "equalsItself" in {
-      using(Generators.jNumber) in {
-        jNumber: JNumber => jNumber.equals(jNumber)
+      using(Generators.jNumber) in { jNumber: JNumber =>
+        jNumber.equals(jNumber)
       }
     }
   }
-
 }

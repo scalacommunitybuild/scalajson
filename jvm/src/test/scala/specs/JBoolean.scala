@@ -30,38 +30,40 @@ class JBoolean extends Spec {
     JBoolean(b).get must beEqualTo(b)
   }
 
-  def readBooleanJBooleanPatternMatchJBooleanTrue = prop { b: Boolean => {
-    b == true
-  } ==> {
-    val result = JBoolean(true) match {
-      case f@JBoolean(true) => f
+  def readBooleanJBooleanPatternMatchJBooleanTrue = prop { b: Boolean =>
+    {
+      b == true
+    } ==> {
+      val result = JBoolean(true) match {
+        case f @ JBoolean(true) => f
+      }
+      result.get must beEqualTo(b)
     }
-    result.get must beEqualTo(b)
-  }
   }
 
   def readBooleanJBooleanPatternMatchJBooleanTrueFail = {
     {
       JBoolean(true) match {
-        case f@JBoolean(false) => f
+        case f @ JBoolean(false) => f
       }
     } must throwA[MatchError]
   }
 
-  def readBooleanJBooleanPatternMatchJBooleanFalse = prop { b: Boolean => {
-    b == false
-  } ==> {
-    val result = JBoolean(b) match {
-      case f@JBoolean(false) => f
+  def readBooleanJBooleanPatternMatchJBooleanFalse = prop { b: Boolean =>
+    {
+      b == false
+    } ==> {
+      val result = JBoolean(b) match {
+        case f @ JBoolean(false) => f
+      }
+      result.get must beEqualTo(b)
     }
-    result.get must beEqualTo(b)
-  }
   }
 
   def readBooleanJBooleanPatternMatchJBooleanFalseFail = {
     {
       JBoolean(false) match {
-        case f@JBoolean(true) => f
+        case f @ JBoolean(true) => f
       }
     } must throwAn[MatchError]
   }
@@ -69,7 +71,7 @@ class JBoolean extends Spec {
   def readBooleanJBooleanPatternMatchJTrue = prop { b: Boolean =>
     (b == true) ==> {
       val result = JBoolean(b) match {
-        case f@JTrue => f
+        case f @ JTrue => f
       }
       result.get must beEqualTo(b)
     }
@@ -78,7 +80,7 @@ class JBoolean extends Spec {
   def readBooleanJBooleanPatternMatchJTrueFail = {
     {
       JBoolean(true) match {
-        case f@JFalse => f
+        case f @ JFalse => f
       }
     } must throwAn[MatchError]
   }
@@ -86,7 +88,7 @@ class JBoolean extends Spec {
   def readBooleanJBooleanPatternMatchJFalse = prop { b: Boolean =>
     (b == false) ==> {
       val result = JBoolean(b) match {
-        case f@JFalse => f
+        case f @ JFalse => f
       }
       result.get must beEqualTo(b)
     }
@@ -95,7 +97,7 @@ class JBoolean extends Spec {
   def readBooleanJBooleanPatternMatchJFalseFail = {
     {
       JBoolean(false) match {
-        case f@JTrue => f
+        case f @ JTrue => f
       }
     } must throwAn[MatchError]
   }
@@ -117,6 +119,7 @@ class JBoolean extends Spec {
   }
 
   def toUnsafe = prop { b: Boolean =>
-    scala.json.ast.JBoolean(b).toUnsafe must beEqualTo(scala.json.ast.unsafe.JBoolean(b))
+    scala.json.ast.JBoolean(b).toUnsafe must beEqualTo(
+        scala.json.ast.unsafe.JBoolean(b))
   }
 }

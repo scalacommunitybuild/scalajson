@@ -6,7 +6,7 @@ val scalaCheckVersion = "1.13.0"
 val specs2Version = "3.7.2"
 
 scalaVersion in ThisBuild := currentScalaVersion
-crossScalaVersions in ThisBuild := Seq(currentScalaVersion,scala210Version)
+crossScalaVersions in ThisBuild := Seq(currentScalaVersion, scala210Version)
 
 lazy val root = project.in(file(".")).
   aggregate(scalaJsonASTJS, scalaJsonASTJVM).

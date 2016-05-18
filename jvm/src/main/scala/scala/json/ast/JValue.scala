@@ -5,7 +5,6 @@ package scala.json.ast
   * @author Matthew de Detrich
   * @see https://www.ietf.org/rfc/rfc4627.txt
   */
-
 sealed abstract class JValue extends Product with Serializable {
 
   /**
@@ -17,7 +16,6 @@ sealed abstract class JValue extends Product with Serializable {
     * @see https://www.ietf.org/rfc/rfc4627.txt
     * @return
     */
-
   def toUnsafe: unsafe.JValue
 }
 
@@ -25,7 +23,6 @@ sealed abstract class JValue extends Product with Serializable {
   *
   * @author Matthew de Detrich
   */
-
 case object JNull extends JValue {
   override def toUnsafe: unsafe.JValue = unsafe.JNull
 }
@@ -34,7 +31,6 @@ case object JNull extends JValue {
   *
   * @author Matthew de Detrich
   */
-
 case class JString(value: String) extends JValue {
   override def toUnsafe: unsafe.JValue = unsafe.JString(value)
 }
@@ -43,7 +39,6 @@ case class JString(value: String) extends JValue {
   * If you are passing in a NaN or Infinity as a Double, JNumber will
   * return a JNull
   */
-
 object JNumber {
   def apply(value: Int): JNumber = JNumber(value.toString)
 
@@ -61,7 +56,6 @@ object JNumber {
     * @param value
     * @return Will return a [[JNull]] if value is a Nan or Infinity
     */
-
   def apply(value: Double): JValue = value match {
     case n if n.isNaN => JNull
     case n if n.isInfinity => JNull
@@ -80,14 +74,14 @@ object JNumber {
   * @author Matthew de Detrich
   * @throws NumberFormatException - If the value is not a valid JSON Number
   */
-
 case class JNumber(value: String) extends JValue {
 
   if (!value.matches(jNumberRegex)) {
     throw new NumberFormatException(value)
   }
 
-  def to[B](implicit bigDecimalConverter: JNumberConverter[B]) = bigDecimalConverter(value)
+  def to[B](implicit bigDecimalConverter: JNumberConverter[B]) =
+    bigDecimalConverter(value)
 
   override def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
@@ -99,7 +93,6 @@ case class JNumber(value: String) extends JValue {
 
   override def hashCode =
     numericStringHashcode(value)
-
 }
 
 /** Represents a JSON Boolean value, which can either be a
@@ -107,7 +100,6 @@ case class JNumber(value: String) extends JValue {
   *
   * @author Matthew de Detrich
   */
-
 // Implements named extractors so we can avoid boxing
 sealed abstract class JBoolean extends JValue {
   def get: Boolean
@@ -123,7 +115,6 @@ object JBoolean {
   *
   * @author Matthew de Detrich
   */
-
 case object JTrue extends JBoolean {
   override def get = true
 
@@ -134,7 +125,6 @@ case object JTrue extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-
 case object JFalse extends JBoolean {
   override def get = false
 
@@ -146,7 +136,6 @@ case object JFalse extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-
 case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
   override def toUnsafe: unsafe.JValue = {
     if (value.isEmpty) {
@@ -164,14 +153,14 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
 }
 
 object JArray {
-  def apply(value: JValue, values: JValue*): JArray = JArray(value +: values.to[Vector])
+  def apply(value: JValue, values: JValue*): JArray =
+    JArray(value +: values.to[Vector])
 }
 
 /** Represents a JSON Array value
   *
   * @author Matthew de Detrich
   */
-
 case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
   override def toUnsafe: unsafe.JValue = {
     val length = value.length

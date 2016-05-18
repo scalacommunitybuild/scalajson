@@ -6,10 +6,9 @@ object JNumber extends Bench.ForkedTime {
 
   performance of "JNumber" in {
     measure method "toFast" in {
-      using(Generators.jNumber) in {
-        jNumber => jNumber.toUnsafe
+      using(Generators.jNumber) in { jNumber =>
+        jNumber.toUnsafe
       }
     }
   }
-  
 }

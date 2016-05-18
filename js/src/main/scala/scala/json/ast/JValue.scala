@@ -9,7 +9,6 @@ import scala.scalajs.js.annotation.JSExport
   * @author Matthew de Detrich
   * @see https://www.ietf.org/rfc/rfc4627.txt
   */
-
 sealed abstract class JValue extends Product with Serializable {
 
   /**
@@ -21,7 +20,6 @@ sealed abstract class JValue extends Product with Serializable {
     * @see https://www.ietf.org/rfc/rfc4627.txt
     * @return
     */
-
   def toUnsafe: unsafe.JValue
 
   /**
@@ -30,7 +28,6 @@ sealed abstract class JValue extends Product with Serializable {
     *
     * @return
     */
-
   def toJsAny: js.Any
 }
 
@@ -38,7 +35,6 @@ sealed abstract class JValue extends Product with Serializable {
   *
   * @author Matthew de Detrich
   */
-
 @JSExport
 case object JNull extends JValue {
   @JSExport override def toUnsafe: unsafe.JValue = unsafe.JNull
@@ -50,7 +46,6 @@ case object JNull extends JValue {
   *
   * @author Matthew de Detrich
   */
-
 @JSExport
 case class JString(@(JSExport @field) value: String) extends JValue {
   @JSExport override def toUnsafe: unsafe.JValue = unsafe.JString(value)
@@ -75,14 +70,14 @@ object JNumber {
     * @param value
     * @return Will return a JNull if value is a Nan or Infinity
     */
-
   def apply(value: Double): JValue = value match {
     case n if n.isNaN => JNull
     case n if n.isInfinity => JNull
     case _ => JNumber(value.toString)
   }
 
-  def apply(value: Float): JNumber = JNumber(value.toString) // In Scala.js, float has the same representation as double
+  def apply(value: Float): JNumber =
+    JNumber(value.toString) // In Scala.js, float has the same representation as double
 }
 
 /** Represents a JSON number value. If you are passing in a
@@ -92,7 +87,6 @@ object JNumber {
   * @author Matthew de Detrich
   * @throws NumberFormatException - If the value is not a valid JSON Number
   */
-
 @JSExport
 case class JNumber(@(JSExport @field) value: String) extends JValue {
 
@@ -100,7 +94,8 @@ case class JNumber(@(JSExport @field) value: String) extends JValue {
     throw new NumberFormatException(value)
   }
 
-  def to[B](implicit bigDecimalConverter: JNumberConverter[B]) = bigDecimalConverter(value)
+  def to[B](implicit bigDecimalConverter: JNumberConverter[B]) =
+    bigDecimalConverter(value)
 
   /**
     * Javascript specification for numbers specify a `Double`, so this is the default export method to `Javascript`
@@ -132,7 +127,6 @@ case class JNumber(@(JSExport @field) value: String) extends JValue {
   *
   * @author Matthew de Detrich
   */
-
 // Implements named extractors so we can avoid boxing
 sealed abstract class JBoolean extends JValue {
   def get: Boolean
@@ -150,7 +144,6 @@ object JBoolean {
   *
   * @author Matthew de Detrich
   */
-
 @JSExport
 case object JTrue extends JBoolean {
   override def get = true
@@ -162,7 +155,6 @@ case object JTrue extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-
 @JSExport
 case object JFalse extends JBoolean {
   override def get = false
@@ -175,8 +167,8 @@ case object JFalse extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-
-case class JObject(@(JSExport @field) value: Map[String, JValue] = Map.empty) extends JValue {
+case class JObject(@(JSExport @field) value: Map[String, JValue] = Map.empty)
+    extends JValue {
 
   /**
     * Construct a JObject using Javascript's object type, i.e. {} or new Object
@@ -217,16 +209,17 @@ case class JObject(@(JSExport @field) value: Map[String, JValue] = Map.empty) ex
 }
 
 object JArray {
-  def apply(value: JValue, values: JValue*): JArray = JArray(value +: values.to[Vector])
+  def apply(value: JValue, values: JValue*): JArray =
+    JArray(value +: values.to[Vector])
 }
-
 
 /** Represents a JSON Array value
   *
   * @author Matthew de Detrich
   */
+case class JArray(@(JSExport @field) value: Vector[JValue] = Vector.empty)
+    extends JValue {
 
-case class JArray(@(JSExport @field) value: Vector[JValue] = Vector.empty) extends JValue {
   /**
     *
     * Construct a JArray using Javascript's array type, i.e. `[]` or `new Array`
