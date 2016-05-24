@@ -18,7 +18,8 @@ lazy val root = project.in(file(".")).
 lazy val scalaJsonAST = crossProject.in(file(".")).
   settings(
     name := "scala-json-ast",
-    version := "1.0.0-SNAPSHOT",
+    version := "1.0.0-M1",
+    organization := "org.mdedetrich",
     scalacOptions ++= Seq(
       "-encoding", "UTF-8",
       "-deprecation", // warning and location for usages of deprecated APIs
@@ -31,6 +32,35 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
       "-Ywarn-inaccessible",
       "-Ywarn-dead-code"
     ),
+    publishMavenStyle := true,
+    publishTo := {
+      val nexus = "https://oss.sonatype.org/"
+      if (isSnapshot.value)
+        Some("snapshots" at nexus + "content/repositories/snapshots")
+      else
+        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+    },
+    publishArtifact in Test := false,
+    pomIncludeRepository := { _ => false },
+    pomExtra := <url>https://github.com/mdedetrich/scala-json-ast</url>
+      <licenses>
+        <license>
+          <name>BSD 3-Clause</name>
+          <url>https://opensource.org/licenses/BSD-3-Clause</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+      <scm>
+        <url>git@github.com:mdedetrich/scala-json-ast.git</url>
+        <connection>scm:git:git@github.com:mdedetrich/scala-json-ast.git</connection>
+      </scm>
+      <developers>
+        <developer>
+          <id>mdedetrich</id>
+          <name>Matthew de Detrich</name>
+          <email>mdedetrich@gmail.com</email>
+        </developer>
+      </developers>,
     scalacOptions += {
       scalaVersion.value match {
         case v if v.startsWith("2.10.") => "-target:jvm-1.6"

@@ -6,6 +6,21 @@
 Two minimal implementations of a [JSON](https://en.wikipedia.org/wiki/JSON) AST, one that is designed for
 typical use and another that is designed for performance.
 
+## Usage
+
+The artifact is currently published under my own personal sonatype. This will change once it gets
+accepted by the SLIP process.
+
+```scala
+"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M1"
+```
+
+If you are using Scala.js, you need to do
+
+```scala
+"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M1"
+```
+
 ## Standard AST
 Implementation is in `scala.json.ast.JValue`
 
