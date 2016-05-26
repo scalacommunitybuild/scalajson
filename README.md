@@ -11,6 +11,8 @@ typical use and another that is designed for performance.
 The artifact is currently published under my own personal sonatype. This will change once it gets
 accepted by the SLIP process.
 
+Built for Scala 2.10.x and 2.11.x
+
 ```scala
 "org.mdedetrich" %% "scala-json-ast" % "1.0.0-M1"
 ```
