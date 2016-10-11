@@ -175,11 +175,9 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
     if (value.isEmpty) {
       unsafe.JObject(js.Array[unsafe.JField]())
     } else {
-      val iterator = value.iterator
       val array = js.Array[unsafe.JField]()
-      while (iterator.hasNext) {
-        val (k, v) = iterator.next()
-        array.push(unsafe.JField(k, v.toUnsafe))
+      value.iterator.foreach { x =>
+        array.push(unsafe.JField(x._1, x._2.toUnsafe))
       }
       unsafe.JObject(array)
     }
@@ -189,11 +187,9 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
     if (value.isEmpty) {
       js.Dictionary[js.Any]().asInstanceOf[js.Object]
     } else {
-      val iterator = value.iterator
       val dict = js.Dictionary[js.Any]()
-      while (iterator.hasNext) {
-        val (k, v) = iterator.next()
-        dict(k) = v.toJsAny
+      value.iterator.foreach { x =>
+        dict(x._1) = x._2.toJsAny
       }
       dict.asInstanceOf[js.Object]
     }

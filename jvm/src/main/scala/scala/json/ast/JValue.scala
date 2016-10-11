@@ -143,9 +143,9 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
     } else {
       val array = Array.ofDim[unsafe.JField](value.size)
       var index = 0
-      for ((k, v) <- value) {
-        array(index) = unsafe.JField(k, v.toUnsafe)
-        index += 1
+      value.iterator.foreach { x =>
+          array(index) = unsafe.JField(x._1, x._2.toUnsafe)
+          index += 1
       }
       unsafe.JObject(array)
     }
@@ -168,10 +168,9 @@ case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
       unsafe.JArray(Array.ofDim[unsafe.JValue](0))
     } else {
       val array = Array.ofDim[unsafe.JValue](length)
-      val iterator = value.iterator
       var index = 0
-      while (iterator.hasNext) {
-        array(index) = iterator.next().toUnsafe
+      value.foreach { x =>
+        array(index) = x.toUnsafe
         index += 1
       }
       unsafe.JArray(array)
