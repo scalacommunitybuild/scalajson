@@ -14,13 +14,13 @@ accepted by the SLIP process.
 Built for Scala 2.10.x and 2.11.x
 
 ```sbt
-"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M1"
+"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M2"
 ```
 
 If you are using Scala.js, you need to do
 
 ```sbt
-"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M1"
+"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M2"
 ```
 
 ## Standard AST
@@ -92,6 +92,7 @@ conversion by creating an `implicit val` that implements a JNumberConverter, i.e
 
 ```scala
 import scala.json.ast.JNumberConverter
+
 
 implicit val myNumberConverter = new JNumberConverter[SomeNumberType]{
   def apply(s: String): SomeNumberType = ???
