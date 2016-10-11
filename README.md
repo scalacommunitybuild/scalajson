@@ -117,7 +117,7 @@ get the raw string value as a solution to this problem.
 `scala.json.JNumber` uses `jNumberRegex` to validate whether a number is a valid
 JSON number. One can use `jNumberRegex` explicitly if you want to use the validation that
 is used by `scala.json.JNumber` (for example, you may want to validate proper numbers
-before creating a  `scala.json.unsafe.JNumber`).
+before creating a `scala.json.unsafe.JNumber`).
 
 ```scala
 import scala.json.jNumberRegex
