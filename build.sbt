@@ -8,20 +8,23 @@ val specs2Version = "3.7.2"
 scalaVersion in ThisBuild := currentScalaVersion
 crossScalaVersions in ThisBuild := Seq(currentScalaVersion, scala210Version)
 
-lazy val root = project.in(file(".")).
-  aggregate(scalaJsonASTJS, scalaJsonASTJVM).
-  settings(
+lazy val root = project
+  .in(file("."))
+  .aggregate(scalaJsonASTJS, scalaJsonASTJVM)
+  .settings(
     publish := {},
     publishLocal := {}
   )
 
-lazy val scalaJsonAST = crossProject.in(file(".")).
-  settings(
+lazy val scalaJsonAST = crossProject
+  .in(file("."))
+  .settings(
     name := "scala-json-ast",
-    version := "1.0.0-M2",
+    version := "1.0.0-M3",
     organization := "org.mdedetrich",
     scalacOptions ++= Seq(
-      "-encoding", "UTF-8",
+      "-encoding",
+      "UTF-8",
       "-deprecation", // warning and location for usages of deprecated APIs
       "-feature", // warning and location for usages of features that should be imported explicitly
       "-unchecked", // additional warnings where generated code depends on assumptions
@@ -38,10 +41,12 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
       if (isSnapshot.value)
         Some("snapshots" at nexus + "content/repositories/snapshots")
       else
-        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+        Some("releases" at nexus + "service/local/staging/deploy/maven2")
     },
     publishArtifact in Test := false,
-    pomIncludeRepository := { _ => false },
+    pomIncludeRepository := { _ =>
+      false
+    },
     pomExtra := <url>https://github.com/mdedetrich/scala-json-ast</url>
       <licenses>
         <license>
@@ -68,8 +73,8 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
         case v if v.startsWith("2.12.") => "-target:jvm-1.8"
       }
     }
-  ).
-  jvmSettings(
+  )
+  .jvmSettings(
     // Add JVM-specific settings here
     testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
     libraryDependencies ++= Seq(
@@ -79,8 +84,8 @@ lazy val scalaJsonAST = crossProject.in(file(".")).
       "org.scalacheck" %% "scalacheck" % scalaCheckVersion % Test
     ),
     scalacOptions in Test ++= Seq("-Yrangepos")
-  ).
-  jsSettings(
+  )
+  .jsSettings(
     // Add JS-specific settings here
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,

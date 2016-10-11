@@ -59,8 +59,7 @@ package object ast {
         while (char == '0' && i < length) {
           i += 1
           if (i != length)
-            char =
-              value(i) // Fencepost, possible that this can be last character
+            char = value(i) // Fencepost, possible that this can be last character
         }
 
         if (i < length) {
@@ -78,13 +77,11 @@ package object ast {
         while (char == '0' && i < length) {
           i += 1
           if (i != length)
-            char =
-              value(i) // Fencepost, possible that this can be last character
+            char = value(i) // Fencepost, possible that this can be last character
         }
 
         if (i < length) {
-          result =
-            31 * result + '.': Int // The decimal is not finishing with a 0
+          result = 31 * result + '.': Int // The decimal is not finishing with a 0
         }
       } else {
         result = 31 * result + char: Int
