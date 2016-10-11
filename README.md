@@ -103,7 +103,7 @@ Then you just need to provide this implementation in scope for usage
 
 ## Scala.js
 Scala json ast also provides support for [Scala.js](https://github.com/scala-js/scala-js).
-The usage of Scala.js mirros the usage of Scala on the JVM however Scala.js also implements
+The usage of Scala.js mirrors the usage of Scala on the JVM however Scala.js also implements
 a `.toJsAny` method which allows you to convert any
 `scala.json.ast.JValue`/`scala.json.ast.unsafe.JValue` to a Javascript value in `Scala.js`.
 
