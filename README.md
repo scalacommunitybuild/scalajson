@@ -139,6 +139,6 @@ in SBT before committing any changes
 * Removed `@JSExport` annotation, it was blowing up the size of Scala.js projects that use scala-json-ast
 * Fixed missing import in some sections of the README, clarified some other sections
 * Added in scalafmt as a code formatter
-### 1.0.0-M3
 
+### 1.0.0-M3
 * Performance improvements
