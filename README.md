@@ -14,13 +14,13 @@ accepted by the SLIP process.
 Built for Scala 2.10.x and 2.11.x
 
 ```sbt
-"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M2"
+"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M3"
 ```
 
 If you are using Scala.js, you need to do
 
 ```sbt
-"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M2"
+"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M3"
 ```
 
 ## Standard AST
@@ -138,3 +138,5 @@ in SBT before committing any changes
 * Removed `@JSExport` annotation, it was blowing up the size of Scala.js projects that use scala-json-ast
 * Fixed missing import in some sections of the README, clarified some other sections
 * Added in scalafmt as a code formatter
+### 1.0.0-M3
+* Performance improvements
