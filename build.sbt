@@ -77,9 +77,7 @@ lazy val scalaJsonAST = crossProject
   )
   .jvmSettings(
     // Add JVM-specific settings here
-    testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
     libraryDependencies ++= Seq(
-      "com.storm-enroute" %% "scalameter" % "0.7" % Test,
       "org.specs2" %% "specs2-core" % specs2Version % Test,
       "org.specs2" %% "specs2-scalacheck" % specs2Version % Test,
       "org.scalacheck" %% "scalacheck" % scalaCheckVersion % Test
@@ -94,6 +92,19 @@ lazy val scalaJsonAST = crossProject
     ),
     testFrameworks += new TestFramework("utest.runner.Framework")
   )
+
+lazy val benchmark = crossProject
+  .in(file("benchmark"))
+  .jvmSettings(
+    testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
+    libraryDependencies ++= Seq(
+      "com.storm-enroute" %% "scalameter" % "0.7" % Test
+    )
+  )
+  .dependsOn(scalaJsonAST)
+
+lazy val scalaJsonASTJVMTest = benchmark.jvm
+lazy val scalaJsonASTJSTest = benchmark.js
 
 lazy val scalaJsonASTJVM = scalaJsonAST.jvm
 lazy val scalaJsonASTJS = scalaJsonAST.js
