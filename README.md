@@ -88,7 +88,7 @@ disregards ordering for equality, however `Array`/`js.Array` equality takes orde
 Both `scala.json.ast.JNumber` and `scala.json.ast.unsafe.JNumber` provide conversions using a `.to[T]` method. These methods 
 provide a default fast implementations for converting between different number types (as well
 as stuff like `Char[Array]`). You can provide your own implementations of a `.to[T]` 
-conversion by creating an `implicit val` that implements a JNumberConverter, i.e.
+conversion by creating an `implicit val` that implements a `scala.json.ast.JNumberConverter`, i.e.
 
 ```scala
 import scala.json.ast.JNumberConverter
@@ -107,10 +107,10 @@ The usage of Scala.js mirrors the usage of Scala on the JVM however Scala.js als
 a `.toJsAny` method which allows you to convert any
 `scala.json.ast.JValue`/`scala.json.ast.unsafe.JValue` to a Javascript value in `Scala.js`.
 
-Note that, since a `scala.json.ast.JNumber`/`scala.json.ast.unsafe.JNumer` is unlimited
+Note that, since a `scala.json.ast.JNumber`/`scala.json.ast.unsafe.JNumber` is unlimited
 precision (represented internally as a `String`), calls to `.toJsAny` can lose precision on the
 underlying number (numbers in Javascript are represented as double precision floating point number).
-You can use the `.value` method on a `scala.json.ast.JNumber`/`scala.json.ast.unsafe.JNumer` to
+You can use the `.value` method on a `scala.json.ast.JNumber`/`scala.json.ast.unsafe.JNumber` to
 get the raw string value as a solution to this problem.
 
 ## jNumberRegex
