@@ -144,8 +144,8 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
       val array = Array.ofDim[unsafe.JField](value.size)
       var index = 0
       value.iterator.foreach { x =>
-          array(index) = unsafe.JField(x._1, x._2.toUnsafe)
-          index += 1
+        array(index) = unsafe.JField(x._1, x._2.toUnsafe)
+        index += 1
       }
       unsafe.JObject(array)
     }
