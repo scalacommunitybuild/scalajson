@@ -11,16 +11,16 @@ typical use and another that is designed for performance.
 The artifact is currently published under my own personal sonatype. This will change once it gets
 accepted by the SLIP process.
 
-Built for Scala 2.10.x and 2.11.x
+Built for Scala 2.10.x, 2.11.x and 2.12.x
 
 ```sbt
-"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M3"
+"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M4"
 ```
 
 If you are using Scala.js, you need to do
 
 ```sbt
-"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M3"
+"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M4"
 ```
 
 ## Standard AST
@@ -126,6 +126,7 @@ import scala.json.jNumberRegex
 ```
 
 ## Code formatting
+
 The project is formatted using [scalafmt](https://github.com/olafurpg/scalafmt). Please run `scalafmt`
 in SBT before committing any changes
 
@@ -142,3 +143,7 @@ in SBT before committing any changes
 
 ### 1.0.0-M3
 * Performance improvements
+
+### 1.0.0-M4
+* Moved benchmarks into their own sub project
+* Build ready for Scala 2.12

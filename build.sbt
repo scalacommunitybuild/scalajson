@@ -2,12 +2,12 @@ name := "scala-json-ast"
 
 val currentScalaVersion = "2.11.8"
 val scala210Version = "2.10.6"
-val scala212Version = "2.12.0-RC1"
-val scalaCheckVersion = "1.13.3"
-val specs2Version = "3.8.5"
+val scala212Version = "2.12.0"
+val scalaCheckVersion = "1.13.4"
+val specs2Version = "3.8.6"
 
 scalaVersion in ThisBuild := currentScalaVersion
-crossScalaVersions in ThisBuild := Seq(currentScalaVersion, scala210Version)
+crossScalaVersions in ThisBuild := Seq(currentScalaVersion, scala210Version, scala212Version)
 
 lazy val root = project
   .in(file("."))
@@ -88,7 +88,7 @@ lazy val scalaJsonAST = crossProject
     // Add JS-specific settings here
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
-      "com.lihaoyi" %%% "utest" % "0.4.3" % Test
+      "com.lihaoyi" %%% "utest" % "0.4.4" % Test
     ),
     testFrameworks += new TestFramework("utest.runner.Framework")
   )
