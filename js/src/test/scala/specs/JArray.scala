@@ -22,14 +22,14 @@ object JArray extends TestSuite with UTestScalaCheck {
       val values = jArray.value.map(_.toUnsafe).toJSArray
 
       Utils.unsafeJValueEquals(
-          jArray.toUnsafe,
-          scala.json.ast.unsafe.JArray(values)
+        jArray.toUnsafe,
+        scala.json.ast.unsafe.JArray(values)
       )
     }.checkUTest()
 
   def testEquals =
     forAll { jArray: JArray =>
       scala.json.ast.JArray(jArray.value) == scala.json.ast.JArray(
-          jArray.value)
+        jArray.value)
     }.checkUTest()
 }

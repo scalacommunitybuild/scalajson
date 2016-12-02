@@ -120,6 +120,6 @@ class JBoolean extends Spec {
 
   def toUnsafe = prop { b: Boolean =>
     scala.json.ast.JBoolean(b).toUnsafe must beEqualTo(
-        scala.json.ast.unsafe.JBoolean(b))
+      scala.json.ast.unsafe.JBoolean(b))
   }
 }

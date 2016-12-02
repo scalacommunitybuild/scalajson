@@ -31,6 +31,6 @@ object JObject extends TestSuite with UTestScalaCheck {
   def testEquals =
     forAll { jObject: scala.json.ast.JObject =>
       scala.json.ast.JObject(jObject.value) == scala.json.ast.JObject(
-          jObject.value)
+        jObject.value)
     }.checkUTest()
 }

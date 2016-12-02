@@ -123,7 +123,8 @@ object JObject {
 
 /** Represents a JSON Object value. Duplicate keys
   * are allowed and ordering is respected
-  *
+  * NOTE: Due to the underlying datastructure being an Array, [[unsafe.JObject]] does
+  * reference and NOT structural equality
   * @author Matthew de Detrich
   */
 // JObject is internally represented as a mutable Array, to improve sequential performance
@@ -151,7 +152,8 @@ object JArray {
 }
 
 /** Represents a JSON Array value
-  *
+  * NOTE: Due to the underlying datastructure being an Array, [[unsafe.JArray]] does
+  * reference and NOT structural equality
   * @author Matthew de Detrich
   */
 // JArray is internally represented as a mutable Array, to improve sequential performance

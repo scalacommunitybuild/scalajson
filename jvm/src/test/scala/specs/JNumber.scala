@@ -144,7 +144,7 @@ class JNumber extends Spec {
 
   def toUnsafe = prop { b: BigDecimal =>
     scala.json.ast.JNumber(b).toUnsafe must beEqualTo(
-        scala.json.ast.unsafe.JNumber(b))
+      scala.json.ast.unsafe.JNumber(b))
   }
 
   def testEquals = prop { b: BigDecimal =>

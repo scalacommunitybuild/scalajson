@@ -48,8 +48,8 @@ object Generators {
     for {
       size <- Gen.range("seed")(0, 10, 1)
       string <- Gen.range("seed")(300000, 1500000, 300000).map {
-                 _.toString
-               }
+        _.toString
+      }
       randomJValue <- jValue
     } yield {
 

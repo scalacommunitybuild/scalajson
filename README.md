@@ -63,6 +63,10 @@ duplicate keys for a `scala.json.ast.unsafe.JObject`).
   - Also means it can hold invalid data, due to not doing runtime checks
 - Is referentially transparent in regards to `String` -> `scala.json.ast.unsafe.JValue` -> `String` since `scala.json.ast.unsafe.JObject` 
   preserves ordering/duplicate keys
+- Doesn't override equality for underlying datastructures. This means that `scala.json.ast.unsafe.JObject`
+ and `scala.json.ast.unsafe.JArray` equals will do reference, not structural
+ equality, i.e. `scala.json.ast.unsafe.JObject() == scala.json.ast.unsafe.JObject()`
+ is `false` for the same reasons that `Array() == Array()` is `false`
 
 ## Conversion between scala.json.JValue and scala.json.ast.unsafe.JValue
 
