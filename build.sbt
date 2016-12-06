@@ -2,7 +2,7 @@ name := "scala-json-ast"
 
 val currentScalaVersion = "2.11.8"
 val scala210Version = "2.10.6"
-val scala212Version = "2.12.0"
+val scala212Version = "2.12.1"
 val scalaCheckVersion = "1.13.4"
 val specs2Version = "3.8.6"
 
