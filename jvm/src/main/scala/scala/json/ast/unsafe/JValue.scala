@@ -1,5 +1,7 @@
 package scala.json.ast.unsafe
 
+import java.util
+
 import scala.json.ast
 import scala.json.ast._
 
@@ -72,7 +74,7 @@ object JNumber {
   */
 // JNumber is internally represented as a string, to improve performance
 case class JNumber(value: String) extends JValue {
-  def to[B](implicit jNumberConverter: JNumberConverter[B]) =
+  def to[B](implicit jNumberConverter: JNumberConverter[B]): B =
     jNumberConverter(value)
 
   override def toStandard: ast.JValue = ast.JNumber(value)
@@ -123,8 +125,6 @@ object JObject {
 
 /** Represents a JSON Object value. Duplicate keys
   * are allowed and ordering is respected
-  * NOTE: Due to the underlying datastructure being an Array, [[unsafe.JObject]] does
-  * reference and NOT structural equality
   * @author Matthew de Detrich
   */
 // JObject is internally represented as a mutable Array, to improve sequential performance
@@ -144,6 +144,26 @@ case class JObject(value: Array[JField] = Array.empty) extends JValue {
       ast.JObject(b.result())
     }
   }
+
+  override def equals(obj: scala.Any): Boolean = {
+    obj match {
+      case jObject: JObject =>
+        val length = value.length
+        if (length != jObject.value.length)
+          return false
+        var index = 0
+        while (index < length) {
+          if (value(index) != jObject.value(index))
+            return false
+          index += 1
+        }
+        true
+      case _ => false
+    }
+  }
+
+  override def hashCode: Int =
+    java.util.Arrays.deepHashCode(value.asInstanceOf[Array[AnyRef]])
 }
 
 object JArray {
@@ -152,8 +172,6 @@ object JArray {
 }
 
 /** Represents a JSON Array value
-  * NOTE: Due to the underlying datastructure being an Array, [[unsafe.JArray]] does
-  * reference and NOT structural equality
   * @author Matthew de Detrich
   */
 // JArray is internally represented as a mutable Array, to improve sequential performance
@@ -172,4 +190,24 @@ case class JArray(value: Array[JValue] = Array.empty) extends JValue {
       ast.JArray(b.result())
     }
   }
+
+  override def equals(obj: scala.Any): Boolean = {
+    obj match {
+      case jArray: JArray =>
+        val length = value.length
+        if (length != jArray.value.length)
+          return false
+        var index = 0
+        while (index < length) {
+          if (value(index) != jArray.value(index))
+            return false
+          index += 1
+        }
+        true
+      case _ => false
+    }
+  }
+
+  override def hashCode: Int =
+    java.util.Arrays.deepHashCode(value.asInstanceOf[Array[AnyRef]])
 }

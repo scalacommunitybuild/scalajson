@@ -14,13 +14,13 @@ accepted by the SLIP process.
 Built for Scala 2.10.x, 2.11.x and 2.12.x
 
 ```sbt
-"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M4"
+"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M5"
 ```
 
 If you are using Scala.js, you need to do
 
 ```sbt
-"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M4"
+"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M5"
 ```
 
 ## Standard AST
@@ -63,10 +63,9 @@ duplicate keys for a `scala.json.ast.unsafe.JObject`).
   - Also means it can hold invalid data, due to not doing runtime checks
 - Is referentially transparent in regards to `String` -> `scala.json.ast.unsafe.JValue` -> `String` since `scala.json.ast.unsafe.JObject` 
   preserves ordering/duplicate keys
-- Doesn't override equality for underlying datastructures. This means that `scala.json.ast.unsafe.JObject`
- and `scala.json.ast.unsafe.JArray` equals will do reference, not structural
- equality, i.e. `scala.json.ast.unsafe.JObject() == scala.json.ast.unsafe.JObject()`
- is `false` for the same reasons that `Array() == Array()` is `false`
+- Implements structural equality for both `hashCode` and `equals`. If you need reference equality
+  you can use `eq` and if you need reference `hashCode` you can use `.value.hashCode`. Also note that for
+  deep comparison is used both `hashCode` and `equals`.
 
 ## Conversion between scala.json.JValue and scala.json.ast.unsafe.JValue
 
@@ -151,3 +150,7 @@ in SBT before committing any changes
 ### 1.0.0-M4
 * Moved benchmarks into their own sub project
 * Build ready for Scala 2.12
+
+### 1.0.0-M5
+* `scala.json.ast.unsafe.JArray` and `scala.json.ast.unsafe.JObject` now implement structural `equality` and `hashCode`
+* Bumped Scala 2.12 version

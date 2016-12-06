@@ -11,8 +11,10 @@ class JObject extends Spec {
     convert toStandard $toStandard
   """
 
-  def toStandard = prop {jObject: scala.json.ast.unsafe.JObject =>
-    val values = jObject.value.map{x => (x.field,x.value.toStandard)}.toMap
+  def toStandard = prop { jObject: scala.json.ast.unsafe.JObject =>
+    val values = jObject.value.map { x =>
+      (x.field, x.value.toStandard)
+    }.toMap
     jObject.toStandard == scala.json.ast.JObject(values)
   }
 

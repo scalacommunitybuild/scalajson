@@ -80,18 +80,18 @@ case class JNumber(value: String) extends JValue {
     throw new NumberFormatException(value)
   }
 
-  def to[B](implicit jNumberConverter: JNumberConverter[B]) =
+  def to[B](implicit jNumberConverter: JNumberConverter[B]): B =
     jNumberConverter(value)
 
   override def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
-  override def equals(a: Any) =
-    a match {
+  override def equals(obj: Any): Boolean =
+    obj match {
       case jNumber: JNumber => numericStringEquals(value, jNumber.value)
       case _ => false
     }
 
-  override def hashCode =
+  override def hashCode: Int =
     numericStringHashcode(value)
 }
 
