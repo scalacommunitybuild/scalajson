@@ -5,9 +5,14 @@ scala:
   - 2.12.1
   - 2.11.8
 jdk:
-  - orcalejdk6
+  - openjdk6
+  - openjdk7
+  - oraclejdk7
   - oraclejdk8
 matrix:
   exclude:
   - scala: 2.12.1
-    jdk: oraclejdk6
+    jdk:
+      - openjdk6
+      - openjdk7
+      - oraclejdk7
