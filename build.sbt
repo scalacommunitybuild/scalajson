@@ -21,7 +21,7 @@ lazy val scalaJsonAST = crossProject
   .in(file("."))
   .settings(
     name := "scala-json-ast",
-    version := "1.0.0-M5",
+    version := "1.0.0-M6",
     organization := "org.mdedetrich",
     scalacOptions ++= Seq(
       "-encoding",

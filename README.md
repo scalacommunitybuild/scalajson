@@ -14,13 +14,13 @@ accepted by the SLIP process.
 Built for Scala 2.10.x, 2.11.x and 2.12.x
 
 ```sbt
-"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M5"
+"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M6"
 ```
 
 If you are using Scala.js, you need to do
 
 ```sbt
-"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M5"
+"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M6"
 ```
 
 ## Standard AST
@@ -154,3 +154,6 @@ in SBT before committing any changes
 ### 1.0.0-M5
 * `scala.json.ast.unsafe.JArray` and `scala.json.ast.unsafe.JObject` now implement structural `equality` and `hashCode`
 * Bumped Scala 2.12 version
+
+### 1.0.0-M6
+* Fixed inproper `hashCode` for Scala.js in the previous release

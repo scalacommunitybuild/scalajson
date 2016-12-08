@@ -220,8 +220,28 @@ case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
     }
   }
 
-  override def hashCode: Int =
-    java.util.Arrays.deepHashCode(value.asInstanceOf[Array[AnyRef]])
+  override def hashCode: Int = {
+    var index = 0
+    var result = 1
+
+    while (index < value.length) {
+      val elem = value(index)
+      result = 31 * result + (if (elem == null) 0
+                              else {
+                              result = 31 * result + elem.field.##
+                              elem.value match {
+                                case unsafe.JNull => unsafe.JNull.##
+                                case unsafe.JString(s) => s.##
+                                case unsafe.JBoolean(b) => b.##
+                                case unsafe.JNumber(i) => i.##
+                                case unsafe.JArray(a) => a.##
+                                case unsafe.JObject(obj) => obj.##
+                              }
+                            })
+      index += 1
+    }
+    result
+  }
 }
 
 object JArray {
@@ -273,6 +293,25 @@ case class JArray(value: js.Array[JValue] = js.Array()) extends JValue {
     }
   }
 
-  override def hashCode: Int =
-    java.util.Arrays.deepHashCode(value.asInstanceOf[Array[AnyRef]])
+  override def hashCode: Int = {
+    var index = 0
+    var result = 1
+
+    while (index < value.length) {
+      val elem = value(index)
+      result = 31 * result + (if (elem == null) 0
+                              else {
+                              elem match {
+                                case unsafe.JNull => unsafe.JNull.##
+                                case unsafe.JString(s) => s.##
+                                case unsafe.JBoolean(b) => b.##
+                                case unsafe.JNumber(i) => i.##
+                                case unsafe.JArray(a) => a.##
+                                case unsafe.JObject(obj) => obj.##
+                              }
+                            })
+      index += 1
+    }
+    result
+  }
 }

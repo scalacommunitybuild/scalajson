@@ -1,7 +1,13 @@
 language: scala
 
 scala:
-   - 2.11.8
-   - 2.10.6
-   - 2.12.0
-jdk: oraclejdk8
+  - 2.10.6
+  - 2.12.1
+  - 2.11.8
+jdk:
+  - orcalejdk6
+  - oraclejdk8
+matrix:
+  exclude:
+  - scala: 2.12.1
+    jdk: oraclejdk6
