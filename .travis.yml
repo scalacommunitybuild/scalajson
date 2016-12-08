@@ -19,4 +19,3 @@ matrix:
   exclude:
   - scala: 2.12.1
     jdk: oraclejdk7
-
