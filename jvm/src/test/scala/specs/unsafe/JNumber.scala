@@ -75,13 +75,17 @@ class JNumber extends Spec {
     JNumber(s).value must beEqualTo(s.toString)
   }
 
-  def readStringJNumberDetect = prop { s: String => {
-    scala.util.Try {
-      BigDecimal(s)
-    }.toOption.isEmpty
-  } ==> {
-    scala.util.Try(BigDecimal(JNumber(s).value)).toOption.isEmpty must beTrue
-  }
+  def readStringJNumberDetect = prop { s: String =>
+    {
+      scala.util
+        .Try {
+          BigDecimal(s)
+        }
+        .toOption
+        .isEmpty
+    } ==> {
+      scala.util.Try(BigDecimal(JNumber(s).value)).toOption.isEmpty must beTrue
+    }
   }
 
   def toStandard = prop { b: BigDecimal =>

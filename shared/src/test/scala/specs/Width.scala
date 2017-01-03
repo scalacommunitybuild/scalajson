@@ -2,17 +2,21 @@
   * Shamelessly taken from
   * https://github.com/jeffmay/play-json-ops/tree/master/playJsonTests/src/main/scala/play/api/libs/json/scalacheck
   */
-
 package specs
 
 import scala.language.implicitConversions
 
-class Width private[Width] (val width: Int) extends AnyVal with Counted with Proxy {
+class Width private[Width] (val width: Int)
+    extends AnyVal
+    with Counted
+    with Proxy {
   override def self = width
-  override protected def throwOnNegative(): Nothing = throw new IllegalArgumentException("Width cannot be negative")
+  override protected def throwOnNegative(): Nothing =
+    throw new IllegalArgumentException("Width cannot be negative")
   @inline override def count: Int = width
   def -(that: Width) = Width(this.width - that.width)
-  def +(that: Width) = new Width(this.width + that.width)  // no need to validate
+  def +(that: Width) =
+    new Width(this.width + that.width) // no need to validate
 }
 
 object Width extends (Int => Width) {

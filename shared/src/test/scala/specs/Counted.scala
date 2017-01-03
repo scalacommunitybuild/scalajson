@@ -2,7 +2,6 @@
   * Shamelessly taken from
   * https://github.com/jeffmay/play-json-ops/tree/master/playJsonTests/src/main/scala/play/api/libs/json/scalacheck
   */
-
 package specs
 
 trait Counted extends Any {

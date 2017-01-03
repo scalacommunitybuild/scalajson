@@ -10,18 +10,18 @@ object JBoolean extends TestSuite with UTestScalaCheck {
       "read a Boolean" - readBooleanJBoolean
       "pattern match with JTrue" - readBooleanJBooleanPatternMatchJBooleanTrue
       "pattern match with JTrue and fail with scala.MatchError" -
-      readBooleanJBooleanPatternMatchJBooleanTrueFail
+        readBooleanJBooleanPatternMatchJBooleanTrueFail
       "pattern match with JFalse" - readBooleanJBooleanPatternMatchJFalse
       "pattern match with JFalse and fail with scala.MatchError" -
-      readBooleanJBooleanPatternMatchJFalseFail
+        readBooleanJBooleanPatternMatchJFalseFail
       "pattern match with JBoolean as true" -
-      readBooleanJBooleanPatternMatchJBooleanTrue
+        readBooleanJBooleanPatternMatchJBooleanTrue
       "pattern match with JBoolean as true and fail with scala.MatchError" -
-      readBooleanJBooleanPatternMatchJBooleanTrueFail
+        readBooleanJBooleanPatternMatchJBooleanTrueFail
       "pattern match with JBoolean as false" -
-      readBooleanJBooleanPatternMatchJBooleanFalse
+        readBooleanJBooleanPatternMatchJBooleanFalse
       "pattern match with JBoolean as false and fail with scala.MatchError" -
-      readBooleanJBooleanPatternMatchJBooleanFalseFail
+        readBooleanJBooleanPatternMatchJBooleanFalseFail
       "The JTrue value should read a Boolean as true" - readBooleanJTrue
       "The JFalse value should read a Boolean as false" - readBooleanJFalse
       "convert to jsAny" - toJsAny

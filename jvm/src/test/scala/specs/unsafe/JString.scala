@@ -15,7 +15,7 @@ class JString extends Spec {
     JString(s).value must beEqualTo(s)
   }
 
-  def toStandard = prop {s: String =>
+  def toStandard = prop { s: String =>
     JString(s).toStandard must beEqualTo(scala.json.ast.JString(s))
   }
 }

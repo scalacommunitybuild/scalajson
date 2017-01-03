@@ -2,6 +2,7 @@
 
 [![Join the chat at https://gitter.im/mdedetrich/scala-json-ast](https://badges.gitter.im/mdedetrich/scala-json-ast.svg)](https://gitter.im/mdedetrich/scala-json-ast?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/mdedetrich/scala-json-ast.svg?branch=master)](https://travis-ci.org/mdedetrich/scala-json-ast)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.14.svg)](https://www.scala-js.org)
 
 Two minimal implementations of a [JSON](https://en.wikipedia.org/wiki/JSON) AST, one that is designed for
 typical use and another that is designed for performance.
@@ -14,13 +15,13 @@ accepted by the SLIP process.
 Built for Scala 2.10.x, 2.11.x and 2.12.x
 
 ```sbt
-"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M6"
+"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M7"
 ```
 
 If you are using Scala.js, you need to do
 
 ```sbt
-"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M6"
+"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M7"
 ```
 
 ## Standard AST
@@ -157,3 +158,9 @@ in SBT before committing any changes
 
 ### 1.0.0-M6
 * Fixed inproper `hashCode` for Scala.js in the previous release
+
+### 1.0.0-M7
+* Set up MIMA
+* Added Scala.js badge
+* Updated scalafmt and ran it on codebase
+* Fixed up .gitignore

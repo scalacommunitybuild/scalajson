@@ -2,17 +2,21 @@
   * Shamelessly taken from
   * https://github.com/jeffmay/play-json-ops/tree/master/playJsonTests/src/main/scala/play/api/libs/json/scalacheck
   */
-
 package specs
 
 import scala.language.implicitConversions
 
-class Depth private[Depth](val depth: Int) extends AnyVal with Counted with Proxy {
+class Depth private[Depth] (val depth: Int)
+    extends AnyVal
+    with Counted
+    with Proxy {
   override def self = depth
-  override protected def throwOnNegative(): Nothing = throw new IllegalArgumentException("Depth cannot be negative")
+  override protected def throwOnNegative(): Nothing =
+    throw new IllegalArgumentException("Depth cannot be negative")
   @inline override def count: Int = depth
   def -(that: Depth) = Depth(this.depth - that.depth)
-  def +(that: Depth) = new Depth(this.depth + that.depth)  // no need to validate
+  def +(that: Depth) =
+    new Depth(this.depth + that.depth) // no need to validate
 }
 
 object Depth extends (Int => Depth) {

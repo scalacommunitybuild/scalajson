@@ -7,7 +7,9 @@ val scalaCheckVersion = "1.13.4"
 val specs2Version = "3.8.6"
 
 scalaVersion in ThisBuild := currentScalaVersion
-crossScalaVersions in ThisBuild := Seq(currentScalaVersion, scala210Version, scala212Version)
+crossScalaVersions in ThisBuild := Seq(currentScalaVersion,
+                                       scala210Version,
+                                       scala212Version)
 
 lazy val root = project
   .in(file("."))
@@ -21,7 +23,7 @@ lazy val scalaJsonAST = crossProject
   .in(file("."))
   .settings(
     name := "scala-json-ast",
-    version := "1.0.0-M6",
+    version := "1.0.0-M7",
     organization := "org.mdedetrich",
     scalacOptions ++= Seq(
       "-encoding",
@@ -82,7 +84,8 @@ lazy val scalaJsonAST = crossProject
       "org.specs2" %% "specs2-scalacheck" % specs2Version % Test,
       "org.scalacheck" %% "scalacheck" % scalaCheckVersion % Test
     ),
-    scalacOptions in Test ++= Seq("-Yrangepos")
+    scalacOptions in Test ++= Seq("-Yrangepos"),
+    mimaPreviousArtifacts := Set("org.mdedetrich" %% "scala-json-ast" % "1.0.0-M6")
   )
   .jsSettings(
     // Add JS-specific settings here

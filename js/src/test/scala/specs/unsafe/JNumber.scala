@@ -89,9 +89,12 @@ object JNumber extends TestSuite with UTestScalaCheck {
   def readStringJNumberDetect =
     forAll { s: String =>
       {
-        scala.util.Try {
-          BigDecimal(s)
-        }.toOption.isEmpty
+        scala.util
+          .Try {
+            BigDecimal(s)
+          }
+          .toOption
+          .isEmpty
       } ==> {
         scala.util
           .Try(BigDecimal(scala.json.ast.unsafe.JNumber(s).value))
