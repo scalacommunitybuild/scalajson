@@ -85,7 +85,8 @@ lazy val scalaJsonAST = crossProject
       "org.scalacheck" %% "scalacheck" % scalaCheckVersion % Test
     ),
     scalacOptions in Test ++= Seq("-Yrangepos"),
-    mimaPreviousArtifacts := Set("org.mdedetrich" %% "scala-json-ast" % "1.0.0-M6")
+    mimaPreviousArtifacts := Set(
+      "org.mdedetrich" %% "scala-json-ast" % "1.0.0-M6")
   )
   .jsSettings(
     // Add JS-specific settings here
