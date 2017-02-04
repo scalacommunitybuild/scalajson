@@ -10,6 +10,13 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 matrix:
+  include:
+  - scala: 2.12.1
+    env: RUN_MIMA=true
+  - scala: 2.11.8
+    env: RUN_MIMA=false
+  - scala: 2.10.6
+    env: RUN_MIMA=false
   exclude:
   - scala: 2.12.1
     jdk: openjdk6
@@ -21,7 +28,7 @@ matrix:
 script:
   - sbt clean coverage test coverageReport
   - sbt ++$TRAVIS_SCALA_VERSION "test"
-  - sbt ++$TRAVIS_SCALA_VERSION "+scalaJsonASTJVM/mimaReportBinaryIssues"
+  - if [ "RUN_MIMA" == "true" ]; sbt ++$TRAVIS_SCALA_VERSION "+scalaJsonASTJVM/mimaReportBinaryIssues"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
