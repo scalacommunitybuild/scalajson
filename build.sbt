@@ -70,10 +70,11 @@ lazy val scalaJsonAST = crossProject
         </developer>
       </developers>,
     scalacOptions += {
-      scalaVersion.value match {
-        case v if v.startsWith("2.10.") => "-target:jvm-1.6"
-        case v if v.startsWith("2.11.") => "-target:jvm-1.6"
-        case v if v.startsWith("2.12.") => "-target:jvm-1.8"
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, n)) if n >= 12 =>
+          "-target:jvm-1.8"
+        case _ =>
+          "-target:jvm-1.6"
       }
     }
   )
