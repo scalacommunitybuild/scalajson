@@ -228,16 +228,16 @@ case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
       val elem = value(index)
       result = 31 * result + (if (elem == null) 0
                               else {
-                              result = 31 * result + elem.field.##
-                              elem.value match {
-                                case unsafe.JNull => unsafe.JNull.##
-                                case unsafe.JString(s) => s.##
-                                case unsafe.JBoolean(b) => b.##
-                                case unsafe.JNumber(i) => i.##
-                                case unsafe.JArray(a) => a.##
-                                case unsafe.JObject(obj) => obj.##
-                              }
-                            })
+                                result = 31 * result + elem.field.##
+                                elem.value match {
+                                  case unsafe.JNull => unsafe.JNull.##
+                                  case unsafe.JString(s) => s.##
+                                  case unsafe.JBoolean(b) => b.##
+                                  case unsafe.JNumber(i) => i.##
+                                  case unsafe.JArray(a) => a.##
+                                  case unsafe.JObject(obj) => obj.##
+                                }
+                              })
       index += 1
     }
     result
@@ -301,15 +301,15 @@ case class JArray(value: js.Array[JValue] = js.Array()) extends JValue {
       val elem = value(index)
       result = 31 * result + (if (elem == null) 0
                               else {
-                              elem match {
-                                case unsafe.JNull => unsafe.JNull.##
-                                case unsafe.JString(s) => s.##
-                                case unsafe.JBoolean(b) => b.##
-                                case unsafe.JNumber(i) => i.##
-                                case unsafe.JArray(a) => a.##
-                                case unsafe.JObject(obj) => obj.##
-                              }
-                            })
+                                elem match {
+                                  case unsafe.JNull => unsafe.JNull.##
+                                  case unsafe.JString(s) => s.##
+                                  case unsafe.JBoolean(b) => b.##
+                                  case unsafe.JNumber(i) => i.##
+                                  case unsafe.JArray(a) => a.##
+                                  case unsafe.JObject(obj) => obj.##
+                                }
+                              })
       index += 1
     }
     result

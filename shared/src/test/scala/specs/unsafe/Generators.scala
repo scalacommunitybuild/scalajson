@@ -169,13 +169,15 @@ object Generators {
 
   implicit val shrinkJsArray: Shrink[scala.json.ast.unsafe.JArray] = Shrink {
     arr =>
-      val stream: Stream[scala.json.ast.unsafe.JArray] = shrink(arr.value) map scala.json.ast.unsafe.JArray.apply
+      val stream
+        : Stream[scala.json.ast.unsafe.JArray] = shrink(arr.value) map scala.json.ast.unsafe.JArray.apply
       stream
   }
 
   implicit val shrinkJsObject: Shrink[scala.json.ast.unsafe.JObject] = Shrink {
     obj =>
-      val stream: Stream[scala.json.ast.unsafe.JObject] = shrink(obj.value) map {
+      val stream
+        : Stream[scala.json.ast.unsafe.JObject] = shrink(obj.value) map {
         fields =>
           scala.json.ast.unsafe.JObject(fields)
       }

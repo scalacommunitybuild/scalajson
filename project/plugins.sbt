@@ -1,6 +1,6 @@
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.14")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.15")
 
-addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "0.5.4")
+addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "0.6.8")
 
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.1.13")
 
