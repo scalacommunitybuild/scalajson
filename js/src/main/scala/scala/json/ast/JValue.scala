@@ -12,7 +12,7 @@ sealed abstract class JValue extends Product with Serializable {
   /**
     * Converts a [[JValue]] to a [[unsafe.JValue]]. Note that
     * when converting [[JObject]], this can produce [[unsafe.JObject]] of
-    * unknown ordering, since ordering on a [[scala.collection.Map]] isn't defined.
+    * unknown ordering, since ordering on a `Map` isn't defined.
     * Duplicate keys will also be removed in an undefined manner.
     *
     * @see https://www.ietf.org/rfc/rfc4627.txt
@@ -77,7 +77,7 @@ object JNumber {
 }
 
 /** Represents a JSON number value. If you are passing in a
-  * NaN or Infinity as a [[Double]], [[JNumber]] will
+  * NaN or Infinity as a `Double`, [[JNumber]] will
   * return a [[JNull]].
   *
   * @author Matthew de Detrich

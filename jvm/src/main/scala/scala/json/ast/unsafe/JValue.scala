@@ -64,7 +64,7 @@ object JNumber {
 
 /** Represents a JSON number value.
   *
-  * If you are passing in a NaN or Infinity as a [[Double]], [[unsafe.JNumber]]
+  * If you are passing in a NaN or Infinity as a `Double`, [[unsafe.JNumber]]
   * will contain "NaN" or "Infinity" as a String which means it will cause
   * issues for users when they use the value at runtime. It may be
   * preferable to check values yourself when constructing [[unsafe.JValue]]
