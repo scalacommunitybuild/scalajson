@@ -1,7 +1,5 @@
 package scala.json.ast.unsafe
 
-import java.util
-
 import scala.json.ast
 import scala.json.ast._
 
