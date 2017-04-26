@@ -1,8 +1,10 @@
 name := "scala-json-ast"
 
+import PgpKeys.publishSigned
+
 val currentScalaVersion = "2.11.8"
 val scala210Version = "2.10.6"
-val scala212Version = "2.12.1"
+val scala212Version = "2.12.2"
 val scalaCheckVersion = "1.13.4"
 val specs2Version = "3.8.6"
 
@@ -16,7 +18,8 @@ lazy val root = project
   .aggregate(scalaJsonASTJS, scalaJsonASTJVM)
   .settings(
     publish := {},
-    publishLocal := {}
+    publishLocal := {},
+    publishSigned := {}
   )
 
 lazy val scalaJsonAST = crossProject
