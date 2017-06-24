@@ -10,17 +10,17 @@ class JObject extends Spec {
    equals $testEquals
   """
 
-  def toUnsafe = prop { jObject: scala.json.ast.JObject =>
+  def toUnsafe = prop { jObject: scalajson.ast.JObject =>
     val values = jObject.value.map {
       case (k, v) =>
-        scala.json.ast.unsafe.JField(k, v.toUnsafe)
+        scalajson.ast.unsafe.JField(k, v.toUnsafe)
     }
     Utils.unsafeJValueEquals(jObject.toUnsafe,
-                             scala.json.ast.unsafe.JObject(values.toArray))
+                             scalajson.ast.unsafe.JObject(values.toArray))
   }
 
-  def testEquals = prop { jObject: scala.json.ast.JObject =>
-    scala.json.ast.JObject(jObject.value) must beEqualTo(
-      scala.json.ast.JObject(jObject.value))
+  def testEquals = prop { jObject: scalajson.ast.JObject =>
+    scalajson.ast.JObject(jObject.value) must beEqualTo(
+      scalajson.ast.JObject(jObject.value))
   }
 }

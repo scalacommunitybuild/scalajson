@@ -1,4 +1,4 @@
-name := "scala-json-ast"
+name := "scalajson"
 
 import PgpKeys.publishSigned
 
@@ -35,18 +35,18 @@ val flagsFor12 = Seq(
 
 lazy val root = project
   .in(file("."))
-  .aggregate(scalaJsonASTJS, scalaJsonASTJVM)
+  .aggregate(scalaJsonJS, scalaJsonJVM)
   .settings(
     publish := {},
     publishLocal := {},
     publishSigned := {}
   )
 
-lazy val scalaJsonAST = crossProject
+lazy val scalaJson = crossProject
   .in(file("."))
   .settings(
-    name := "scala-json-ast",
-    version := "1.0.0-M8",
+    name := "scalajson",
+    version := "1.0.0-M1",
     organization := "org.mdedetrich",
     scalacOptions ++= Seq(
       "-encoding",
@@ -71,13 +71,17 @@ lazy val scalaJsonAST = crossProject
     },
     publishArtifact in Test := false,
     pomIncludeRepository := (_ => false),
-    homepage := Some(url("https://github.com/mdedetrich/scala-json-ast")),
-    scmInfo := Some(
-      ScmInfo(url("https://github.com/mdedetrich/scala-json-ast"), "git@github.com:mdedetrich/scala-json-ast.git")),
+    homepage := Some(url("https://github.com/mdedetrich/scalajson")),
+    scmInfo := Some(ScmInfo(url("https://github.com/mdedetrich/scalajson"),
+                            "git@github.com:mdedetrich/scalajson.git")),
     developers := List(
-      Developer("mdedetrich", "Matthew de Detrich", "mdedetrich@gmail.com", url("https://github.com/mdedetrich"))
+      Developer("mdedetrich",
+                "Matthew de Detrich",
+                "mdedetrich@gmail.com",
+                url("https://github.com/mdedetrich"))
     ),
-    licenses += ("BSD 3 Clause", url("https://opensource.org/licenses/BSD-3-Clause")),
+    licenses += ("BSD 3 Clause", url(
+      "https://opensource.org/licenses/BSD-3-Clause")),
     scalacOptions += {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n >= 12 =>
@@ -105,8 +109,7 @@ lazy val scalaJsonAST = crossProject
       }
     },
     scalacOptions in Test ++= Seq("-Yrangepos"),
-    mimaPreviousArtifacts := Set(
-      "org.mdedetrich" %% "scala-json-ast" % "1.0.0-M7")
+    mimaPreviousArtifacts := Set("org.mdedetrich" %% "scalajson" % "1.0.0-M1")
   )
   .jsSettings(
     // Add JS-specific settings here
@@ -125,10 +128,10 @@ lazy val benchmark = crossProject
       "com.storm-enroute" %% "scalameter" % "0.7" % Test
     )
   )
-  .dependsOn(scalaJsonAST)
+  .dependsOn(scalaJson)
 
-lazy val scalaJsonASTJVMTest = benchmark.jvm
-lazy val scalaJsonASTJSTest = benchmark.js
+lazy val scalaJsonJVMTest = benchmark.jvm
+lazy val scalaJsonJSTest = benchmark.js
 
-lazy val scalaJsonASTJVM = scalaJsonAST.jvm
-lazy val scalaJsonASTJS = scalaJsonAST.js
+lazy val scalaJsonJVM = scalaJson.jvm
+lazy val scalaJsonJS = scalaJson.js

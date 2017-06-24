@@ -16,16 +16,16 @@ object JString extends TestSuite with UTestScalaCheck {
 
   def readStringJString =
     forAll { s: String =>
-      scala.json.ast.unsafe.JString(s).value == s
+      scalajson.ast.unsafe.JString(s).value == s
     }.checkUTest()
 
   def toJsAny =
     forAll { s: String =>
-      scala.json.ast.unsafe.JString(s).toJsAny == s
+      scalajson.ast.unsafe.JString(s).toJsAny == s
     }.checkUTest()
 
   def toStandard =
     forAll { s: String =>
-      scala.json.ast.unsafe.JString(s).toStandard == scala.json.ast.JString(s)
+      scalajson.ast.unsafe.JString(s).toStandard == scalajson.ast.JString(s)
     }.checkUTest()
 }

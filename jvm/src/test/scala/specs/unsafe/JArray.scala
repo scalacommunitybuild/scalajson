@@ -1,7 +1,7 @@
 package specs.unsafe
 
 import specs.Spec
-import scala.json.ast.unsafe._
+import scalajson.ast.unsafe._
 import Generators._
 
 class JArray extends Spec {
@@ -11,8 +11,8 @@ class JArray extends Spec {
     convert toStandard $toStandard
   """
 
-  def toStandard = prop { jArray: scala.json.ast.unsafe.JArray =>
+  def toStandard = prop { jArray: scalajson.ast.unsafe.JArray =>
     val values = jArray.value.map(_.toStandard).to[Vector]
-    jArray.toStandard == scala.json.ast.JArray(values)
+    jArray.toStandard == scalajson.ast.JArray(values)
   }
 }

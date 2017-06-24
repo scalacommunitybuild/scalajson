@@ -2,7 +2,7 @@ package specs.unsafe
 
 import org.scalacheck.Prop._
 
-import scala.json.ast._
+import scalajson.ast._
 import Generators._
 import specs.{UTestScalaCheck, Utils}
 import utest._
@@ -19,8 +19,8 @@ object JArray extends TestSuite with UTestScalaCheck {
   }
 
   def toStandard =
-    forAll { jArray: scala.json.ast.unsafe.JArray =>
+    forAll { jArray: scalajson.ast.unsafe.JArray =>
       val values = jArray.value.map(_.toStandard).to[Vector]
-      jArray.toStandard == scala.json.ast.JArray(values)
+      jArray.toStandard == scalajson.ast.JArray(values)
     }.checkUTest()
 }

@@ -1,7 +1,7 @@
 package specs.unsafe
 
 import specs.Spec
-import scala.json.ast.unsafe._
+import scalajson.ast.unsafe._
 import Generators._
 
 class JObject extends Spec {
@@ -11,11 +11,11 @@ class JObject extends Spec {
     convert toStandard $toStandard
   """
 
-  def toStandard = prop { jObject: scala.json.ast.unsafe.JObject =>
+  def toStandard = prop { jObject: scalajson.ast.unsafe.JObject =>
     val values = jObject.value.map { x =>
       (x.field, x.value.toStandard)
     }.toMap
-    jObject.toStandard == scala.json.ast.JObject(values)
+    jObject.toStandard == scalajson.ast.JObject(values)
   }
 
 }

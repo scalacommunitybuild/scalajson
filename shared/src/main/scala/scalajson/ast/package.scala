@@ -1,4 +1,4 @@
-package scala.json
+package scalajson
 
 package object ast {
 

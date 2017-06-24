@@ -1,4 +1,4 @@
-package scala.json.ast
+package scalajson.ast
 
 import specs.Spec
 

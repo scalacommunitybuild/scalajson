@@ -1,6 +1,6 @@
 package specs
 
-import scala.json.ast._
+import scalajson.ast._
 
 class JNumber extends Spec {
   def is =
@@ -143,11 +143,11 @@ class JNumber extends Spec {
   }
 
   def toUnsafe = prop { b: BigDecimal =>
-    scala.json.ast.JNumber(b).toUnsafe must beEqualTo(
-      scala.json.ast.unsafe.JNumber(b))
+    scalajson.ast.JNumber(b).toUnsafe must beEqualTo(
+      scalajson.ast.unsafe.JNumber(b))
   }
 
   def testEquals = prop { b: BigDecimal =>
-    scala.json.ast.JNumber(b) must beEqualTo(scala.json.ast.JNumber(b))
+    scalajson.ast.JNumber(b) must beEqualTo(scalajson.ast.JNumber(b))
   }
 }

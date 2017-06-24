@@ -1,6 +1,6 @@
 package specs
 
-import scala.json.ast.JString
+import scalajson.ast.JString
 
 class JString extends Spec {
   def is =
@@ -16,10 +16,10 @@ class JString extends Spec {
   }
 
   def toUnsafe = prop { b: Boolean =>
-    scala.json.ast.JBoolean(b).toUnsafe == scala.json.ast.unsafe.JBoolean(b)
+    scalajson.ast.JBoolean(b).toUnsafe == scalajson.ast.unsafe.JBoolean(b)
   }
 
   def testEquals = prop { s: String =>
-    scala.json.ast.JString(s) == scala.json.ast.JString(s)
+    scalajson.ast.JString(s) == scalajson.ast.JString(s)
   }
 }

@@ -1,4 +1,4 @@
-package scala.json.ast.unsafe
+package scalajson.ast.unsafe
 
 abstract class JNumberConverter[T] {
   def apply(s: String): T

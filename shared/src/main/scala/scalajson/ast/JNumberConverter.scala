@@ -1,4 +1,4 @@
-package scala.json.ast
+package scalajson.ast
 
 abstract class JNumberConverter[T] {
   def apply(string: String): T

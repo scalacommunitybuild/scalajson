@@ -1,7 +1,9 @@
-package scala.json.ast.unsafe
+package scalajson.ast.unsafe
 
-import scala.json.ast
-import scala.json.ast._
+import scalajson.ast
+import scalajson.ast._
+import scala.scalajs.js
+import scala.scalajs.js.annotation.JSExport
 
 /** Represents a JSON Value which may be invalid. Internally uses mutable
   * collections when its desirable to do so, for performance and other reasons
@@ -15,13 +17,21 @@ sealed abstract class JValue extends Serializable with Product {
   /**
     * Converts a [[unsafe.JValue]] to a [[ast.JValue]]. Note that
     * when converting [[unsafe.JNumber]], this can throw runtime error if the underlying
-    * string representation is not a correct number. Also when converting a [[unsafe.JObject]]
+    * string representation is not a correct number. Also when converting a [[ast.JObject]]
     * to a [[ast.JObject]], its possible to lose data if you have duplicate keys.
     *
     * @see https://www.ietf.org/rfc/rfc4627.txt
     * @return
     */
   def toStandard: ast.JValue
+
+  /**
+    * Converts a [[unsafe.JValue]] to a Javascript object/value that can be used within
+    * Javascript
+    *
+    * @return
+    */
+  def toJsAny: js.Any
 }
 
 /** Represents a JSON null value
@@ -30,6 +40,8 @@ sealed abstract class JValue extends Serializable with Product {
   */
 case object JNull extends JValue {
   override def toStandard: ast.JValue = ast.JNull
+
+  override def toJsAny: js.Any = null
 }
 
 /** Represents a JSON string value
@@ -38,10 +50,12 @@ case object JNull extends JValue {
   */
 case class JString(value: String) extends JValue {
   override def toStandard: ast.JValue = ast.JString(value)
+
+  override def toJsAny: js.Any = value
 }
 
 object JNumber {
-  def apply(value: Int): JNumber = JNumber(value.toInt.toString)
+  def apply(value: Int): JNumber = JNumber(value.toString)
 
   def apply(value: Short): JNumber = JNumber(value.toString)
 
@@ -76,6 +90,16 @@ case class JNumber(value: String) extends JValue {
     jNumberConverter(value)
 
   override def toStandard: ast.JValue = ast.JNumber(value)
+
+  def this(value: Double) = {
+    this(value.toString)
+  }
+
+  override def toJsAny: js.Any = value.toDouble match {
+    case n if n.isNaN => null
+    case n if n.isInfinity => null
+    case n => n
+  }
 }
 
 /** Represents a JSON Boolean value, which can either be a
@@ -86,6 +110,8 @@ case class JNumber(value: String) extends JValue {
 // Implements named extractors so we can avoid boxing
 sealed abstract class JBoolean extends JValue {
   def get: Boolean
+
+  override def toJsAny: js.Any = get
 }
 
 object JBoolean {
@@ -117,8 +143,11 @@ case object JFalse extends JBoolean {
 case class JField(field: String, value: JValue)
 
 object JObject {
+  import js.JSConverters._
   def apply(value: JField, values: JField*): JObject =
-    JObject(Array(value) ++ values)
+    JObject(js.Array(value) ++ values.toJSArray)
+
+  def apply(value: Array[JField]): JObject = JObject(value.toJSArray)
 }
 
 /** Represents a JSON Object value. Duplicate keys
@@ -126,20 +155,50 @@ object JObject {
   * @author Matthew de Detrich
   */
 // JObject is internally represented as a mutable Array, to improve sequential performance
-case class JObject(value: Array[JField] = Array.empty) extends JValue {
+case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
+  def this(value: js.Dictionary[JValue]) = {
+    this({
+      val array: js.Array[JField] = new js.Array()
+      for (key <- value.keys) {
+        array.push(JField(key, value(key)))
+      }
+      array
+    })
+  }
+
   override def toStandard: ast.JValue = {
+    // Javascript array.length across all major browsers has near constant cost, so we
+    // use this to build the array http://jsperf.com/length-comparisons
     val length = value.length
+
     if (length == 0) {
-      ast.JObject(Map[String, ast.JValue]())
+      ast.JObject(Map.newBuilder[String, ast.JValue].result())
     } else {
-      var index = 0
       val b = Map.newBuilder[String, ast.JValue]
+      var index = 0
       while (index < length) {
         val v = value(index)
         b += ((v.field, v.value.toStandard))
         index += 1
       }
       ast.JObject(b.result())
+    }
+  }
+
+  override def toJsAny: js.Any = {
+    val length = value.length
+
+    if (length == 0) {
+      js.Dictionary[js.Any]().asInstanceOf[js.Object]
+    } else {
+      val dict = js.Dictionary[js.Any]()
+      var index = 0
+      while (index < length) {
+        val v = value(index)
+        dict(v.field) = v.value.toJsAny
+        index += 1
+      }
+      dict.asInstanceOf[js.Object]
     }
   }
 
@@ -160,27 +219,52 @@ case class JObject(value: Array[JField] = Array.empty) extends JValue {
     }
   }
 
-  override def hashCode: Int =
-    java.util.Arrays.deepHashCode(value.asInstanceOf[Array[AnyRef]])
+  override def hashCode: Int = {
+    var index = 0
+    var result = 1
+
+    while (index < value.length) {
+      val elem = value(index)
+      result = 31 * result + (if (elem == null) 0
+                              else {
+                                result = 31 * result + elem.field.##
+                                elem.value match {
+                                  case unsafe.JNull => unsafe.JNull.##
+                                  case unsafe.JString(s) => s.##
+                                  case unsafe.JBoolean(b) => b.##
+                                  case unsafe.JNumber(i) => i.##
+                                  case unsafe.JArray(a) => a.##
+                                  case unsafe.JObject(obj) => obj.##
+                                }
+                              })
+      index += 1
+    }
+    result
+  }
 }
 
 object JArray {
+  import js.JSConverters._
   def apply(value: JValue, values: JValue*): JArray =
-    JArray(Array(value) ++ values.to[Array])
+    JArray(js.Array(value) ++ values.toJSArray)
+
+  def apply(value: Array[JValue]): JArray = JArray(value.toJSArray)
 }
 
 /** Represents a JSON Array value
   * @author Matthew de Detrich
   */
-// JArray is internally represented as a mutable Array, to improve sequential performance
-case class JArray(value: Array[JValue] = Array.empty) extends JValue {
+// JArray is internally represented as a mutable js.Array, to improve sequential performance
+case class JArray(value: js.Array[JValue] = js.Array()) extends JValue {
   override def toStandard: ast.JValue = {
+    // Javascript array.length across all major browsers has near constant cost, so we
+    // use this to build the array http://jsperf.com/length-comparisons
     val length = value.length
     if (length == 0) {
-      ast.JArray(Vector[ast.JValue]())
+      ast.JArray(Vector.newBuilder[ast.JValue].result())
     } else {
-      var index = 0
       val b = Vector.newBuilder[ast.JValue]
+      var index = 0
       while (index < length) {
         b += value(index).toStandard
         index += 1
@@ -188,6 +272,8 @@ case class JArray(value: Array[JValue] = Array.empty) extends JValue {
       ast.JArray(b.result())
     }
   }
+
+  override def toJsAny: js.Any = value
 
   override def equals(obj: scala.Any): Boolean = {
     obj match {
@@ -206,6 +292,25 @@ case class JArray(value: Array[JValue] = Array.empty) extends JValue {
     }
   }
 
-  override def hashCode: Int =
-    java.util.Arrays.deepHashCode(value.asInstanceOf[Array[AnyRef]])
+  override def hashCode: Int = {
+    var index = 0
+    var result = 1
+
+    while (index < value.length) {
+      val elem = value(index)
+      result = 31 * result + (if (elem == null) 0
+                              else {
+                                elem match {
+                                  case unsafe.JNull => unsafe.JNull.##
+                                  case unsafe.JString(s) => s.##
+                                  case unsafe.JBoolean(b) => b.##
+                                  case unsafe.JNumber(i) => i.##
+                                  case unsafe.JArray(a) => a.##
+                                  case unsafe.JObject(obj) => obj.##
+                                }
+                              })
+      index += 1
+    }
+    result
+  }
 }

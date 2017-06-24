@@ -1,86 +1,83 @@
-# Scala JSON AST
+# ScalaJSON
 
-[![Join the chat at https://gitter.im/mdedetrich/scala-json-ast](https://badges.gitter.im/mdedetrich/scala-json-ast.svg)](https://gitter.im/mdedetrich/scala-json-ast?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![codecov.io](http://codecov.io/github/mdedetrich/scala-json-ast/coverage.svg?branch=master)](http://codecov.io/github/mdedetrich/scala-json-ast?branch=master)
-[![Build Status](https://travis-ci.org/mdedetrich/scala-json-ast.svg?branch=master)](https://travis-ci.org/mdedetrich/scala-json-ast)
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.14.svg)](https://www.scala-js.org)
+[![Join the chat at https://gitter.im/mdedetrich/scalajson](https://badges.gitter.im/mdedetrich/scalajson.svg)](https://gitter.im/mdedetrich/scalajson?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![codecov.io](http://codecov.io/github/mdedetrich/scalajson/coverage.svg?branch=master)](http://codecov.io/github/mdedetrich/scalajson?branch=master)
+[![Build Status](https://travis-ci.org/mdedetrich/scalajson.svg?branch=master)](https://travis-ci.org/mdedetrich/scalajson)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org)
 
-Two minimal implementations of a [JSON](https://en.wikipedia.org/wiki/JSON) AST, one that is designed for
-typical use and another that is designed for performance.
+ScalaJSON library, currently provides two minimal implementations of [JSON](https://en.wikipedia.org/wiki/JSON) AST, one that is designed for
+typical use and another that is designed for performance/corner cases.
 
 ## Usage
-
-The artifact is currently published under my own personal sonatype. This will change once it gets
-accepted by the SLIP process.
 
 Built for Scala 2.10.x, 2.11.x and 2.12.x
 
 ```sbt
-"org.mdedetrich" %% "scala-json-ast" % "1.0.0-M8"
+"org.mdedetrich" %% "scalajson" % "1.0.0-M1"
 ```
 
 If you are using Scala.js, you need to do
 
 ```sbt
-"org.mdedetrich" %%% "scala-json-ast" % "1.0.0-M8"
+"org.mdedetrich" %%% "scalajson" % "1.0.0-M1"
 ```
 
 ## Standard AST
-Implementation is in `scala.json.ast.JValue`
+Implementation is in `scalajson.ast.JValue`
 
 ### Goals
 - Fully immutable (all underlying collections/types used are immutable)
-- `constant`/`effective constant` lookup time for `scala.json.ast.JArray`/`scala.json.ast.JObject`
+- `constant`/`effective constant` lookup time for `scalajson.ast.JArray`/`scalajson.ast.JObject`
 - Adherence to the typical use for the [JSON](https://en.wikipedia.org/wiki/JSON) standard.
-    - Number representation for `scala.json.ast.JNumber` is a `String` which checks if its a valid JSON representation
+    - Number representation for `scalajson.ast.JNumber` is a `String` which checks if its a valid JSON representation
       of a number (http://stackoverflow.com/a/13502497/1519631)
-      - Equals will properly detect if two numbers are equal, i.e. `scala.json.ast.JNumber("34.00") == scala.json.ast.JNumber("34")`
+      - Equals will properly detect if two numbers are equal, i.e. `scalajson.ast.JNumber("34.00") == scalajson.ast.JNumber("34")`
       - Hashcode has been designed to provide consistent hash for numbers of unlimited precision.
-    - `scala.json.ast.JObject` is an actual `Map[String,JValue]`. This means that it doesn't handle duplicate keys for a `scala.json.ast.JObject`,
+    - `scalajson.ast.JObject` is an actual `Map[String,JValue]`. This means that it doesn't handle duplicate keys for a `scalajson.ast.JObject`,
     nor does it handle key ordering.
-    - `scala.json.ast.JArray` is an `Vector`.
-- Library does not allow invalid JSON in the representation and hence we can guarantee that a `scala.json.ast.JValue` will 
+    - `scalajson.ast.JArray` is an `Vector`.
+- Library does not allow invalid JSON in the representation and hence we can guarantee that a `scalajson.ast.JValue` will 
 always contain a valid structure that can be serialized/rendered into [JSON](https://en.wikipedia.org/wiki/JSON). 
-  - Note that you can lose precision when using `scala.json.ast.JNumber` in `Scala.js` (see `Scala.js` 
+  - Note that you can lose precision when using `scalajson.ast.JNumber` in `Scala.js` (see `Scala.js` 
 section for more info).
-- Due to the above, has properly implemented deep equality for all types of `scala.json.ast.JValue`
+- Due to the above, has properly implemented deep equality for all types of `scalajson.ast.JValue`
 
 ## Unsafe AST
-Implementation is in `scala.json.unsafe.JValue`
+Implementation is in `scalajson.unsafe.JValue`
 
 ### Goals
 - Uses the best performing datastructure's for high performance/low memory usage in construction of a `unsafe.JValue`
-    - `scala.json.ast.unsafe.JArray` stored as an `Array` for JVM and `js.Array` for Scala.js
-    - `scala.json.ast.unsafe.JObject` stored as an `Array` for JVM and `js.Array` for Scala.js
-    - `scala.json.ast.unsafe.JNumber` stored as a `String`
+    - `scalajson.ast.unsafe.JArray` stored as an `Array` for JVM and `js.Array` for Scala.js
+    - `scalajson.ast.unsafe.JObject` stored as an `Array` for JVM and `js.Array` for Scala.js
+    - `scalajson.ast.unsafe.JNumber` stored as a `String`
 - Doesn't use `Scala`'s `stdlib` collection's library
 - Defer all runtime errors. We don't throw errors if you happen to provide Infinity/NaN or other invalid data.
-- Allow duplicate and ordered keys for a `scala.json.ast.unsafe.JObject`.
-- Allow any length/precision of numbers for `scala.json.ast.unsafe.JNumber` since its represented as a `String`
+- Allow duplicate and ordered keys for a `scalajson.ast.unsafe.JObject`.
+- Allow any length/precision of numbers for `scalajson.ast.unsafe.JNumber` since its represented as a `String`
   - Equals/hashcode only checks for `String` equality, not number equality.
-    - Means that `scala.json.ast.unsafe.JNumber("34.00")` is not equal to `scala.json.ast.unsafe.JNumber("34")`
-- This means that `scala.json.ast.unsafe.JValue` can represent everything that can
+    - Means that `scalajson.ast.unsafe.JNumber("34.00")` is not equal to `scalajson.ast.unsafe.JNumber("34")`
+- This means that `scalajson.ast.unsafe.JValue` can represent everything that can
 can be considered valid under the official [JSON spec](https://www.ietf.org/rfc/rfc4627.txt), even if its not considered sane (i.e.
-duplicate keys for a `scala.json.ast.unsafe.JObject`).
+duplicate keys for a `scalajson.ast.unsafe.JObject`).
   - Also means it can hold invalid data, due to not doing runtime checks
-- Is referentially transparent in regards to `String` -> `scala.json.ast.unsafe.JValue` -> `String` since `scala.json.ast.unsafe.JObject` 
+- Is referentially transparent in regards to `String` -> `scalajson.ast.unsafe.JValue` -> `String` since `scalajson.ast.unsafe.JObject` 
   preserves ordering/duplicate keys
 - Implements structural equality for both `hashCode` and `equals`. If you need reference equality
   you can use `eq` and if you need reference `hashCode` you can use `.value.hashCode`. Also note that for
   deep comparison is used both `hashCode` and `equals`.
 
-## Conversion between scala.json.JValue and scala.json.ast.unsafe.JValue
+## Conversion between scalajson.JValue and scalajson.ast.unsafe.JValue
 
-Any `scala.json.ast.JValue` implements a conversion to `scala.json.ast.unsafe.JValue` with a `toUnsafe` method and vice versa with a
+Any `scalajson.ast.JValue` implements a conversion to `scalajson.ast.unsafe.JValue` with a `toUnsafe` method and vice versa with a
 `toStandard` method. These conversion methods have been written to be as fast as possible.
 
-There are some peculiarities when converting between the two AST's. When converting a `scala.json.ast.unsafe.JNumber` to a 
-`scala.json.ast.JNumber`, it is possible for this to fail at runtime (since the internal representation of 
-`scala.json.ast.unsafe.JNumber` is a `String` and it doesn't have a runtime check). It is up to the caller on how to handle this error (and when), 
+There are some peculiarities when converting between the two AST's. When converting a `scalajson.ast.unsafe.JNumber` to a 
+`scalajson.ast.JNumber`, it is possible for this to fail at runtime (since the internal representation of 
+`scalajson.ast.unsafe.JNumber` is a `String` and it doesn't have a runtime check). It is up to the caller on how to handle this error (and when), 
 a runtime check is deliberately avoided on our end for performance reasons.
 
-Converting from a `scala.json.ast.JObject` to a `scala.json.ast.unsafe.JObject` will produce 
-an `scala.json.ast.unsafe.JObject` with an undefined ordering for its internal `Array`/`js.Array` representation.
+Converting from a `scalajson.ast.JObject` to a `scalajson.ast.unsafe.JObject` will produce 
+an `scalajson.ast.unsafe.JObject` with an undefined ordering for its internal `Array`/`js.Array` representation.
 This is because a `Map` has no predefined ordering. If you wish to provide ordering, you will either need
 to write your own custom conversion to handle this case. Duplicate keys will also be removed for the same reason
 in an undefined manner.
@@ -90,13 +87,13 @@ disregards ordering for equality, however `Array`/`js.Array` equality takes orde
 
 ## .to[T] Conversion
 
-Both `scala.json.ast.JNumber` and `scala.json.ast.unsafe.JNumber` provide conversions using a `.to[T]` method. These methods 
+Both `scalajson.ast.JNumber` and `scalajson.ast.unsafe.JNumber` provide conversions using a `.to[T]` method. These methods 
 provide a default fast implementations for converting between different number types (as well
 as stuff like `Char[Array]`). You can provide your own implementations of a `.to[T]` 
-conversion by creating an `implicit val` that implements a `scala.json.ast.JNumberConverter`, i.e.
+conversion by creating an `implicit val` that implements a `scalajson.ast.JNumberConverter`, i.e.
 
 ```scala
-import scala.json.ast.JNumberConverter
+import scalajson.ast.JNumberConverter
 
 
 implicit val myNumberConverter = new JNumberConverter[SomeNumberType]{
@@ -107,25 +104,25 @@ implicit val myNumberConverter = new JNumberConverter[SomeNumberType]{
 Then you just need to provide this implementation in scope for usage
 
 ## Scala.js
-Scala json ast also provides support for [Scala.js](https://github.com/scala-js/scala-js).
+ScalaJSON also provides support for [Scala.js](https://github.com/scala-js/scala-js).
 The usage of Scala.js mirrors the usage of Scala on the JVM however Scala.js also implements
 a `.toJsAny` method which allows you to convert any
-`scala.json.ast.JValue`/`scala.json.ast.unsafe.JValue` to a Javascript value in `Scala.js`.
+`scalajson.ast.JValue`/`scalajson.ast.unsafe.JValue` to a Javascript value in `Scala.js`.
 
-Note that, since a `scala.json.ast.JNumber`/`scala.json.ast.unsafe.JNumber` is unlimited
+Note that, since a `scalajson.ast.JNumber`/`scalajson.ast.unsafe.JNumber` is unlimited
 precision (represented internally as a `String`), calls to `.toJsAny` can lose precision on the
 underlying number (numbers in Javascript are represented as double precision floating point number).
-You can use the `.value` method on a `scala.json.ast.JNumber`/`scala.json.ast.unsafe.JNumber` to
+You can use the `.value` method on a `scalajson.ast.JNumber`/`scalajson.ast.unsafe.JNumber` to
 get the raw string value as a solution to this problem.
 
 ## jNumberRegex
-`scala.json.JNumber` uses `jNumberRegex` to validate whether a number is a valid
+`scalajson.JNumber` uses `jNumberRegex` to validate whether a number is a valid
 JSON number. One can use `jNumberRegex` explicitly if you want to use the validation that
-is used by `scala.json.JNumber` (for example, you may want to validate proper numbers
-before creating a `scala.json.unsafe.JNumber`).
+is used by `scalajson.JNumber` (for example, you may want to validate proper numbers
+before creating a `scalajson.unsafe.JNumber`).
 
 ```scala
-import scala.json.jNumberRegex
+import scalajson.jNumberRegex
 
 "3535353".matches(jNumberRegex) // true
 ```
@@ -134,39 +131,3 @@ import scala.json.jNumberRegex
 
 The project is formatted using [scalafmt](https://github.com/olafurpg/scalafmt). Please run `scalafmt`
 in SBT before committing any changes
-
-## Changelog
-
-### 1.0.0-M1
-* First release of draft for scala-json-ast
-
-### 1.0.0-M2
-* Renamed bigDecimalConverter to jNumberConverter
-* Removed `@JSExport` annotation, it was blowing up the size of Scala.js projects that use scala-json-ast
-* Fixed missing import in some sections of the README, clarified some other sections
-* Added in scalafmt as a code formatter
-
-### 1.0.0-M3
-* Performance improvements
-
-### 1.0.0-M4
-* Moved benchmarks into their own sub project
-* Build ready for Scala 2.12
-
-### 1.0.0-M5
-* `scala.json.ast.unsafe.JArray` and `scala.json.ast.unsafe.JObject` now implement structural `equality` and `hashCode`
-* Bumped Scala 2.12 version
-
-### 1.0.0-M6
-* Fixed inproper `hashCode` for Scala.js in the previous release
-
-### 1.0.0-M7
-* Set up MIMA
-* Added Scala.js badge
-* Updated scalafmt and ran it on codebase
-* Fixed up .gitignore
-
-### 1.0.0-M8
-* Updated Scalajs version
-* Updated Scalafmt version
-* Ran Scalafmt

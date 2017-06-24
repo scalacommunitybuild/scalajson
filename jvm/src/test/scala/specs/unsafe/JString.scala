@@ -1,7 +1,7 @@
 package specs.unsafe
 
 import specs.Spec
-import scala.json.ast.unsafe._
+import scalajson.ast.unsafe._
 
 class JString extends Spec {
   def is =
@@ -16,6 +16,6 @@ class JString extends Spec {
   }
 
   def toStandard = prop { s: String =>
-    JString(s).toStandard must beEqualTo(scala.json.ast.JString(s))
+    JString(s).toStandard must beEqualTo(scalajson.ast.JString(s))
   }
 }

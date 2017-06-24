@@ -1,4 +1,4 @@
-package scala.json.ast
+package scalajson.ast
 
 import benchmark.Generators
 import org.scalameter.Bench

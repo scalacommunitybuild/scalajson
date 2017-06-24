@@ -1,6 +1,6 @@
 package specs
 
-import scala.json.ast.{JBoolean, JFalse, JTrue}
+import scalajson.ast.{JBoolean, JFalse, JTrue}
 
 class JBoolean extends Spec {
   def is =
@@ -115,11 +115,11 @@ class JBoolean extends Spec {
   }
 
   def testEquals = prop { b: Boolean =>
-    scala.json.ast.JBoolean(b) must beEqualTo(scala.json.ast.JBoolean(b))
+    scalajson.ast.JBoolean(b) must beEqualTo(scalajson.ast.JBoolean(b))
   }
 
   def toUnsafe = prop { b: Boolean =>
-    scala.json.ast.JBoolean(b).toUnsafe must beEqualTo(
-      scala.json.ast.unsafe.JBoolean(b))
+    scalajson.ast.JBoolean(b).toUnsafe must beEqualTo(
+      scalajson.ast.unsafe.JBoolean(b))
   }
 }
