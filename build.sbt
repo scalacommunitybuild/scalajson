@@ -2,11 +2,11 @@ name := "scala-json-ast"
 
 import PgpKeys.publishSigned
 
-val currentScalaVersion = "2.11.8"
+val currentScalaVersion = "2.11.11"
 val scala210Version = "2.10.6"
 val scala212Version = "2.12.2"
 val scalaCheckVersion = "1.13.4"
-val specs2Version = "3.8.6"
+val specs2Version = "3.9.1"
 
 scalaVersion in ThisBuild := currentScalaVersion
 crossScalaVersions in ThisBuild := Seq(currentScalaVersion,
@@ -50,28 +50,14 @@ lazy val scalaJsonAST = crossProject
         Some("releases" at nexus + "service/local/staging/deploy/maven2")
     },
     publishArtifact in Test := false,
-    pomIncludeRepository := { _ =>
-      false
-    },
-    pomExtra := <url>https://github.com/mdedetrich/scala-json-ast</url>
-      <licenses>
-        <license>
-          <name>BSD 3-Clause</name>
-          <url>https://opensource.org/licenses/BSD-3-Clause</url>
-          <distribution>repo</distribution>
-        </license>
-      </licenses>
-      <scm>
-        <url>git@github.com:mdedetrich/scala-json-ast.git</url>
-        <connection>scm:git:git@github.com:mdedetrich/scala-json-ast.git</connection>
-      </scm>
-      <developers>
-        <developer>
-          <id>mdedetrich</id>
-          <name>Matthew de Detrich</name>
-          <email>mdedetrich@gmail.com</email>
-        </developer>
-      </developers>,
+    pomIncludeRepository := (_ => false),
+    homepage := Some(url("https://github.com/mdedetrich/scala-json-ast")),
+    scmInfo := Some(
+      ScmInfo(url("https://github.com/mdedetrich/scala-json-ast"), "git@github.com:mdedetrich/scala-json-ast.git")),
+    developers := List(
+      Developer("mdedetrich", "Matthew de Detrich", "mdedetrich@gmail.com", url("https://github.com/mdedetrich"))
+    ),
+    licenses += ("BSD 3 Clause", url("https://opensource.org/licenses/BSD-3-Clause")),
     scalacOptions += {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n >= 12 =>
