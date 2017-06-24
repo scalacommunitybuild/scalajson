@@ -13,6 +13,26 @@ crossScalaVersions in ThisBuild := Seq(currentScalaVersion,
                                        scala210Version,
                                        scala212Version)
 
+val flagsFor10 = Seq(
+  "-Xlint",
+  "-Yclosure-elim",
+  "-Ydead-code"
+)
+
+val flagsFor11 = Seq(
+  "-Xlint:_",
+  "-Yconst-opt",
+  "-Ywarn-infer-any",
+  "-Yclosure-elim",
+  "-Ydead-code"
+)
+
+val flagsFor12 = Seq(
+  "-Xlint:_",
+  "-Ywarn-infer-any",
+  "-opt:l:project"
+)
+
 lazy val root = project
   .in(file("."))
   .aggregate(scalaJsonASTJS, scalaJsonASTJVM)
@@ -74,9 +94,19 @@ lazy val scalaJsonAST = crossProject
       "org.specs2" %% "specs2-scalacheck" % specs2Version % Test,
       "org.scalacheck" %% "scalacheck" % scalaCheckVersion % Test
     ),
+    scalacOptions ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, n)) if n >= 12 =>
+          flagsFor12
+        case Some((2, n)) if n == 11 =>
+          flagsFor11
+        case Some((2, n)) if n == 10 =>
+          flagsFor10
+      }
+    },
     scalacOptions in Test ++= Seq("-Yrangepos"),
     mimaPreviousArtifacts := Set(
-      "org.mdedetrich" %% "scala-json-ast" % "1.0.0-M6")
+      "org.mdedetrich" %% "scala-json-ast" % "1.0.0-M7")
   )
   .jsSettings(
     // Add JS-specific settings here
