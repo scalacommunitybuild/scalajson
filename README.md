@@ -13,13 +13,13 @@ typical use and another that is designed for performance/corner cases.
 Built for Scala 2.10.x, 2.11.x and 2.12.x
 
 ```sbt
-"org.mdedetrich" %% "scalajson" % "1.0.0-M1"
+"platform.scala-lang.org" %% "scalajson" % "1.0.0-M1"
 ```
 
 If you are using Scala.js, you need to do
 
 ```sbt
-"org.mdedetrich" %%% "scalajson" % "1.0.0-M1"
+"platform.scala-lang.org" %%% "scalajson" % "1.0.0-M1"
 ```
 
 ## Standard AST
@@ -126,6 +126,12 @@ import scalajson.jNumberRegex
 
 "3535353".matches(jNumberRegex) // true
 ```
+
+Code of Conduct
+===============
+ScalaJSON uses the [Scala Code of Conduct](https://www.scala-lang.org/conduct.html)
+for all communication and discussion. This includes both GitHub, Gitter chat and
+other more direct lines of communication such as email.
 
 ## Code formatting
 

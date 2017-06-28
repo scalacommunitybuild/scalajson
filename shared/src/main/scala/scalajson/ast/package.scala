@@ -10,10 +10,7 @@ package object ast {
     """-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?"""
 
   /**
-    * Finds the hashcode for a numeric JSON string. Will check
-    * if the number is large enough to fit into a [[Double]] for
-    * performance reasons, else it will calculate hashcode manually
-    * by digits
+    * Finds the hashcode for a numeric JSON string.
     *
     * @author Matthew de Detrich
     * @param value

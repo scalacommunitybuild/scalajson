@@ -12,7 +12,7 @@ sealed abstract class JValue extends Product with Serializable {
   /**
     * Converts a [[JValue]] to a [[unsafe.JValue]]. Note that
     * when converting [[JObject]], this can produce [[unsafe.JObject]] of
-    * unknown ordering, since ordering on a `Map` isn't defined.
+    * unknown ordering, since ordering on a [[scala.collection.Map]] isn't defined.
     * Duplicate keys will also be removed in an undefined manner.
     *
     * @see https://www.ietf.org/rfc/rfc4627.txt
@@ -77,11 +77,11 @@ object JNumber {
 }
 
 /** Represents a JSON number value. If you are passing in a
-  * NaN or Infinity as a `Double`, [[JNumber]] will
+  * NaN or Infinity as a [[scala.Double]], [[JNumber]] will
   * return a [[JNull]].
   *
   * @author Matthew de Detrich
-  * @throws NumberFormatException - If the value is not a valid JSON Number
+  * @throws scala.NumberFormatException - If the value is not a valid JSON Number
   */
 case class JNumber(value: String) extends JValue {
 
@@ -93,7 +93,7 @@ case class JNumber(value: String) extends JValue {
     jNumberConverter(value)
 
   /**
-    * Javascript specification for numbers specify a `Double`, so this is the default export method to `Javascript`
+    * Javascript specification for numbers specify a [[scala.Double]], so this is the default export method to `Javascript`
     *
     * @param value
     */

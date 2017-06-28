@@ -13,6 +13,8 @@ crossScalaVersions in ThisBuild := Seq(currentScalaVersion,
                                        scala210Version,
                                        scala212Version)
 
+autoAPIMappings := true
+
 val flagsFor10 = Seq(
   "-Xlint",
   "-Yclosure-elim",
@@ -47,7 +49,7 @@ lazy val scalaJson = crossProject
   .settings(
     name := "scalajson",
     version := "1.0.0-M1",
-    organization := "org.mdedetrich",
+    organization := "platform.scala-lang.org",
     scalacOptions ++= Seq(
       "-encoding",
       "UTF-8",
@@ -109,7 +111,7 @@ lazy val scalaJson = crossProject
       }
     },
     scalacOptions in Test ++= Seq("-Yrangepos"),
-    mimaPreviousArtifacts := Set("org.mdedetrich" %% "scalajson" % "1.0.0-M1")
+    mimaPreviousArtifacts := Set("platform.scala-lang.org" %% "scalajson" % "1.0.0-M1")
   )
   .jsSettings(
     // Add JS-specific settings here
