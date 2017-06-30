@@ -1,6 +1,6 @@
 package scala.collection.immutable
 
-import scala.collection.GenTraversableOnce
+import scala.collection.{GenTraversableOnce, mutable}
 import scala.collection.generic.{CanBuildFrom, ImmutableMapFactory}
 
 /** This class implements immutable maps using a vector/map-based data structure, which preserves insertion order.
@@ -18,7 +18,7 @@ import scala.collection.generic.{CanBuildFrom, ImmutableMapFactory}
   "The semantics of immutable collections makes inheriting from VectorMap error-prone.")
 class VectorMap[A, +B](private val fields: Vector[A],
                        private val underlying: Map[A, B])
-  extends AbstractMap[A, B]
+    extends AbstractMap[A, B]
     with Map[A, B]
     with MapLike[A, B, VectorMap[A, B]]
     with Serializable {
@@ -98,9 +98,32 @@ class VectorMap[A, +B](private val fields: Vector[A],
 
 object VectorMap extends ImmutableMapFactory[VectorMap] {
   implicit def canBuildFrom[A, B]
-  : CanBuildFrom[Coll, (A, B), VectorMap[A, B]] =
+    : CanBuildFrom[Coll, (A, B), VectorMap[A, B]] =
     new MapCanBuildFrom[A, B]
 
   override def empty[A, B]: VectorMap[A, B] =
     new VectorMap(Vector.empty, Map.empty)
+
+  override def newBuilder[A, B]: mutable.Builder[(A, B), VectorMap[A, B]] =
+    new VectorMapBuilder
+}
+
+class VectorMapBuilder[A, B] extends mutable.Builder[(A, B), VectorMap[A, B]] {
+  private val fieldBuilder = Vector.newBuilder[A]
+  private val underlyingBuilder = Map.newBuilder[A, B]
+
+  override def +=(elem: (A, B)): VectorMapBuilder.this.type = {
+    underlyingBuilder += elem
+    fieldBuilder += elem._1
+    this
+  }
+
+  override def clear(): Unit = {
+    underlyingBuilder.clear()
+    fieldBuilder.clear()
+  }
+
+  override def result(): VectorMap[A, B] = {
+    new VectorMap(fieldBuilder.result(), underlyingBuilder.result())
+  }
 }
