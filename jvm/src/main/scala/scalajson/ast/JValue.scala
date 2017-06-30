@@ -135,7 +135,8 @@ case object JFalse extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-case class JObject(value: VectorMap[String, JValue] = VectorMap.empty) extends JValue {
+case class JObject(value: VectorMap[String, JValue] = VectorMap.empty)
+    extends JValue {
   override def toUnsafe: unsafe.JValue = {
     if (value.isEmpty) {
       unsafe.JArray(Array.ofDim[unsafe.JValue](0))

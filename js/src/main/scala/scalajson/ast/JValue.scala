@@ -158,7 +158,8 @@ case object JFalse extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-case class JObject(value: VectorMap[String, JValue] = VectorMap.empty) extends JValue {
+case class JObject(value: VectorMap[String, JValue] = VectorMap.empty)
+    extends JValue {
 
   /**
     * Construct a JObject using Javascript's object type, i.e. {} or new Object
