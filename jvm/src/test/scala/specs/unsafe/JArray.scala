@@ -12,7 +12,7 @@ class JArray extends Spec {
   """
 
   def toStandard = prop { jArray: scalajson.ast.unsafe.JArray =>
-    val values = jArray.value.map(_.toStandard).to[Vector]
+    val values = jArray.value.map(_.toStandard).toVector
     jArray.toStandard == scalajson.ast.JArray(values)
   }
 }

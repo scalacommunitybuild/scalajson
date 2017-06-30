@@ -72,9 +72,6 @@ object JNumber {
   */
 // JNumber is internally represented as a string, to improve performance
 case class JNumber(value: String) extends JValue {
-  def to[B](implicit jNumberConverter: JNumberConverter[B]): B =
-    jNumberConverter(value)
-
   override def toStandard: ast.JValue = ast.JNumber(value)
 }
 
@@ -166,7 +163,7 @@ case class JObject(value: Array[JField] = Array.empty) extends JValue {
 
 object JArray {
   def apply(value: JValue, values: JValue*): JArray =
-    JArray(Array(value) ++ values.to[Array])
+    JArray(Array(value) ++ values.toArray[JValue])
 }
 
 /** Represents a JSON Array value

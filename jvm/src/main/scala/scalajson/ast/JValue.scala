@@ -80,9 +80,6 @@ case class JNumber(value: String) extends JValue {
     throw new NumberFormatException(value)
   }
 
-  def to[B](implicit jNumberConverter: JNumberConverter[B]): B =
-    jNumberConverter(value)
-
   override def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
   override def equals(obj: Any): Boolean =
@@ -154,7 +151,7 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
 
 object JArray {
   def apply(value: JValue, values: JValue*): JArray =
-    JArray(value +: values.to[Vector])
+    JArray(value +: values.toVector)
 }
 
 /** Represents a JSON Array value

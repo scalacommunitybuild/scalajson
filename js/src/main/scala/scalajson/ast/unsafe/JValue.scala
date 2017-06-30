@@ -86,9 +86,6 @@ object JNumber {
   */
 // JNumber is internally represented as a string, to improve performance
 case class JNumber(value: String) extends JValue {
-  def to[B](implicit jNumberConverter: JNumberConverter[B]): B =
-    jNumberConverter(value)
-
   override def toStandard: ast.JValue = ast.JNumber(value)
 
   def this(value: Double) = {

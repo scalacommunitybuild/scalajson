@@ -13,13 +13,13 @@ typical use and another that is designed for performance/corner cases.
 Built for Scala 2.10.x, 2.11.x and 2.12.x
 
 ```sbt
-"org.scala-lang.platform" %% "scalajson" % "1.0.0-M1"
+"org.scala-lang.platform" %% "scalajson" % "1.0.0-M2"
 ```
 
 If you are using Scala.js, you need to do
 
 ```sbt
-"org.scala-lang.platform" %%% "scalajson" % "1.0.0-M1"
+"org.scala-lang.platform" %%% "scalajson" % "1.0.0-M2"
 ```
 
 ## Standard AST
@@ -84,24 +84,6 @@ in an undefined manner.
 
 Do note that according to the JSON spec, whether to order keys for a `JObject` is not specified. Also note that `Map` 
 disregards ordering for equality, however `Array`/`js.Array` equality takes ordering into account.
-
-## .to[T] Conversion
-
-Both `scalajson.ast.JNumber` and `scalajson.ast.unsafe.JNumber` provide conversions using a `.to[T]` method. These methods 
-provide a default fast implementations for converting between different number types (as well
-as stuff like `Char[Array]`). You can provide your own implementations of a `.to[T]` 
-conversion by creating an `implicit val` that implements a `scalajson.ast.JNumberConverter`, i.e.
-
-```scala
-import scalajson.ast.JNumberConverter
-
-
-implicit val myNumberConverter = new JNumberConverter[SomeNumberType]{
-  def apply(s: String): SomeNumberType = ???
-}
-```
-
-Then you just need to provide this implementation in scope for usage
 
 ## Scala.js
 ScalaJSON also provides support for [Scala.js](https://github.com/scala-js/scala-js).

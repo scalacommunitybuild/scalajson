@@ -89,9 +89,6 @@ case class JNumber(value: String) extends JValue {
     throw new NumberFormatException(value)
   }
 
-  def to[B](implicit jNumberConverter: JNumberConverter[B]): B =
-    jNumberConverter(value)
-
   /**
     * Javascript specification for numbers specify a [[scala.Double]], so this is the default export method to `Javascript`
     *
@@ -198,7 +195,7 @@ case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
 
 object JArray {
   def apply(value: JValue, values: JValue*): JArray =
-    JArray(value +: values.to[Vector])
+    JArray(value +: values.toVector)
 }
 
 /** Represents a JSON Array value
@@ -214,7 +211,7 @@ case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
     * @param value
     */
   def this(value: js.Array[JValue]) = {
-    this(value.to[Vector])
+    this(value.toVector)
   }
 
   override def toUnsafe: unsafe.JValue = {

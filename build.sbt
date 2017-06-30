@@ -48,7 +48,7 @@ lazy val scalaJson = crossProject
   .in(file("."))
   .settings(
     name := "scalajson",
-    version := "1.0.0-M1",
+    version := "1.0.0-M2",
     organization := "org.scala-lang.platform",
     scalacOptions ++= Seq(
       "-encoding",
@@ -111,7 +111,8 @@ lazy val scalaJson = crossProject
       }
     },
     scalacOptions in Test ++= Seq("-Yrangepos"),
-    mimaPreviousArtifacts := Set("org.scala-lang.platform" %% "scalajson" % "1.0.0-M1")
+    mimaPreviousArtifacts := Set(
+      "org.scala-lang.platform" %% "scalajson" % "1.0.0-M2")
   )
   .jsSettings(
     // Add JS-specific settings here
