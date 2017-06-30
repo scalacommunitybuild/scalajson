@@ -1,9 +1,9 @@
 package scalajson.ast.unsafe
 
+import scala.collection.immutable.VectorMap
 import scalajson.ast
 import scalajson.ast._
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSExport
 
 /** Represents a JSON Value which may be invalid. Internally uses mutable
   * collections when its desirable to do so, for performance and other reasons
@@ -169,9 +169,9 @@ case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
     val length = value.length
 
     if (length == 0) {
-      ast.JObject(Map.newBuilder[String, ast.JValue].result())
+      ast.JObject(VectorMap.newBuilder[String, ast.JValue].result())
     } else {
-      val b = Map.newBuilder[String, ast.JValue]
+      val b = VectorMap.newBuilder[String, ast.JValue]
       var index = 0
       while (index < length) {
         val v = value(index)
