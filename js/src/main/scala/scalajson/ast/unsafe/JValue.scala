@@ -59,8 +59,6 @@ object JNumber {
 
   def apply(value: Short): JNumber = JNumber(value.toString)
 
-  def apply(value: Long): JNumber = JNumber(value.toString)
-
   def apply(value: BigInt): JNumber = JNumber(value.toString)
 
   def apply(value: BigDecimal): JNumber = JNumber(value.toString)
@@ -70,8 +68,6 @@ object JNumber {
   def apply(value: Double): JNumber = JNumber(value.toString)
 
   def apply(value: Integer): JNumber = JNumber(value.toString)
-
-  def apply(value: Array[Char]): JNumber = JNumber(value.mkString)
 }
 
 /** Represents a JSON number value.

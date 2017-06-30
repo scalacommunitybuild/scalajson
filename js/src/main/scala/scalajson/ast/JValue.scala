@@ -54,8 +54,6 @@ object JNumber {
 
   def apply(value: Integer): JNumber = JNumber(value.toString)
 
-  def apply(value: Short): JNumber = JNumber(value.toString)
-
   def apply(value: Long): JNumber = JNumber(value.toString)
 
   def apply(value: BigInt): JNumber = JNumber(value.toString())
