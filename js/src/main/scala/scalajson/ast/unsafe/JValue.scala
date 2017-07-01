@@ -71,7 +71,7 @@ object JNumber {
 
   def apply(value: Integer): JNumber = JNumber(value.toString)
 
-  def apply(value: Array[Char]): JNumber = JNumber(value.mkString)
+  def apply(value: Array[Char]): JNumber = JNumber(new String(value))
 }
 
 /** Represents a JSON number value.
