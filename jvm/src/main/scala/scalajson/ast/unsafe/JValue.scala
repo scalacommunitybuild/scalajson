@@ -54,6 +54,8 @@ object JNumber {
   def apply(value: Double): JNumber = JNumber(value.toString)
 
   def apply(value: Integer): JNumber = JNumber(value.toString)
+
+  def apply(value: Array[Char]): JNumber = JNumber(new String(value))
 }
 
 /** Represents a JSON number value.
