@@ -22,7 +22,7 @@ object JObject extends TestSuite with UTestScalaCheck {
     forAll { jObject: scalajson.ast.unsafe.JObject =>
       val values = jObject.value.map { x =>
         (x.field, x.value.toStandard)
-      }.toMap
+      }
 
       val mapped = {
         val b = VectorMap.newBuilder[String, scalajson.ast.JValue]
