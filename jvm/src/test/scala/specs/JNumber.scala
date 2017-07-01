@@ -16,6 +16,7 @@ class JNumber extends Spec {
     read a Double Negative Infinity $readDoubleNegativeInfinityJNumber
     read a Float $readFloatJNumber
     read a Short $readShortJNumber
+    read a Array[Char] $readCharArrayJNumber
     hashCode equals decimal $hashCodeEqualsDecimal
     hashCode equals decimal #2 $hashCodeEqualsDecimal2
     hashCode not equals decimal $hashCodeNotEqualsDecimal
@@ -84,6 +85,10 @@ class JNumber extends Spec {
 
   def readShortJNumber = prop { s: Short =>
     JNumber(s).value must beEqualTo(s.toString)
+  }
+
+  def readCharArrayJNumber = {
+    JNumber("34".toCharArray).## must beEqualTo(JNumber("34").##)
   }
 
   def hashCodeEqualsDecimal = {
