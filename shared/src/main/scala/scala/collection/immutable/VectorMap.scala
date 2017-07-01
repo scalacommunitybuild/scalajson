@@ -94,6 +94,19 @@ class VectorMap[A, +B](private val fields: Vector[A],
       new VectorMap(fields :+ key, underlying.updated(key, value))
     }
   }
+
+  override def equals(that: Any): Boolean = {
+    that match {
+      case vectorMap: VectorMap[A, B] =>
+        vectorMap.underlying.equals(this.underlying) && vectorMap.fields
+          .equals(this.fields)
+      case _ => false
+    }
+  }
+
+  override def hashCode(): Int = {
+    (31 * underlying.hashCode()) + (31 * fields.hashCode())
+  }
 }
 
 object VectorMap extends ImmutableMapFactory[VectorMap] {
