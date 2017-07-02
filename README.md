@@ -33,6 +33,8 @@ Implementation is in `scalajson.ast.JValue`
       of a number (http://stackoverflow.com/a/13502497/1519631)
       - Equals will properly detect if two numbers are equal, i.e. `scalajson.ast.JNumber("34.00") == scalajson.ast.JNumber("34")`
       - Hashcode has been designed to provide consistent hash for numbers of unlimited precision.
+      - If you construct a JNumber with `Float.NaN`/`Float.PositiveInfinity`/`Float.NegativeInfinity`/`Double.NaN`/`Double.PositiveInfinity`/`Double.NegativeInfinity` it will return a `JNull`
+      - Also provides a `.fromString` function which you can use to create unlimited precision numbers. Returns an `Option[JNumber]` (will return `None` if `String` isn't a valid number)
     - `scalajson.ast.JObject` is an actual `Map[String,JValue]`. This means that it doesn't handle duplicate keys for a `scalajson.ast.JObject`,
     nor does it handle key ordering.
     - `scalajson.ast.JArray` is an `Vector`.
@@ -109,8 +111,7 @@ import scalajson.jNumberRegex
 "3535353".matches(jNumberRegex) // true
 ```
 
-Code of Conduct
-===============
+## Code of Conduct
 ScalaJSON uses the [Scala Code of Conduct](https://www.scala-lang.org/conduct.html)
 for all communication and discussion. This includes both GitHub, Gitter chat and
 other more direct lines of communication such as email.

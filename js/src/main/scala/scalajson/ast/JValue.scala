@@ -50,15 +50,15 @@ final case class JString(value: String) extends JValue {
 }
 
 object JNumber {
-  def apply(value: Int): JNumber = JNumber(value.toString)
+  def apply(value: Int): JNumber = new JNumber(value.toString)
 
-  def apply(value: Integer): JNumber = JNumber(value.toString)
+  def apply(value: Integer): JNumber = new JNumber(value.toString)
 
-  def apply(value: Long): JNumber = JNumber(value.toString)
+  def apply(value: Long): JNumber = new JNumber(value.toString)
 
-  def apply(value: BigInt): JNumber = JNumber(value.toString())
+  def apply(value: BigInt): JNumber = new JNumber(value.toString())
 
-  def apply(value: BigDecimal): JNumber = JNumber(value.toString())
+  def apply(value: BigDecimal): JNumber = new JNumber(value.toString())
 
   /**
     * @param value
@@ -67,7 +67,7 @@ object JNumber {
   def apply(value: Double): JValue = value match {
     case n if n.isNaN => JNull
     case n if n.isInfinity => JNull
-    case _ => JNumber(value.toString)
+    case _ => new JNumber(value.toString)
   }
 
   /**
@@ -77,22 +77,26 @@ object JNumber {
   def apply(value: Float): JValue = value match {
     case n if java.lang.Float.isNaN(n) => JNull
     case n if n.isInfinity => JNull
-    case _ => JNumber(value.toString)
+    case _ => new JNumber(value.toString)
   }
+
+  def fromString(value: String): Option[JNumber] =
+    if (value.matches(jNumberRegex))
+      Some(new JNumber(value))
+    else
+      None
+
+  def unapply(arg: JNumber): Option[String] = Some(arg.underlying)
 }
 
 /** Represents a JSON number value. If you are passing in a
-  * NaN or Infinity as a [[scala.Double]], [[JNumber]] will
+  * NaN or Infinity as a [[scala.Double]] or [[scala.Float]], [[JNumber]] will
   * return a [[JNull]].
   *
   * @author Matthew de Detrich
-  * @throws scala.NumberFormatException - If the value is not a valid JSON Number
   */
-final case class JNumber(value: String) extends JValue {
-
-  if (!value.matches(jNumberRegex)) {
-    throw new NumberFormatException(value)
-  }
+final class JNumber(private[ast] val underlying: String) extends JValue {
+  @inline val value: String = underlying
 
   /**
     * Javascript specification for numbers specify a [[scala.Double]], so this is the default export method to `Javascript`
@@ -101,22 +105,40 @@ final case class JNumber(value: String) extends JValue {
     */
   def this(value: Double) = this(value.toString)
 
-  override def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
+  override def toUnsafe: unsafe.JValue = unsafe.JNumber(underlying)
 
-  override def toJsAny: js.Any = value.toDouble match {
+  override def toJsAny: js.Any = underlying.toDouble match {
     case n if n.isNaN => null
     case n if n.isInfinity => null
     case n => n
   }
 
-  override def equals(obj: Any) =
+  override def equals(obj: Any): Boolean =
     obj match {
-      case jNumber: JNumber => numericStringEquals(value, jNumber.value)
+      case jNumber: JNumber =>
+        numericStringEquals(underlying, jNumber.underlying)
       case _ => false
     }
 
   override def hashCode: Int =
-    numericStringHashcode(value)
+    numericStringHashcode(underlying)
+
+  override def productElement(n: Int): Any =
+    if (n == 0)
+      underlying
+    else
+      throw new IndexOutOfBoundsException(n.toString)
+
+  override def productArity: Int = 1
+
+  override def canEqual(obj: Any): Boolean = {
+    obj match {
+      case _: JNumber => true
+      case _ => false
+    }
+  }
+
+  override def toString: String = s"JNumber($underlying)"
 }
 
 /** Represents a JSON Boolean value, which can either be a

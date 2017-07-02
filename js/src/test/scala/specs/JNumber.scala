@@ -123,28 +123,44 @@ object JNumber extends TestSuite with UTestScalaCheck {
       }.checkUTest()
 
     def hashCodeEqualsDecimal = {
-      scalajson.ast.JNumber("34").## == scalajson.ast.JNumber("34.0").##
+      scalajson.ast.JNumber.fromString("34").get.## == scalajson.ast.JNumber
+        .fromString("34.0")
+        .get
+        .##
     }
 
     def hashCodeEqualsDecimal2 = {
-      scalajson.ast.JNumber("34").## == scalajson.ast.JNumber("34.00").##
+      scalajson.ast.JNumber.fromString("34").get.## == scalajson.ast.JNumber
+        .fromString("34.00")
+        .get
+        .##
     }
 
     def hashCodeNotEqualsDecimal = {
-      scalajson.ast.JNumber("34").## == scalajson.ast.JNumber("34.01").##
+      scalajson.ast.JNumber.fromString("34").get.## == scalajson.ast.JNumber
+        .fromString("34.01")
+        .get
+        .##
     }
 
     def hashCodeNotEqualsDecimal2 = {
-      scalajson.ast.JNumber("34").## == scalajson.ast.JNumber("34.001").##
+      scalajson.ast.JNumber.fromString("34").get.## == scalajson.ast.JNumber
+        .fromString("34.001")
+        .get
+        .##
     }
 
     def hashCodeEqualsE = {
-      scalajson.ast.JNumber("34e34").## != scalajson.ast.JNumber("34e034").##
+      scalajson.ast.JNumber.fromString("34e34").get.## != scalajson.ast.JNumber
+        .fromString("34e034")
+        .get
+        .##
     }
 
     def hashCodeEqualsE2 = {
-      scalajson.ast.JNumber("34e34").## != scalajson.ast
-        .JNumber("34e0034")
+      scalajson.ast.JNumber.fromString("34e34").get.## != scalajson.ast.JNumber
+        .fromString("34e0034")
+        .get
         .##
     }
 
