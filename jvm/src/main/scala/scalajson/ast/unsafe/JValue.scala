@@ -29,7 +29,7 @@ sealed abstract class JValue extends Serializable with Product {
   *
   * @author Matthew de Detrich
   */
-case object JNull extends JValue {
+final case object JNull extends JValue {
   override def toStandard: ast.JValue = ast.JNull
 }
 
@@ -37,7 +37,7 @@ case object JNull extends JValue {
   *
   * @author Matthew de Detrich
   */
-case class JString(value: String) extends JValue {
+final case class JString(value: String) extends JValue {
   override def toStandard: ast.JValue = ast.JString(value)
 }
 
@@ -72,7 +72,7 @@ object JNumber {
   * @author Matthew de Detrich
   */
 // JNumber is internally represented as a string, to improve performance
-case class JNumber(value: String) extends JValue {
+final case class JNumber(value: String) extends JValue {
   override def toStandard: ast.JValue = ast.JNumber(value)
 }
 
@@ -96,7 +96,7 @@ object JBoolean {
   *
   * @author Matthew de Detrich
   */
-case object JTrue extends JBoolean {
+final case object JTrue extends JBoolean {
   override def get = true
 
   override def toStandard: ast.JValue = ast.JTrue
@@ -106,13 +106,13 @@ case object JTrue extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-case object JFalse extends JBoolean {
+final case object JFalse extends JBoolean {
   override def get = false
 
   override def toStandard: ast.JValue = ast.JFalse
 }
 
-case class JField(field: String, value: JValue)
+final case class JField(field: String, value: JValue)
 
 object JObject {
   def apply(value: JField, values: JField*): JObject =
@@ -124,7 +124,7 @@ object JObject {
   * @author Matthew de Detrich
   */
 // JObject is internally represented as a mutable Array, to improve sequential performance
-case class JObject(value: Array[JField] = Array.empty) extends JValue {
+final case class JObject(value: Array[JField] = Array.empty) extends JValue {
   override def toStandard: ast.JValue = {
     val length = value.length
     if (length == 0) {
@@ -171,7 +171,7 @@ object JArray {
   * @author Matthew de Detrich
   */
 // JArray is internally represented as a mutable Array, to improve sequential performance
-case class JArray(value: Array[JValue] = Array.empty) extends JValue {
+final case class JArray(value: Array[JValue] = Array.empty) extends JValue {
   override def toStandard: ast.JValue = {
     val length = value.length
     if (length == 0) {
