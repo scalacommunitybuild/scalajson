@@ -48,7 +48,7 @@ lazy val scalaJson = crossProject
   .in(file("."))
   .settings(
     name := "scalajson",
-    version := "1.0.0-M2",
+    version := "1.0.0-M3",
     organization := "org.scala-lang.platform",
     scalacOptions ++= Seq(
       "-encoding",
