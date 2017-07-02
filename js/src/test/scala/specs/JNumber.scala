@@ -16,6 +16,9 @@ object JNumber extends TestSuite with UTestScalaCheck {
       "read a Double Positive Infinity" - readDoublePositiveInfinityJNumber
       "read a Double Negative Infinity" - readDoubleNegativeInfinityJNumber
       "read a Float" - readFloatJNumber
+      "read a Float NaN" - readFloatNANJNumber
+      "read a Float Positive Infinity" - readFloatPositiveInfinityJNumber
+      "read a Float Negative Infinity" - readFloatNegativeInfinityJNumber
       "read a Short" - readShortJNumber
       "hashCode equals decimal" - hashCodeEqualsDecimal
       "hashCode equals decimal #2" - hashCodeEqualsDecimal2
@@ -87,8 +90,32 @@ object JNumber extends TestSuite with UTestScalaCheck {
 
     def readFloatJNumber =
       forAll { f: Float =>
-        scalajson.ast.JNumber(f).value == f.toString
+        scalajson.ast.JNumber(f) match {
+          case scalajson.ast.JNull => JNull == JNull
+          case scalajson.ast.JNumber(value) => value == f.toString
+        }
       }.checkUTest()
+
+    def readFloatNANJNumber = {
+      scalajson.ast.JNumber(Float.NaN) match {
+        case scalajson.ast.JNull => true
+        case _ => false
+      }
+    }
+
+    def readFloatPositiveInfinityJNumber = {
+      scalajson.ast.JNumber(Float.PositiveInfinity) match {
+        case scalajson.ast.JNull => true
+        case _ => false
+      }
+    }
+
+    def readFloatNegativeInfinityJNumber = {
+      scalajson.ast.JNumber(Float.NegativeInfinity) match {
+        case scalajson.ast.JNull => true
+        case _ => false
+      }
+    }
 
     def readShortJNumber =
       forAll { s: Short =>
