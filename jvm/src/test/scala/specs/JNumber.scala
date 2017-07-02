@@ -15,6 +15,9 @@ class JNumber extends Spec {
     read a Double Positive Infinity $readDoublePositiveInfinityJNumber
     read a Double Negative Infinity $readDoubleNegativeInfinityJNumber
     read a Float $readFloatJNumber
+    read a Float NaN $readFloatNANJNumber
+    read a Float Positive Infinity $readFloatPositiveInfinityJNumber
+    read a Float Negative Infinity $readFloatNegativeInfinityJNumber
     read a Short $readShortJNumber
     read a Array[Char] $readCharArrayJNumber
     hashCode equals decimal $hashCodeEqualsDecimal
@@ -80,7 +83,31 @@ class JNumber extends Spec {
   }
 
   def readFloatJNumber = prop { f: Float =>
-    JNumber(f).value must beEqualTo(f.toString)
+    JNumber(f) match {
+      case JNull => JNull must beEqualTo(JNull)
+      case JNumber(value) => value must beEqualTo(f.toString)
+    }
+  }
+
+  def readFloatNANJNumber = {
+    JNumber(Float.NaN) match {
+      case JNull => true
+      case _ => false
+    }
+  }
+
+  def readFloatPositiveInfinityJNumber = {
+    JNumber(Float.PositiveInfinity) match {
+      case JNull => true
+      case _ => false
+    }
+  }
+
+  def readFloatNegativeInfinityJNumber = {
+    JNumber(Float.NegativeInfinity) match {
+      case JNull => true
+      case _ => false
+    }
   }
 
   def readShortJNumber = prop { s: Short =>

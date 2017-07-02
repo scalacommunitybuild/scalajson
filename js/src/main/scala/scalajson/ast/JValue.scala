@@ -54,8 +54,6 @@ object JNumber {
 
   def apply(value: Integer): JNumber = JNumber(value.toString)
 
-  def apply(value: Short): JNumber = JNumber(value.toString)
-
   def apply(value: Long): JNumber = JNumber(value.toString)
 
   def apply(value: BigInt): JNumber = JNumber(value.toString())
@@ -72,8 +70,15 @@ object JNumber {
     case _ => JNumber(value.toString)
   }
 
-  def apply(value: Float): JNumber =
-    JNumber(value.toString) // In Scala.js, float has the same representation as double
+  /**
+    * @param value
+    * @return Will return a JNull if value is a Nan or Infinity
+    */
+  def apply(value: Float): JValue = value match {
+    case n if java.lang.Float.isNaN(n) => JNull
+    case n if n.isInfinity => JNull
+    case _ => JNumber(value.toString)
+  }
 }
 
 /** Represents a JSON number value. If you are passing in a

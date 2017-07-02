@@ -57,8 +57,6 @@ final case class JString(value: String) extends JValue {
 object JNumber {
   def apply(value: Int): JNumber = JNumber(value.toString)
 
-  def apply(value: Short): JNumber = JNumber(value.toString)
-
   def apply(value: Long): JNumber = JNumber(value.toString)
 
   def apply(value: BigInt): JNumber = JNumber(value.toString)
