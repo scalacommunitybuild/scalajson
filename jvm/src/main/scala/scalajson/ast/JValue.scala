@@ -23,7 +23,7 @@ sealed abstract class JValue extends Product with Serializable {
   *
   * @author Matthew de Detrich
   */
-case object JNull extends JValue {
+final case object JNull extends JValue {
   override def toUnsafe: unsafe.JValue = unsafe.JNull
 }
 
@@ -31,7 +31,7 @@ case object JNull extends JValue {
   *
   * @author Matthew de Detrich
   */
-case class JString(value: String) extends JValue {
+final case class JString(value: String) extends JValue {
   override def toUnsafe: unsafe.JValue = unsafe.JString(value)
 }
 
@@ -74,7 +74,7 @@ object JNumber {
   * @author Matthew de Detrich
   * @throws scala.NumberFormatException - If the value is not a valid JSON Number
   */
-case class JNumber(value: String) extends JValue {
+final case class JNumber(value: String) extends JValue {
 
   if (!value.matches(jNumberRegex)) {
     throw new NumberFormatException(value)
@@ -112,7 +112,7 @@ object JBoolean {
   *
   * @author Matthew de Detrich
   */
-case object JTrue extends JBoolean {
+final case object JTrue extends JBoolean {
   override def get = true
 
   override def toUnsafe: unsafe.JValue = unsafe.JTrue
@@ -122,7 +122,7 @@ case object JTrue extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-case object JFalse extends JBoolean {
+final case object JFalse extends JBoolean {
   override def get = false
 
   override def toUnsafe: unsafe.JValue = unsafe.JFalse
@@ -133,7 +133,8 @@ case object JFalse extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-case class JObject(value: Map[String, JValue] = Map.empty) extends JValue {
+final case class JObject(value: Map[String, JValue] = Map.empty)
+    extends JValue {
   override def toUnsafe: unsafe.JValue = {
     if (value.isEmpty) {
       unsafe.JArray(Array.ofDim[unsafe.JValue](0))
@@ -158,7 +159,7 @@ object JArray {
   *
   * @author Matthew de Detrich
   */
-case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
+final case class JArray(value: Vector[JValue] = Vector.empty) extends JValue {
   override def toUnsafe: unsafe.JValue = {
     val length = value.length
     if (length == 0) {

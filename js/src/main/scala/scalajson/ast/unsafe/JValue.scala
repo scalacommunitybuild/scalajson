@@ -38,7 +38,7 @@ sealed abstract class JValue extends Serializable with Product {
   *
   * @author Matthew de Detrich
   */
-case object JNull extends JValue {
+final case object JNull extends JValue {
   override def toStandard: ast.JValue = ast.JNull
 
   override def toJsAny: js.Any = null
@@ -48,7 +48,7 @@ case object JNull extends JValue {
   *
   * @author Matthew de Detrich
   */
-case class JString(value: String) extends JValue {
+final case class JString(value: String) extends JValue {
   override def toStandard: ast.JValue = ast.JString(value)
 
   override def toJsAny: js.Any = value
@@ -85,7 +85,7 @@ object JNumber {
   * @author Matthew de Detrich
   */
 // JNumber is internally represented as a string, to improve performance
-case class JNumber(value: String) extends JValue {
+final case class JNumber(value: String) extends JValue {
   override def toStandard: ast.JValue = ast.JNumber(value)
 
   def this(value: Double) = {
@@ -121,7 +121,7 @@ object JBoolean {
   *
   * @author Matthew de Detrich
   */
-case object JTrue extends JBoolean {
+final case object JTrue extends JBoolean {
   override def get = true
 
   override def toStandard: ast.JValue = ast.JTrue
@@ -131,13 +131,13 @@ case object JTrue extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-case object JFalse extends JBoolean {
+final case object JFalse extends JBoolean {
   override def get = false
 
   override def toStandard: ast.JValue = ast.JFalse
 }
 
-case class JField(field: String, value: JValue)
+final case class JField(field: String, value: JValue)
 
 object JObject {
   import js.JSConverters._
@@ -152,7 +152,7 @@ object JObject {
   * @author Matthew de Detrich
   */
 // JObject is internally represented as a mutable Array, to improve sequential performance
-case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
+final case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
   def this(value: js.Dictionary[JValue]) = {
     this({
       val array: js.Array[JField] = new js.Array()
@@ -252,7 +252,7 @@ object JArray {
   * @author Matthew de Detrich
   */
 // JArray is internally represented as a mutable js.Array, to improve sequential performance
-case class JArray(value: js.Array[JValue] = js.Array()) extends JValue {
+final case class JArray(value: js.Array[JValue] = js.Array()) extends JValue {
   override def toStandard: ast.JValue = {
     // Javascript array.length across all major browsers has near constant cost, so we
     // use this to build the array http://jsperf.com/length-comparisons
