@@ -93,7 +93,7 @@ object JNumber {
   *
   * @author Matthew de Detrich
   */
-final class JNumber(private[ast] val underlying: String) extends JValue {
+final class JNumber private[ast] (val underlying: String) extends JValue {
   @inline def value: String = underlying
 
   override def toUnsafe: unsafe.JValue = unsafe.JNumber(underlying)
