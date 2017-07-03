@@ -96,7 +96,7 @@ object JNumber {
   * @author Matthew de Detrich
   */
 final class JNumber(private[ast] val underlying: String) extends JValue {
-  @inline val value: String = underlying
+  @inline def value: String = underlying
 
   /**
     * Javascript specification for numbers specify a [[scala.Double]], so this is the default export method to `Javascript`
