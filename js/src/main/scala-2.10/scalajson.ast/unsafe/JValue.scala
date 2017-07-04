@@ -4,6 +4,7 @@ package unsafe
 import scalajson.ast
 import scalajson.ast._
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSExport
 
 /** Represents a JSON Value which may be invalid. Internally uses mutable
   * collections when its desirable to do so, for performance and other reasons

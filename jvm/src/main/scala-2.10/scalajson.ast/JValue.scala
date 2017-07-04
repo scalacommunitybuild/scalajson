@@ -78,13 +78,13 @@ object JNumber {
       None
   }
 
-  def apply(value: String): Option[JNumber] = fromString(value)
-
   def fromString(value: String): Option[JNumber] =
     if (value.matches(jNumberRegex))
       Some(new JNumber(value))
     else
       None
+
+  def unapply(arg: JNumber): Option[String] = Some(arg.value)
 }
 
 /** Represents a JSON number value. If you are passing in a
@@ -93,7 +93,9 @@ object JNumber {
   *
   * @author Matthew de Detrich
   */
-final case class JNumber private[ast] (value: String) extends JValue {
+// Due to a restriction in Scala 2.10, we can't use a proper case class along with
+// a private constructor, so we have to simulate a case class with a normal class
+final class JNumber private[ast] (val value: String) extends JValue {
   override def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
   override def equals(obj: Any): Boolean =
@@ -105,6 +107,23 @@ final case class JNumber private[ast] (value: String) extends JValue {
 
   override def hashCode: Int =
     numericStringHashcode(value)
+
+  override def productElement(n: Int): Any =
+    if (n == 0)
+      value
+    else
+      throw new IndexOutOfBoundsException(n.toString)
+
+  override def productArity: Int = 1
+
+  override def canEqual(obj: Any): Boolean = {
+    obj match {
+      case _: JNumber => true
+      case _ => false
+    }
+  }
+
+  override def toString: String = s"JNumber($value)"
 }
 
 /** Represents a JSON Boolean value, which can either be a

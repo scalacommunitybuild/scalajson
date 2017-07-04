@@ -85,8 +85,6 @@ object JNumber {
       Some(new JNumber(value))
     else
       None
-
-  def unapply(arg: JNumber): Option[String] = Some(arg.underlying)
 }
 
 /** Represents a JSON number value. If you are passing in a
@@ -95,8 +93,7 @@ object JNumber {
   *
   * @author Matthew de Detrich
   */
-final class JNumber private[ast] (val underlying: String) extends JValue {
-  @inline def value: String = underlying
+final case class JNumber private[ast] (value: String) extends JValue {
 
   /**
     * Javascript specification for numbers specify a [[scala.Double]], so this is the default export method to `Javascript`
@@ -105,9 +102,9 @@ final class JNumber private[ast] (val underlying: String) extends JValue {
     */
   def this(value: Double) = this(value.toString)
 
-  override def toUnsafe: unsafe.JValue = unsafe.JNumber(underlying)
+  override def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
-  override def toJsAny: js.Any = underlying.toDouble match {
+  override def toJsAny: js.Any = value.toDouble match {
     case n if n.isNaN => null
     case n if n.isInfinity => null
     case n => n
@@ -116,29 +113,12 @@ final class JNumber private[ast] (val underlying: String) extends JValue {
   override def equals(obj: Any): Boolean =
     obj match {
       case jNumber: JNumber =>
-        numericStringEquals(underlying, jNumber.underlying)
+        numericStringEquals(value, jNumber.value)
       case _ => false
     }
 
   override def hashCode: Int =
-    numericStringHashcode(underlying)
-
-  override def productElement(n: Int): Any =
-    if (n == 0)
-      underlying
-    else
-      throw new IndexOutOfBoundsException(n.toString)
-
-  override def productArity: Int = 1
-
-  override def canEqual(obj: Any): Boolean = {
-    obj match {
-      case _: JNumber => true
-      case _ => false
-    }
-  }
-
-  override def toString: String = s"JNumber($underlying)"
+    numericStringHashcode(value)
 }
 
 /** Represents a JSON Boolean value, which can either be a
