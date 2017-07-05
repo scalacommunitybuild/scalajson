@@ -13,13 +13,13 @@ typical use and another that is designed for performance/corner cases.
 Built for Scala 2.10.x, 2.11.x and 2.12.x
 
 ```sbt
-"org.scala-lang.platform" %% "scalajson" % "1.0.0-M3"
+"org.scala-lang.platform" %% "scalajson" % "1.0.0-M4"
 ```
 
 If you are using Scala.js, you need to do
 
 ```sbt
-"org.scala-lang.platform" %%% "scalajson" % "1.0.0-M3"
+"org.scala-lang.platform" %%% "scalajson" % "1.0.0-M4"
 ```
 
 ## Standard AST

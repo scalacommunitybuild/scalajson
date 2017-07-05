@@ -50,7 +50,7 @@ lazy val root = project
 
 lazy val commonSettings = Seq(
   name := "scalajson",
-  version := "1.0.0-M3",
+  version := "1.0.0-M4",
   organization := "org.scala-lang.platform",
   scalacOptions ++= Seq(
     "-encoding",
@@ -134,7 +134,7 @@ lazy val scalaJson = crossProject(JSPlatform, JVMPlatform)
     ),
     scalacOptions in Test ++= Seq("-Yrangepos"),
     mimaPreviousArtifacts := Set(
-      "org.scala-lang.platform" %% "scalajson" % "1.0.0-M2")
+      "org.scala-lang.platform" %% "scalajson" % "1.0.0-M3")
   )
   .jsSettings(
     // Add JS-specific settings here
