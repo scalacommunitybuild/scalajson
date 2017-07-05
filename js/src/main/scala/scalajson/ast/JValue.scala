@@ -80,6 +80,9 @@ object JNumber {
     case _ => new JNumber(value.toString)
   }
 
+  def apply(value: String): Option[JNumber] =
+    fromString(value)
+
   def fromString(value: String): Option[JNumber] =
     value match {
       case jNumberRegex(_ *) => Some(new JNumber(value))

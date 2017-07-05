@@ -113,15 +113,7 @@ lazy val scalaJson = crossProject(JSPlatform, JVMPlatform)
         case _ =>
           "-target:jvm-1.6"
       }
-    }
-  )
-  .jvmSettings(
-    // Add JVM-specific settings here
-    libraryDependencies ++= Seq(
-      "org.specs2" %% "specs2-core" % specs2Version % Test,
-      "org.specs2" %% "specs2-scalacheck" % specs2Version % Test,
-      "org.scalacheck" %% "scalacheck" % scalaCheckVersion % Test
-    ),
+    },
     scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n >= 12 =>
@@ -131,7 +123,15 @@ lazy val scalaJson = crossProject(JSPlatform, JVMPlatform)
         case Some((2, n)) if n == 10 =>
           flagsFor10
       }
-    },
+    }
+  )
+  .jvmSettings(
+    // Add JVM-specific settings here
+    libraryDependencies ++= Seq(
+      "org.specs2" %% "specs2-core" % specs2Version % Test,
+      "org.specs2" %% "specs2-scalacheck" % specs2Version % Test,
+      "org.scalacheck" %% "scalacheck" % scalaCheckVersion % Test
+    ),
     scalacOptions in Test ++= Seq("-Yrangepos"),
     mimaPreviousArtifacts := Set(
       "org.scala-lang.platform" %% "scalajson" % "1.0.0-M2")

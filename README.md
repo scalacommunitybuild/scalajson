@@ -35,7 +35,7 @@ Implementation is in `scalajson.ast.JValue`
       - Hashcode has been designed to provide consistent hash for numbers of unlimited precision.
       - If you construct a JNumber with `Float.NaN`/`Float.PositiveInfinity`/`Float.NegativeInfinity`/`Double.NaN`/`Double.PositiveInfinity`/`Double.NegativeInfinity` it will return a `JNull`
       - You can construct an unlimited precision number using a string, i.e. `JNumber("34324")`. Returns an `Option[JNumber]` (will return `None` if `String` isn't a valid number)
-        - Note that this doesn't work for Scala 2.10 or Scala.js due to a restriction with how case classes are handled. For this reason a `JNumber.fromString` method is provided which compiles on all platforms and scala versions
+        - Note that this doesn't work for Scala 2.10 due to a restriction with how private constructor case classes are handled. For this reason a `JNumber.fromString` method is provided which compiles on all platforms and scala versions
     - `scalajson.ast.JObject` is an actual `Map[String,JValue]`. This means that it doesn't handle duplicate keys for a `scalajson.ast.JObject`,
     nor does it handle key ordering.
     - `scalajson.ast.JArray` is an `Vector`.
