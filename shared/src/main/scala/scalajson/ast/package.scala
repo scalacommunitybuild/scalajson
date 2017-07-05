@@ -1,13 +1,15 @@
 package scalajson
 
+import scala.util.matching.Regex
+
 package object ast {
 
   /**
     * A regex that will match any valid JSON number for unlimited
     * precision
     */
-  @inline protected[ast] val jNumberRegex: String =
-    """-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?"""
+  protected[ast] val jNumberRegex: Regex =
+    """-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?""".r
 
   /**
     * Finds the hashcode for a numeric JSON string.

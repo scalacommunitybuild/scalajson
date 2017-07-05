@@ -71,12 +71,11 @@ object JNumber {
   */
 // JNumber is internally represented as a string, to improve performance
 final case class JNumber(value: String) extends JValue {
-  override def toStandard: ast.JValue = {
-    if (value.matches(jNumberRegex))
-      new ast.JNumber(value)
-    else
-      throw new NumberFormatException(value)
-  }
+  override def toStandard: ast.JValue =
+    value match {
+      case jNumberRegex(_ *) => new ast.JNumber(value)
+      case _ => throw new NumberFormatException(value)
+    }
 }
 
 /** Represents a JSON Boolean value, which can either be a

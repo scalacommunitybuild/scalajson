@@ -70,21 +70,16 @@ object JNumber {
 
   def apply(value: Integer): JNumber = new JNumber(value.toString)
 
-  def apply(value: Array[Char]): Option[JNumber] = {
-    val s = new String(value)
-    if (s.matches(jNumberRegex))
-      Some(new JNumber(s))
-    else
-      None
-  }
+  def apply(value: Array[Char]): Option[JNumber] =
+    fromString(new String(value))
 
   def apply(value: String): Option[JNumber] = fromString(value)
 
   def fromString(value: String): Option[JNumber] =
-    if (value.matches(jNumberRegex))
-      Some(new JNumber(value))
-    else
-      None
+    value match {
+      case jNumberRegex(_ *) => Some(new JNumber(value))
+      case _ => None
+    }
 }
 
 /** Represents a JSON number value. If you are passing in a

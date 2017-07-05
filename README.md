@@ -13,8 +13,7 @@ typical use and another that is designed for performance/corner cases.
 Built for Scala 2.10.x, 2.11.x and 2.12.x
 
 ```sbt
-"org.scala-lang.platform" %% "scalajson" % "
-1.0.0-M3"
+"org.scala-lang.platform" %% "scalajson" % "1.0.0-M3"
 ```
 
 If you are using Scala.js, you need to do
@@ -110,7 +109,10 @@ before creating a `scalajson.unsafe.JNumber`).
 ```scala
 import scalajson.jNumberRegex
 
-"3535353".matches(jNumberRegex) // true
+"3535353" match {
+  case jNumberRegex(_ *) => true
+  case _ => false
+}
 ```
 
 ## Code of Conduct

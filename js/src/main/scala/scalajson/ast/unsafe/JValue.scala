@@ -2,7 +2,6 @@ package scalajson.ast
 package unsafe
 
 import scalajson.ast
-import scalajson.ast._
 import scala.scalajs.js
 
 /** Represents a JSON Value which may be invalid. Internally uses mutable
@@ -85,10 +84,10 @@ object JNumber {
 // JNumber is internally represented as a string, to improve performance
 final case class JNumber(value: String) extends JValue {
   override def toStandard: ast.JValue =
-    if (value.matches(jNumberRegex))
-      new ast.JNumber(value)
-    else
-      throw new NumberFormatException(value)
+    value match {
+      case jNumberRegex(_ *) => new ast.JNumber(value)
+      case _ => throw new NumberFormatException(value)
+    }
 
   def this(value: Double) = {
     this(value.toString)

@@ -81,10 +81,10 @@ object JNumber {
   }
 
   def fromString(value: String): Option[JNumber] =
-    if (value.matches(jNumberRegex))
-      Some(new JNumber(value))
-    else
-      None
+    value match {
+      case jNumberRegex(_ *) => Some(new JNumber(value))
+      case _ => None
+    }
 }
 
 /** Represents a JSON number value. If you are passing in a
