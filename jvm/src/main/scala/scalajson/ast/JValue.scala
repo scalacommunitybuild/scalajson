@@ -115,6 +115,7 @@ final case class JNumber private[ast] (value: String) extends JValue {
   */
 // Implements named extractors so we can avoid boxing
 sealed abstract class JBoolean extends JValue {
+  def isEmpty: Boolean = false
   def get: Boolean
 }
 
