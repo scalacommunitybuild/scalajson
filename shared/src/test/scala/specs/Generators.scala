@@ -52,7 +52,8 @@ object Generators {
   }
 
   implicit def arbJsNumber: Arbitrary[scalajson.ast.JNumber] = Arbitrary {
-    genSafeBigDecimal map (x => scalajson.ast.JNumber(x.toString()))
+    genSafeBigDecimal map (x =>
+      scalajson.ast.JNumber.fromString(x.toString()).get)
   }
 
   implicit def arbJsBoolean: Arbitrary[scalajson.ast.JBoolean] = Arbitrary {
@@ -194,7 +195,7 @@ object Generators {
     case obj: scalajson.ast.JObject => shrink(obj)
     case scalajson.ast.JString(str) => shrink(str) map scalajson.ast.JString
     case scalajson.ast.JNumber(num) =>
-      shrink(num) map (x => scalajson.ast.JNumber(x))
+      shrink(num) map (x => scalajson.ast.JNumber.fromString(x).get)
     case scalajson.ast.JNull | scalajson.ast.JBoolean(_) =>
       Stream.empty[scalajson.ast.JValue]
   }

@@ -1,7 +1,6 @@
 package scalajson.ast
 package unsafe
 
-import scala.collection.immutable.VectorMap
 import scalajson.ast
 import scalajson.ast._
 
@@ -86,7 +85,6 @@ final case class JNumber(value: String) extends JValue {
   */
 // Implements named extractors so we can avoid boxing
 sealed abstract class JBoolean extends JValue {
-  def isEmpty: Boolean = false
   def get: Boolean
 }
 
@@ -132,10 +130,10 @@ final case class JObject(value: Array[JField] = Array.empty) extends JValue {
   override def toStandard: ast.JValue = {
     val length = value.length
     if (length == 0) {
-      ast.JObject(VectorMap[String, ast.JValue]())
+      ast.JObject(Map[String, ast.JValue]())
     } else {
       var index = 0
-      val b = VectorMap.newBuilder[String, ast.JValue]
+      val b = Map.newBuilder[String, ast.JValue]
       while (index < length) {
         val v = value(index)
         b += ((v.field, v.value.toStandard))

@@ -1,8 +1,8 @@
-package scalajson.ast.unsafe
+package scalajson.ast
+package unsafe
 
 import scala.collection.immutable.VectorMap
 import scalajson.ast
-import scalajson.ast._
 import scala.scalajs.js
 
 /** Represents a JSON Value which may be invalid. Internally uses mutable
@@ -57,8 +57,6 @@ final case class JString(value: String) extends JValue {
 object JNumber {
   def apply(value: Int): JNumber = JNumber(value.toString)
 
-  def apply(value: Short): JNumber = JNumber(value.toString)
-
   def apply(value: Long): JNumber = JNumber(value.toString)
 
   def apply(value: BigInt): JNumber = JNumber(value.toString)
@@ -86,7 +84,11 @@ object JNumber {
   */
 // JNumber is internally represented as a string, to improve performance
 final case class JNumber(value: String) extends JValue {
-  override def toStandard: ast.JValue = ast.JNumber(value)
+  override def toStandard: ast.JValue =
+    value match {
+      case jNumberRegex(_ *) => new ast.JNumber(value)
+      case _ => throw new NumberFormatException(value)
+    }
 
   def this(value: Double) = {
     this(value.toString)
@@ -106,6 +108,7 @@ final case class JNumber(value: String) extends JValue {
   */
 // Implements named extractors so we can avoid boxing
 sealed abstract class JBoolean extends JValue {
+  def isEmpty: Boolean = false
   def get: Boolean
 
   override def toJsAny: js.Any = get

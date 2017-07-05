@@ -13,13 +13,13 @@ typical use and another that is designed for performance/corner cases.
 Built for Scala 2.10.x, 2.11.x and 2.12.x
 
 ```sbt
-"org.scala-lang.platform" %% "scalajson" % "1.0.0-M2"
+"org.scala-lang.platform" %% "scalajson" % "1.0.0-M4"
 ```
 
 If you are using Scala.js, you need to do
 
 ```sbt
-"org.scala-lang.platform" %%% "scalajson" % "1.0.0-M2"
+"org.scala-lang.platform" %%% "scalajson" % "1.0.0-M4"
 ```
 
 ## Standard AST
@@ -33,6 +33,9 @@ Implementation is in `scalajson.ast.JValue`
       of a number (http://stackoverflow.com/a/13502497/1519631)
       - Equals will properly detect if two numbers are equal, i.e. `scalajson.ast.JNumber("34.00") == scalajson.ast.JNumber("34")`
       - Hashcode has been designed to provide consistent hash for numbers of unlimited precision.
+      - If you construct a JNumber with `Float.NaN`/`Float.PositiveInfinity`/`Float.NegativeInfinity`/`Double.NaN`/`Double.PositiveInfinity`/`Double.NegativeInfinity` it will return a `JNull`
+      - You can construct an unlimited precision number using a string, i.e. `JNumber("34324")`. Returns an `Option[JNumber]` (will return `None` if `String` isn't a valid number)
+        - Note that this doesn't work for Scala 2.10 due to a restriction with how private constructor case classes are handled. For this reason a `JNumber.fromString` method is provided which compiles on all platforms and scala versions
     - `scalajson.ast.JObject` is an actual `Map[String,JValue]`. This means that it doesn't handle duplicate keys for a `scalajson.ast.JObject`,
     nor does it handle key ordering.
     - `scalajson.ast.JArray` is an `Vector`.
@@ -40,6 +43,9 @@ Implementation is in `scalajson.ast.JValue`
 always contain a valid structure that can be serialized/rendered into [JSON](https://en.wikipedia.org/wiki/JSON). 
   - Note that you can lose precision when using `scalajson.ast.JNumber` in `Scala.js` (see `Scala.js` 
 section for more info).
+  - The `.copy` method of `scalajson.ast.JNumber` has been overridden to make sure you can't replace the internal `String`
+  with an incorrect number
+    - Will throw a `NumberFormatException` if you use `.copy` with an invalid JSON number
 - Due to the above, has properly implemented deep equality for all types of `scalajson.ast.JValue`
 
 ## Unsafe AST
@@ -106,11 +112,13 @@ before creating a `scalajson.unsafe.JNumber`).
 ```scala
 import scalajson.jNumberRegex
 
-"3535353".matches(jNumberRegex) // true
+"3535353" match {
+  case jNumberRegex(_ *) => true
+  case _ => false
+}
 ```
 
-Code of Conduct
-===============
+## Code of Conduct
 ScalaJSON uses the [Scala Code of Conduct](https://www.scala-lang.org/conduct.html)
 for all communication and discussion. This includes both GitHub, Gitter chat and
 other more direct lines of communication such as email.
