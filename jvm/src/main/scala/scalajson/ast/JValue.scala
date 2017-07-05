@@ -100,6 +100,12 @@ final case class JNumber private[ast] (value: String) extends JValue {
 
   override def hashCode: Int =
     numericStringHashcode(value)
+
+  def copy(value: String): JNumber =
+    value match {
+      case jNumberRegex(_ *) => new JNumber(value)
+      case _ => throw new NumberFormatException(value)
+    }
 }
 
 /** Represents a JSON Boolean value, which can either be a

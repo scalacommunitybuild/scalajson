@@ -36,6 +36,8 @@ class JNumber extends Spec {
     hashCode not equals e positive #2 $hashCodeNotEqualsEPositive2
     convert toUnsafe $toUnsafe
     equals $testEquals
+    "copy" $testCopy
+    "failing copy with NumberFormatException" $testCopyFail
   """
 
   def readLongJNumber = prop { l: Long =>
@@ -209,4 +211,17 @@ class JNumber extends Spec {
   def testEquals = prop { b: BigDecimal =>
     scalajson.ast.JNumber(b) must beEqualTo(scalajson.ast.JNumber(b))
   }
+
+  def testCopy =
+    prop { (b1: BigDecimal, b2: BigDecimal) =>
+      val asString = b2.toString()
+      scalajson.ast.JNumber(b1).copy(value = asString) must beEqualTo(
+        scalajson.ast.JNumber(b2))
+    }
+
+  def testCopyFail =
+    prop { b: BigDecimal =>
+      scalajson.ast.JNumber(b).copy(value = "not a number") must throwA(
+        new NumberFormatException("not a number"))
+    }
 }

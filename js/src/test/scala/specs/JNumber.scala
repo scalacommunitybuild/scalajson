@@ -37,6 +37,8 @@ object JNumber extends TestSuite with UTestScalaCheck {
       "hashCode not equals e positive #2" - hashCodeNotEqualsEPositive2
       "convert toUnsafe" - toUnsafe
       "equals" - testEquals
+      "copy" - testCopy
+      "failing copy with NumberFormatException" - testCopyFail
     }
 
     def readLongJNumber =
@@ -209,6 +211,26 @@ object JNumber extends TestSuite with UTestScalaCheck {
     def testEquals =
       forAll { b: BigDecimal =>
         scalajson.ast.JNumber(b) == scalajson.ast.JNumber(b)
+      }.checkUTest()
+
+    def testCopy =
+      forAll { (b1: BigDecimal, b2: BigDecimal) =>
+        val asString = b2.toString()
+        scalajson.ast.JNumber(b1).copy(value = asString) == scalajson.ast
+          .JNumber(b2)
+      }.checkUTest()
+
+    def testCopyFail =
+      forAll { b: BigDecimal =>
+        try {
+          scalajson.ast.JNumber(b).copy(value = "not a number")
+          false
+        } catch {
+          case exception: NumberFormatException
+              if exception.getMessage == "not a number" =>
+            true
+          case _ => false
+        }
       }.checkUTest()
   }
 }

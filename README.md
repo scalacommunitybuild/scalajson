@@ -43,6 +43,9 @@ Implementation is in `scalajson.ast.JValue`
 always contain a valid structure that can be serialized/rendered into [JSON](https://en.wikipedia.org/wiki/JSON). 
   - Note that you can lose precision when using `scalajson.ast.JNumber` in `Scala.js` (see `Scala.js` 
 section for more info).
+  - The `.copy` method of `scalajson.ast.JNumber` has been overridden to make sure you can't replace the internal `String`
+  with an incorrect number
+    - Will throw a `NumberFormatException` if you use `.copy` with an invalid JSON number
 - Due to the above, has properly implemented deep equality for all types of `scalajson.ast.JValue`
 
 ## Unsafe AST

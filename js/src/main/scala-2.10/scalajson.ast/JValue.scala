@@ -140,6 +140,12 @@ final class JNumber private[ast] (val value: String) extends JValue {
   }
 
   override def toString: String = s"JNumber($value)"
+
+  def copy(value: String): JNumber =
+    value match {
+      case jNumberRegex(_ *) => new JNumber(value)
+      case _ => throw new NumberFormatException(value)
+    }
 }
 
 /** Represents a JSON Boolean value, which can either be a
