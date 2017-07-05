@@ -40,11 +40,11 @@ final case class JString(value: String) extends JValue {
   * return a JNull
   */
 object JNumber {
-  def apply(value: Int): JNumber = JNumber(value.toString)
+  def apply(value: Int): JNumber = new JNumber(value.toString)
 
-  def apply(value: Long): JNumber = JNumber(value.toString)
+  def apply(value: Long): JNumber = new JNumber(value.toString)
 
-  def apply(value: BigInt): JNumber = JNumber(value.toString)
+  def apply(value: BigInt): JNumber = new JNumber(value.toString)
 
   /**
     * @param value
@@ -53,10 +53,10 @@ object JNumber {
   def apply(value: Float): JValue = value match {
     case n if java.lang.Float.isNaN(n) => JNull
     case n if n.isInfinity => JNull
-    case _ => JNumber(value.toString)
+    case _ => new JNumber(value.toString)
   }
 
-  def apply(value: BigDecimal): JNumber = JNumber(value.toString())
+  def apply(value: BigDecimal): JNumber = new JNumber(value.toString())
 
   /**
     * @param value
@@ -65,37 +65,47 @@ object JNumber {
   def apply(value: Double): JValue = value match {
     case n if n.isNaN => JNull
     case n if n.isInfinity => JNull
-    case _ => JNumber(value.toString)
+    case _ => new JNumber(value.toString)
   }
 
-  def apply(value: Integer): JNumber = JNumber(value.toString)
+  def apply(value: Integer): JNumber = new JNumber(value.toString)
 
-  def apply(value: Array[Char]): JNumber = JNumber(new String(value))
+  def apply(value: Array[Char]): Option[JNumber] =
+    fromString(new String(value))
+
+  def apply(value: String): Option[JNumber] = fromString(value)
+
+  def fromString(value: String): Option[JNumber] =
+    value match {
+      case jNumberRegex(_ *) => Some(new JNumber(value))
+      case _ => None
+    }
 }
 
 /** Represents a JSON number value. If you are passing in a
-  * NaN or Infinity as a [[scala.Double]], [[JNumber]] will
+  * NaN or Infinity as a [[scala.Double]] or [[scala.Float]], [[JNumber]] will
   * return a [[JNull]].
   *
   * @author Matthew de Detrich
-  * @throws scala.NumberFormatException - If the value is not a valid JSON Number
   */
-final case class JNumber(value: String) extends JValue {
-
-  if (!value.matches(jNumberRegex)) {
-    throw new NumberFormatException(value)
-  }
-
+final case class JNumber private[ast] (value: String) extends JValue {
   override def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
   override def equals(obj: Any): Boolean =
     obj match {
-      case jNumber: JNumber => numericStringEquals(value, jNumber.value)
+      case jNumber: JNumber =>
+        numericStringEquals(value, jNumber.value)
       case _ => false
     }
 
   override def hashCode: Int =
     numericStringHashcode(value)
+
+  def copy(value: String): JNumber =
+    value match {
+      case jNumberRegex(_ *) => new JNumber(value)
+      case _ => throw new NumberFormatException(value)
+    }
 }
 
 /** Represents a JSON Boolean value, which can either be a
@@ -105,6 +115,7 @@ final case class JNumber(value: String) extends JValue {
   */
 // Implements named extractors so we can avoid boxing
 sealed abstract class JBoolean extends JValue {
+  def isEmpty: Boolean = false
   def get: Boolean
 }
 

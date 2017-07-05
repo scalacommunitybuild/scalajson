@@ -1,9 +1,8 @@
-package scalajson.ast.unsafe
+package scalajson.ast
+package unsafe
 
 import scalajson.ast
-import scalajson.ast._
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSExport
 
 /** Represents a JSON Value which may be invalid. Internally uses mutable
   * collections when its desirable to do so, for performance and other reasons
@@ -84,7 +83,11 @@ object JNumber {
   */
 // JNumber is internally represented as a string, to improve performance
 final case class JNumber(value: String) extends JValue {
-  override def toStandard: ast.JValue = ast.JNumber(value)
+  override def toStandard: ast.JValue =
+    value match {
+      case jNumberRegex(_ *) => new ast.JNumber(value)
+      case _ => throw new NumberFormatException(value)
+    }
 
   def this(value: Double) = {
     this(value.toString)
@@ -104,6 +107,7 @@ final case class JNumber(value: String) extends JValue {
   */
 // Implements named extractors so we can avoid boxing
 sealed abstract class JBoolean extends JValue {
+  def isEmpty: Boolean = false
   def get: Boolean
 
   override def toJsAny: js.Any = get

@@ -37,6 +37,8 @@ object JNumber extends TestSuite with UTestScalaCheck {
       "hashCode not equals e positive #2" - hashCodeNotEqualsEPositive2
       "convert toUnsafe" - toUnsafe
       "equals" - testEquals
+      "copy" - testCopy
+      "failing copy with NumberFormatException" - testCopyFail
     }
 
     def readLongJNumber =
@@ -123,28 +125,44 @@ object JNumber extends TestSuite with UTestScalaCheck {
       }.checkUTest()
 
     def hashCodeEqualsDecimal = {
-      scalajson.ast.JNumber("34").## == scalajson.ast.JNumber("34.0").##
+      scalajson.ast.JNumber.fromString("34").get.## == scalajson.ast.JNumber
+        .fromString("34.0")
+        .get
+        .##
     }
 
     def hashCodeEqualsDecimal2 = {
-      scalajson.ast.JNumber("34").## == scalajson.ast.JNumber("34.00").##
+      scalajson.ast.JNumber.fromString("34").get.## == scalajson.ast.JNumber
+        .fromString("34.00")
+        .get
+        .##
     }
 
     def hashCodeNotEqualsDecimal = {
-      scalajson.ast.JNumber("34").## == scalajson.ast.JNumber("34.01").##
+      scalajson.ast.JNumber.fromString("34").get.## == scalajson.ast.JNumber
+        .fromString("34.01")
+        .get
+        .##
     }
 
     def hashCodeNotEqualsDecimal2 = {
-      scalajson.ast.JNumber("34").## == scalajson.ast.JNumber("34.001").##
+      scalajson.ast.JNumber.fromString("34").get.## == scalajson.ast.JNumber
+        .fromString("34.001")
+        .get
+        .##
     }
 
     def hashCodeEqualsE = {
-      scalajson.ast.JNumber("34e34").## != scalajson.ast.JNumber("34e034").##
+      scalajson.ast.JNumber.fromString("34e34").get.## != scalajson.ast.JNumber
+        .fromString("34e034")
+        .get
+        .##
     }
 
     def hashCodeEqualsE2 = {
-      scalajson.ast.JNumber("34e34").## != scalajson.ast
-        .JNumber("34e0034")
+      scalajson.ast.JNumber.fromString("34e34").get.## != scalajson.ast.JNumber
+        .fromString("34e0034")
+        .get
         .##
     }
 
@@ -193,6 +211,26 @@ object JNumber extends TestSuite with UTestScalaCheck {
     def testEquals =
       forAll { b: BigDecimal =>
         scalajson.ast.JNumber(b) == scalajson.ast.JNumber(b)
+      }.checkUTest()
+
+    def testCopy =
+      forAll { (b1: BigDecimal, b2: BigDecimal) =>
+        val asString = b2.toString()
+        scalajson.ast.JNumber(b1).copy(value = asString) == scalajson.ast
+          .JNumber(b2)
+      }.checkUTest()
+
+    def testCopyFail =
+      forAll { b: BigDecimal =>
+        try {
+          scalajson.ast.JNumber(b).copy(value = "not a number")
+          false
+        } catch {
+          case exception: NumberFormatException
+              if exception.getMessage == "not a number" =>
+            true
+          case _ => false
+        }
       }.checkUTest()
   }
 }

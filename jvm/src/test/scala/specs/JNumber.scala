@@ -36,6 +36,8 @@ class JNumber extends Spec {
     hashCode not equals e positive #2 $hashCodeNotEqualsEPositive2
     convert toUnsafe $toUnsafe
     equals $testEquals
+    "copy" $testCopy
+    "failing copy with NumberFormatException" $testCopyFail
   """
 
   def readLongJNumber = prop { l: Long =>
@@ -115,63 +117,90 @@ class JNumber extends Spec {
   }
 
   def readCharArrayJNumber = {
-    JNumber("34".toCharArray).## must beEqualTo(JNumber("34").##)
+    JNumber("34".toCharArray).get.## must beEqualTo(
+      JNumber.fromString("34").get.##)
   }
 
   def hashCodeEqualsDecimal = {
-    JNumber("34").## must beEqualTo(JNumber("34.0").##)
+    JNumber.fromString("34").get.## must beEqualTo(
+      JNumber.fromString("34.0").get.##)
   }
 
   def hashCodeEqualsDecimal2 = {
-    JNumber("34").## must beEqualTo(JNumber("34.00").##)
+    JNumber.fromString("34").get.## must beEqualTo(
+      JNumber.fromString("34.00").get.##)
   }
 
   def hashCodeNotEqualsDecimal = {
-    JNumber("34").## mustNotEqual JNumber("34.01").##
+    JNumber.fromString("34").get.## mustNotEqual JNumber
+      .fromString("34.01")
+      .get
+      .##
   }
 
   def hashCodeNotEqualsDecimal2 = {
-    JNumber("34").## mustNotEqual JNumber("34.001").##
+    JNumber.fromString("34").get.## mustNotEqual JNumber
+      .fromString("34.001")
+      .get
+      .##
   }
 
   def hashCodeEqualsE = {
-    JNumber("34e34").## must beEqualTo(JNumber("34e034").##)
+    JNumber.fromString("34e34").get.## must beEqualTo(
+      JNumber.fromString("34e034").get.##)
   }
 
   def hashCodeEqualsE2 = {
-    JNumber("34e34").## must beEqualTo(JNumber("34e0034").##)
+    JNumber.fromString("34e34").get.## must beEqualTo(
+      JNumber.fromString("34e0034").get.##)
   }
 
   def hashCodeEqualsENegative = {
-    JNumber("34e-0").## must beEqualTo(JNumber("34").##)
+    JNumber.fromString("34e-0").get.## must beEqualTo(
+      JNumber.fromString("34").get.##)
   }
 
   def hashCodeEqualsENegative2 = {
-    JNumber("34e-00").## must beEqualTo(JNumber("34").##)
+    JNumber.fromString("34e-00").get.## must beEqualTo(
+      JNumber.fromString("34").get.##)
   }
 
   def hashCodeNotEqualsENegative = {
-    JNumber("34e-01").## mustNotEqual JNumber("34").##
+    JNumber.fromString("34e-01").get.## mustNotEqual JNumber
+      .fromString("34")
+      .get
+      .##
   }
 
   def hashCodeNotEqualsENegative2 = {
-    JNumber("34e-001").## mustNotEqual JNumber("34").##
+    JNumber.fromString("34e-001").get.## mustNotEqual JNumber
+      .fromString("34")
+      .get
+      .##
   }
 
   def hashCodeEqualsEPositive = {
-    JNumber("34e+0").## must beEqualTo(JNumber("34").##)
+    JNumber.fromString("34e+0").get.## must beEqualTo(
+      JNumber.fromString("34").get.##)
   }
 
   def hashCodeEqualsEPositive2 = {
-    JNumber("34e+00").## must beEqualTo(JNumber("34").##)
+    JNumber.fromString("34e+00").get.## must beEqualTo(
+      JNumber.fromString("34").get.##)
   }
 
   def hashCodeNotEqualsEPositive = {
-    JNumber("34e+01").## mustNotEqual JNumber("34").##
+    JNumber.fromString("34e+01").get.## mustNotEqual JNumber
+      .fromString("34")
+      .get
+      .##
   }
 
   def hashCodeNotEqualsEPositive2 = {
-    JNumber("34e+001").## mustNotEqual JNumber("34").##
+    JNumber.fromString("34e+001").get.## mustNotEqual JNumber
+      .fromString("34")
+      .get
+      .##
   }
 
   def toUnsafe = prop { b: BigDecimal =>
@@ -182,4 +211,17 @@ class JNumber extends Spec {
   def testEquals = prop { b: BigDecimal =>
     scalajson.ast.JNumber(b) must beEqualTo(scalajson.ast.JNumber(b))
   }
+
+  def testCopy =
+    prop { (b1: BigDecimal, b2: BigDecimal) =>
+      val asString = b2.toString()
+      scalajson.ast.JNumber(b1).copy(value = asString) must beEqualTo(
+        scalajson.ast.JNumber(b2))
+    }
+
+  def testCopyFail =
+    prop { b: BigDecimal =>
+      scalajson.ast.JNumber(b).copy(value = "not a number") must throwA(
+        new NumberFormatException("not a number"))
+    }
 }
