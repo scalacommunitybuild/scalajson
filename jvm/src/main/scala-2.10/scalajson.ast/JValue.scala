@@ -1,5 +1,7 @@
 package scalajson.ast
 
+import scala.collection.immutable.VectorMap
+
 /** Represents a valid JSON Value
   *
   * @author Matthew de Detrich
@@ -168,7 +170,7 @@ final case object JFalse extends JBoolean {
   *
   * @author Matthew de Detrich
   */
-final case class JObject(value: Map[String, JValue] = Map.empty)
+final case class JObject(value: VectorMap[String, JValue] = VectorMap.empty)
     extends JValue {
   override def toUnsafe: unsafe.JValue = {
     if (value.isEmpty) {
