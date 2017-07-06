@@ -17,7 +17,7 @@ import scala.collection.generic.{CanBuildFrom, ImmutableMapFactory}
 @deprecatedInheritance(
   "The semantics of immutable collections makes inheriting from VectorMap error-prone.")
 class VectorMap[A, +B](private val fields: Vector[A],
-                       private val underlying: Map[A, B])
+                       private val underlying: Map[A, (Int, B)])
     extends AbstractMap[A, B]
     with Map[A, B]
     with MapLike[A, B, VectorMap[A, B]]
@@ -27,26 +27,42 @@ class VectorMap[A, +B](private val fields: Vector[A],
 
   override def +[B1 >: B](kv: (A, B1)): VectorMap[A, B1] = {
     if (underlying.contains(kv._1)) {
-      new VectorMap(fields, underlying.updated(kv._1, kv._2))
+      new VectorMap(
+        fields,
+        underlying.updated(kv._1, (fields.length, kv._2.asInstanceOf[B])))
     } else {
-      new VectorMap(fields :+ kv._1, underlying.updated(kv._1, kv._2))
+      new VectorMap(
+        fields :+ kv._1,
+        underlying.updated(kv._1, (fields.length + 1, kv._2.asInstanceOf[B])))
     }
   }
 
   override def ++[B1 >: B](xs: GenTraversableOnce[(A, B1)]): VectorMap[A, B1] = {
     val fieldsBuilder = Vector.newBuilder[A]
+    val mapBuilder = Map.newBuilder[A, (Int, B)]
+    val originalFieldsLength = fields.length
+    var newFieldsCounter = 0
     xs.foreach { value =>
       if (!underlying.contains(value._1)) {
+        newFieldsCounter += 1
         fieldsBuilder += value._1
+        mapBuilder += ((value._1,
+                        (originalFieldsLength + newFieldsCounter,
+                         value._2.asInstanceOf[B])))
+      } else {
+        val oldCounter = underlying(value._1)._1
+        mapBuilder += ((value._1, (oldCounter, value._2.asInstanceOf[B])))
       }
+
     }
-    new VectorMap(fields ++ fieldsBuilder.result(), underlying ++ xs)
+    new VectorMap(fields ++ fieldsBuilder.result(),
+                  underlying ++ mapBuilder.result())
   }
 
-  override def get(key: A): Option[B] = underlying.get(key)
+  override def get(key: A): Option[B] = underlying.get(key).map(_._2)
 
   override def getOrElse[B1 >: B](key: A, default: => B1): B1 =
-    underlying.getOrElse(key, default)
+    underlying.get(key).map(_._2.asInstanceOf[B]).getOrElse(default)
 
   override def iterator: Iterator[(A, B)] = new Iterator[(A, B)] {
     private val fieldsIterator = fields.iterator
@@ -55,14 +71,18 @@ class VectorMap[A, +B](private val fields: Vector[A],
 
     override def next(): (A, B) = {
       val field = fieldsIterator.next()
-      (field, underlying(field))
+      (field, underlying(field)._2)
     }
   }
 
-  def toMap: Map[A, B] = underlying
-
-  override def -(key: A): VectorMap[A, B] =
-    new VectorMap(fields.filterNot(_ == key), underlying - key)
+  override def -(key: A): VectorMap[A, B] = {
+    underlying.get(key) match {
+      case Some((index, _)) =>
+        new VectorMap(fields.patch(index, Nil, 1), underlying - key)
+      case _ =>
+        this
+    }
+  }
 
   override def keys: scala.Iterable[A] = fields.iterator.toIterable
 
@@ -75,7 +95,7 @@ class VectorMap[A, +B](private val fields: Vector[A],
 
         override def next(): B = {
           val field = fieldsIterator.next()
-          underlying(field)
+          underlying(field)._2
         }
       }
     }
@@ -85,13 +105,17 @@ class VectorMap[A, +B](private val fields: Vector[A],
 
   override def size: Int = fields.size
 
-  override def apply(k: A): B = underlying(k)
+  override def apply(k: A): B = underlying(k)._2
 
   override def updated[B1 >: B](key: A, value: B1): VectorMap[A, B1] = {
     if (underlying.contains(key)) {
-      new VectorMap(fields, underlying.updated(key, value))
+      val oldKey = underlying(key)._1
+      new VectorMap(fields,
+                    underlying.updated(key, (oldKey, value.asInstanceOf[B])))
     } else {
-      new VectorMap(fields :+ key, underlying.updated(key, value))
+      new VectorMap(
+        fields :+ key,
+        underlying.updated(key, (fields.length + 1, value.asInstanceOf[B])))
     }
   }
 
@@ -123,10 +147,12 @@ object VectorMap extends ImmutableMapFactory[VectorMap] {
 
 class VectorMapBuilder[A, B] extends mutable.Builder[(A, B), VectorMap[A, B]] {
   private val fieldBuilder = Vector.newBuilder[A]
-  private val underlyingBuilder = Map.newBuilder[A, B]
+  private val underlyingBuilder = Map.newBuilder[A, (Int, B)]
+  private var counter = 0
 
   override def +=(elem: (A, B)): VectorMapBuilder.this.type = {
-    underlyingBuilder += elem
+    underlyingBuilder += ((elem._1, (counter, elem._2)))
+    counter += 1
     fieldBuilder += elem._1
     this
   }
@@ -134,6 +160,7 @@ class VectorMapBuilder[A, B] extends mutable.Builder[(A, B), VectorMap[A, B]] {
   override def clear(): Unit = {
     underlyingBuilder.clear()
     fieldBuilder.clear()
+    counter = 0
   }
 
   override def result(): VectorMap[A, B] = {
