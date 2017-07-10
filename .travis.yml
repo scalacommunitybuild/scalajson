@@ -15,8 +15,8 @@ matrix:
 script:
   - sbt clean coverage test coverageReport
   - sbt ++$TRAVIS_SCALA_VERSION "test"
-  - sbt benchmarkJVM/test:compile
-  - sbt benchmarkJS/test:compile
+  - sbt ++$TRAVIS_SCALA_VERSION "benchmarkJVM/test:compile"
+  - sbt ++$TRAVIS_SCALA_VERSION "benchmarkJS/test:compile"
 #  - if [ "$RUN_MIMA" == "true" ]; then sbt ++$TRAVIS_SCALA_VERSION "+scalaJsonJVM/mimaReportBinaryIssues" ; fi
 
 after_success:
