@@ -103,6 +103,15 @@ final case class JNumber(value: String, constructedFlag: Int = 0)
     case n => n
   }
 
+  override def equals(obj: scala.Any): Boolean = {
+    obj match {
+      case jNumber: JNumber => jNumber.value == this.value
+      case _ => false
+    }
+  }
+
+  override def hashCode(): Int = value.##
+
   def toInt: Option[Long] = {
     if ((constructedFlag & NumberFlags.int) == NumberFlags.int)
       Some(value.toInt)
