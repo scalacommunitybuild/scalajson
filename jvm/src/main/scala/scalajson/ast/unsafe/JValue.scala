@@ -134,7 +134,13 @@ final case class JNumber(value: String, constructedFlag: Int = 0)
     }
   }
 
-  def toBigDecimal: BigDecimal = BigDecimal(value)
+  def toBigDecimal: Option[BigDecimal] = {
+    try {
+      Some(BigDecimal(value))
+    } catch {
+      case _: NumberFormatException => None
+    }
+  }
 
   def toFloat: Option[Float] = {
     if ((constructedFlag & NumberFlags.float) == NumberFlags.float)

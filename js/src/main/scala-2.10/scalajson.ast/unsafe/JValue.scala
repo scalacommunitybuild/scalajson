@@ -153,17 +153,27 @@ final case class JNumber(value: String, constructedFlag: Int = 0)
     }
   }
 
-  def toBigDecimal: BigDecimal = BigDecimal(value)
+  def toBigDecimal: Option[BigDecimal] = {
+    try {
+      Some(BigDecimal(value))
+    } catch {
+      case _: NumberFormatException => None
+    }
+  }
 
   def toFloat: Option[Float] = {
     if ((constructedFlag & NumberFlags.float) == NumberFlags.float)
       Some(value.toFloat)
     else {
-      val asFloat = value.toFloat
-      if (BigDecimal(value) == BigDecimal(asFloat.toDouble))
-        Some(asFloat)
-      else
-        None
+      try {
+        val asFloat = value.toFloat
+        if (BigDecimal(value) == BigDecimal(asFloat.toDouble))
+          Some(asFloat)
+        else
+          None
+      } catch {
+        case _: NumberFormatException => None
+      }
     }
   }
 
@@ -171,11 +181,15 @@ final case class JNumber(value: String, constructedFlag: Int = 0)
     if ((constructedFlag & NumberFlags.double) == NumberFlags.double)
       Some(value.toDouble)
     else {
-      val asDouble = value.toDouble
-      if (BigDecimal(value) == BigDecimal(asDouble))
-        Some(asDouble)
-      else
-        None
+      try {
+        val asDouble = value.toDouble
+        if (BigDecimal(value) == BigDecimal(asDouble))
+          Some(asDouble)
+        else
+          None
+      } catch {
+        case _: NumberFormatException => None
+      }
     }
   }
 }

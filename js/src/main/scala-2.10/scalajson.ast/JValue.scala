@@ -190,7 +190,13 @@ final class JNumber private[ast] (val value: String)(
     }
   }
 
-  def toBigDecimal: BigDecimal = BigDecimal(value)
+  def toBigDecimal: Option[BigDecimal] = {
+    try {
+      Some(BigDecimal(value))
+    } catch {
+      case _: NumberFormatException => None
+    }
+  }
 
   def toFloat: Option[Float] = {
     if ((constructedFlag & NumberFlags.float) == NumberFlags.float)

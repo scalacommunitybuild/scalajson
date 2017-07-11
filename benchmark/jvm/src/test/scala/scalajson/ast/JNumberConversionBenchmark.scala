@@ -58,22 +58,32 @@ object JNumberConversionBenchmark extends Bench.ForkedTime {
       if ((floatConstructedFlag & NumberFlags.float) == NumberFlags.float)
         Some(value.toFloat)
       else {
-        val asFloat = value.toFloat
-        if (BigDecimal(value) == BigDecimal(asFloat.toDouble))
-          Some(asFloat)
-        else
-          None
+        try {
+          val asFloat = value.toFloat
+          if (BigDecimal(value) == BigDecimal(asFloat.toDouble))
+            Some(asFloat)
+          else
+            None
+        } catch {
+          case _: NumberFormatException => None
+        }
+
       }
     }
   }
 
   performance of "floatManualCheckSuccess" in {
     using(floatString) in { value: String =>
-      val asFloat = value.toFloat
-      if (BigDecimal(value) == BigDecimal(asFloat.toDouble))
-        Some(asFloat)
-      else
-        None
+      try {
+        val asFloat = value.toFloat
+        if (BigDecimal(value) == BigDecimal(asFloat.toDouble))
+          Some(asFloat)
+        else
+          None
+      } catch {
+        case _: NumberFormatException => None
+      }
+
     }
   }
 }
