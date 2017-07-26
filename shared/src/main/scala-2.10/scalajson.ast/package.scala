@@ -605,7 +605,7 @@ package object ast {
   private[ast] def toDouble(value: String): Option[Double] = {
     try {
       val asDouble = value.toDouble
-      if (BigDecimal(value) == BigDecimal(asDouble))
+      if (BigDecimal(value, MathContext.UNLIMITED) == BigDecimal(asDouble, MathContext.UNLIMITED))
         Some(asDouble)
       else
         None
