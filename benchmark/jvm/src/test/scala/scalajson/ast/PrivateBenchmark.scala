@@ -3,7 +3,10 @@ package scalajson.ast
 import benchmark.Generators
 import org.scalameter.Bench
 
-object EqualsHashcodeBenchmark extends Bench.ForkedTime {
+/**
+  * Created by matthewdedetrich on 17/10/16.
+  */
+object PrivateBenchmark extends Bench.ForkedTime {
 
   performance of "privateMethods" in {
     measure method "hashcode" in {

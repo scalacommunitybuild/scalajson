@@ -4,6 +4,7 @@ package unsafe
 import scalajson.ast
 import scalajson.ast._
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSExport
 
 /** Represents a JSON Value which may be invalid. Internally uses mutable
   * collections when its desirable to do so, for performance and other reasons
@@ -55,28 +56,21 @@ final case class JString(value: String) extends JValue {
 }
 
 object JNumber {
-  def apply(value: Int): JNumber =
-    JNumber(value.toString, NumberFlags.intConstructed)
+  def apply(value: Int): JNumber = JNumber(value.toString)
 
-  def apply(value: Long): JNumber =
-    JNumber(value.toString, NumberFlags.longConstructed)
+  def apply(value: Long): JNumber = JNumber(value.toString)
 
-  def apply(value: BigInt): JNumber =
-    JNumber(value.toString, NumberFlags.bigIntConstructed)
+  def apply(value: BigInt): JNumber = JNumber(value.toString)
 
-  def apply(value: BigDecimal): JNumber =
-    JNumber(value.toString, NumberFlags.bigDecimalConstructed)
+  def apply(value: BigDecimal): JNumber = JNumber(value.toString)
 
-  def apply(value: Float): JNumber =
-    JNumber(value.toString, NumberFlags.floatConstructed)
+  def apply(value: Float): JNumber = JNumber(value.toString)
 
-  def apply(value: Double): JNumber =
-    JNumber(value.toString, NumberFlags.doubleConstructed)
+  def apply(value: Double): JNumber = JNumber(value.toString)
 
-  def apply(value: Integer): JNumber =
-    JNumber(value.toString, NumberFlags.intConstructed)
+  def apply(value: Integer): JNumber = JNumber(value.toString)
 
-  def apply(value: Array[Char]): JNumber = JNumber(new String(value), (0))
+  def apply(value: Array[Char]): JNumber = JNumber(new String(value))
 }
 
 /** Represents a JSON number value.
@@ -90,17 +84,12 @@ object JNumber {
   * @author Matthew de Detrich
   */
 // JNumber is internally represented as a string, to improve performance
-final case class JNumber(value: String, constructedFlag: Int = 0)
-    extends JValue {
+final case class JNumber(value: String) extends JValue {
   override def toStandard: ast.JValue =
     value match {
-      case jNumberRegex(_ *) => new ast.JNumber(value)(constructedFlag)
+      case jNumberRegex(_ *) => new ast.JNumber(value)
       case _ => throw new NumberFormatException(value)
     }
-
-  def this(value: Double) = {
-    this(value.toString)
-  }
 
   override def toJsAny: js.Any = value.toDouble match {
     case n if n.isNaN => null
@@ -108,98 +97,15 @@ final case class JNumber(value: String, constructedFlag: Int = 0)
     case n => n
   }
 
-  override def equals(obj: scala.Any): Boolean = {
-    obj match {
-      case jNumber: JNumber => jNumber.value == this.value
-      case _ => false
-    }
-  }
+  def toInt: Option[Int] = scalajson.ast.toInt(value)
 
-  override def hashCode(): Int = value.##
+  def toBigInt: Option[BigInt] = scalajson.ast.toBigInt(value)
 
-  def toInt: Option[Long] = {
-    if ((constructedFlag & NumberFlags.int) == NumberFlags.int)
-      Some(value.toInt)
-    else {
-      try {
-        val asInt = value.toInt
-        if (BigInt(value) == BigInt(asInt))
-          Some(asInt)
-        else
-          None
-      } catch {
-        case _: NumberFormatException => None
-      }
-    }
-  }
+  def toLong: Option[Long] = scalajson.ast.toLong(value)
 
-  def toLong: Option[Long] = {
-    if ((constructedFlag & NumberFlags.long) == NumberFlags.long)
-      Some(value.toLong)
-    else {
-      try {
-        val asLong = value.toLong
-        if (BigInt(value) == BigInt(asLong))
-          Some(asLong)
-        else
-          None
-      } catch {
-        case _: NumberFormatException => None
-      }
-    }
-  }
+  def toDouble: Option[Double] = scalajson.ast.toDouble(value)
 
-  def toBigInt: Option[BigInt] = {
-    if ((constructedFlag & NumberFlags.bigInt) == NumberFlags.bigInt)
-      Some(BigInt(value))
-    else {
-      try {
-        Some(BigInt(value))
-      } catch {
-        case _: NumberFormatException => None
-      }
-    }
-  }
-
-  def toBigDecimal: Option[BigDecimal] = {
-    try {
-      Some(BigDecimal(value))
-    } catch {
-      case _: NumberFormatException => None
-    }
-  }
-
-  def toFloat: Option[Float] = {
-    if ((constructedFlag & NumberFlags.float) == NumberFlags.float)
-      Some(value.toFloat)
-    else {
-      try {
-        val asFloat = value.toFloat
-        if (BigDecimal(value) == BigDecimal(asFloat.toDouble))
-          Some(asFloat)
-        else
-          None
-      } catch {
-        case _: NumberFormatException => None
-      }
-    }
-  }
-
-  def toDouble: Option[Double] = {
-    if ((constructedFlag & NumberFlags.double) == NumberFlags.double)
-      Some(value.toDouble)
-    else {
-      try {
-        val asDouble = value.toDouble
-        if (BigDecimal(value) == BigDecimal(asDouble))
-          Some(asDouble)
-        else
-          None
-      } catch {
-        case _: NumberFormatException => None
-      }
-    }
-  }
+  def toBigDecimal: Option[BigDecimal] = scalajson.ast.toBigDecimal(value)
 }
 
 /** Represents a JSON Boolean value, which can either be a
@@ -332,7 +238,7 @@ final case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
                                   case unsafe.JNull => unsafe.JNull.##
                                   case unsafe.JString(s) => s.##
                                   case unsafe.JBoolean(b) => b.##
-                                  case unsafe.JNumber(i, _) => i.##
+                                  case unsafe.JNumber(i) => i.##
                                   case unsafe.JArray(a) => a.##
                                   case unsafe.JObject(obj) => obj.##
                                 }
@@ -404,7 +310,7 @@ final case class JArray(value: js.Array[JValue] = js.Array()) extends JValue {
                                   case unsafe.JNull => unsafe.JNull.##
                                   case unsafe.JString(s) => s.##
                                   case unsafe.JBoolean(b) => b.##
-                                  case unsafe.JNumber(i, _) => i.##
+                                  case unsafe.JNumber(i) => i.##
                                   case unsafe.JArray(a) => a.##
                                   case unsafe.JObject(obj) => obj.##
                                 }
