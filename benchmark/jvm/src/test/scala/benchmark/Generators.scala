@@ -25,8 +25,9 @@ object Generators {
   def jNumber: Gen[ast.JNumber] =
     for {
       size <- Gen.range("seed")(300000, 1500000, 300000)
+      size2 <- Gen.range("seed")(300000, 1500000, 300000)
     } yield {
-      ast.JNumber(size)
+      ast.JNumber(s"$size.$size2").get
     }
 
   def jArray: Gen[ast.JArray] =
