@@ -428,7 +428,7 @@ package object ast {
         if (!(digit == 0 && (decimalFlag || eFlag))) {
 
           if (!negativeEFlag) {
-            if (digitLength == maxLengthConstant -1) {
+            if (digitLength == maxLengthConstant - 1) {
               var result2: Int = result
               result2 *= radix
 
@@ -554,7 +554,7 @@ package object ast {
         if (!(digit == 0 && (decimalFlag || eFlag))) {
 
           if (!negativeEFlag) {
-            if (digitLength == maxLengthConstant -1) {
+            if (digitLength == maxLengthConstant - 1) {
               var result2: Long = result
               result2 *= radix
 
@@ -602,6 +602,7 @@ package object ast {
 
   private[ast] def toBigInt(value: String): Option[BigInt] = {
     var decimalFlag = false
+    @inline def maxLengthConstant: Int = 10
     var result: Int = 0 // assume that values are initially small when we convert to bigInt
     var resultBigInt: BigInt = null
     var negative = false
@@ -662,10 +663,13 @@ package object ast {
         if (!(digit == 0 && (decimalFlag || eFlag))) {
 
           if (!negativeEFlag) {
-            var result2: Int = result
-            result2 *= radix
-            if (!negative && result2 < 0 || negative && result2 > 0) {
-              resultBigInt = BigInt(result)
+            if (digitLength == maxLengthConstant - 1) {
+              var result2: Long = result
+              result2 *= radix
+
+              if (!negative && result2 < 0 || negative && result2 > 0) {
+                resultBigInt = BigInt(result)
+              }
             }
 
             if (resultBigInt == null) {
@@ -697,7 +701,9 @@ package object ast {
   private[ast] def toDouble(value: String): Option[Double] = {
     try {
       val asDouble = value.toDouble
-      if (BigDecimal(value, MathContext.UNLIMITED) == BigDecimal(asDouble, MathContext.UNLIMITED))
+      if (BigDecimal(value, MathContext.UNLIMITED) == BigDecimal(
+            asDouble,
+            MathContext.UNLIMITED))
         Some(asDouble)
       else
         None
