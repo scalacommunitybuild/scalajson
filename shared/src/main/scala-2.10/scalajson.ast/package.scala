@@ -352,16 +352,17 @@ package object ast {
     @inline def maxLengthConstant: Int = 10
     var limit: Int = -Integer.MAX_VALUE
     var decimalFlag = false
-    var result: BigInt = 0
+    var result: Int = 0
+    var resultBigInt: BigInt = null
     var negative = false
     var multmin: Int = 0
     var char: Char = 0
     var i = 0
     var eFlag = false
-    var trailingZeroes: BigInt = 0
+    var trailingZeroes: Int = 0
     var negativeEFlag: Boolean = false
-    var resultNegativeEFlag: BigInt = 0
-    var digitLength: BigInt = 0
+    var resultNegativeEFlag: Int = 0
+    var digitLength: Int = 0
     multmin = limit / radix
     if (value.charAt(0) == '-') {
       limit = Integer.MIN_VALUE
@@ -403,7 +404,10 @@ package object ast {
               if (trailingZeroes >= resultNegativeEFlag) {
                 var i2: Int = 0
                 while (i2 < resultNegativeEFlag) {
-                  result = result / radix
+                  if (resultBigInt == null)
+                    result = result / radix
+                  else
+                    resultBigInt = resultBigInt / radix
                   i2 += 1
                 }
               } else
@@ -413,28 +417,60 @@ package object ast {
 
         val maxLenCheck = digitLength <= maxLengthConstant
 
-        if (result < multmin && maxLenCheck && !eFlag)
-          return None
+        if (resultBigInt == null) {
+          if (result < multmin && maxLenCheck && !eFlag)
+            return None
+        } else {
+          if (resultBigInt < multmin && maxLenCheck && !eFlag)
+            return None
+        }
 
         if (!(digit == 0 && (decimalFlag || eFlag))) {
 
           if (!negativeEFlag) {
-            result *= radix
-            if (result < limit + digit && maxLenCheck)
-              return None
-            result -= digit
+            if (digitLength == maxLengthConstant -1) {
+              var result2: Int = result
+              result2 *= radix
+
+              if (!negative && result2 < 0 || negative && result2 > 0) {
+                resultBigInt = BigInt(result)
+              }
+            }
+
+            if (resultBigInt == null) {
+              result *= radix
+              if (result < limit + digit && maxLenCheck)
+                return None
+              result -= digit
+            } else {
+              resultBigInt *= radix
+              if (resultBigInt < limit + digit && maxLenCheck)
+                return None
+              resultBigInt -= digit
+            }
           }
         }
       }
       i += 1
     }
-    if (result < limit)
-      None
-    else {
-      if (negative)
-        Some(result.toInt)
-      else
-        Some(-result.toInt)
+    if (resultBigInt == null) {
+      if (result < limit)
+        None
+      else {
+        if (negative)
+          Some(result)
+        else
+          Some(-result)
+      }
+    } else {
+      if (resultBigInt < limit)
+        None
+      else {
+        if (negative)
+          Some(resultBigInt.toInt)
+        else
+          Some(-resultBigInt.toInt)
+      }
     }
   }
 
@@ -442,16 +478,17 @@ package object ast {
     @inline def maxLengthConstant: Int = 19
     var limit: Long = -Long.MaxValue
     var decimalFlag = false
-    var result: BigInt = 0
+    var result: Long = 0
+    var resultBigInt: BigInt = null
     var negative = false
     var multmin: Long = 0
     var char: Char = 0
     var i = 0
     var eFlag = false
-    var trailingZeroes: BigInt = 0
+    var trailingZeroes: Int = 0
     var negativeEFlag: Boolean = false
-    var resultNegativeEFlag: BigInt = 0
-    var digitLength: BigInt = 0
+    var resultNegativeEFlag: Long = 0
+    var digitLength: Int = 0
     multmin = limit / radix
     if (value.charAt(0) == '-') {
       limit = Long.MinValue
@@ -493,7 +530,10 @@ package object ast {
               if (trailingZeroes >= resultNegativeEFlag) {
                 var i2: Int = 0
                 while (i2 < resultNegativeEFlag) {
-                  result = result / radix
+                  if (resultBigInt == null)
+                    result = result / radix
+                  else
+                    resultBigInt = resultBigInt / radix
                   i2 += 1
                 }
               } else
@@ -503,42 +543,75 @@ package object ast {
 
         val maxLenCheck = digitLength <= maxLengthConstant
 
-        if (result < multmin && maxLenCheck && !eFlag)
-          return None
+        if (resultBigInt == null) {
+          if (result < multmin && maxLenCheck && !eFlag)
+            return None
+        } else {
+          if (resultBigInt < multmin && maxLenCheck && !eFlag)
+            return None
+        }
 
         if (!(digit == 0 && (decimalFlag || eFlag))) {
 
           if (!negativeEFlag) {
-            result *= radix
-            if (result < limit + digit && maxLenCheck)
-              return None
-            result -= digit
+            if (digitLength == maxLengthConstant -1) {
+              var result2: Long = result
+              result2 *= radix
+
+              if (!negative && result2 < 0 || negative && result2 > 0) {
+                resultBigInt = BigInt(result)
+              }
+            }
+
+            if (resultBigInt == null) {
+              result *= radix
+              if (result < limit + digit && maxLenCheck)
+                return None
+              result -= digit
+            } else {
+              resultBigInt *= radix
+              if (resultBigInt < limit + digit && maxLenCheck)
+                return None
+              resultBigInt -= digit
+            }
           }
         }
       }
       i += 1
     }
-    if (result < limit)
-      None
-    else {
-      if (negative)
-        Some(result.toLong)
-      else
-        Some(-result.toLong)
+    if (resultBigInt == null) {
+      if (result < limit)
+        None
+      else {
+        if (negative)
+          Some(result)
+        else
+          Some(-result)
+      }
+    } else {
+      if (resultBigInt < limit)
+        None
+      else {
+        if (negative)
+          Some(resultBigInt.toLong)
+        else
+          Some(-resultBigInt.toLong)
+      }
     }
   }
 
   private[ast] def toBigInt(value: String): Option[BigInt] = {
     var decimalFlag = false
-    var result: BigInt = 0
+    var result: Int = 0 // assume that values are initially small when we convert to bigInt
+    var resultBigInt: BigInt = null
     var negative = false
     var char: Char = 0
     var i = 0
     var eFlag = false
-    var trailingZeroes: BigInt = 0
+    var trailingZeroes: Int = 0
     var negativeEFlag: Boolean = false
-    var resultNegativeEFlag: BigInt = 0
-    var digitLength: BigInt = 0
+    var resultNegativeEFlag: Int = 0
+    var digitLength: Int = 0
     if (value.charAt(0) == '-') {
       negative = true
       i += 1
@@ -589,17 +662,36 @@ package object ast {
         if (!(digit == 0 && (decimalFlag || eFlag))) {
 
           if (!negativeEFlag) {
-            result *= radix
-            result -= digit
+            var result2: Int = result
+            result2 *= radix
+            if (!negative && result2 < 0 || negative && result2 > 0) {
+              resultBigInt = BigInt(result)
+            }
+
+            if (resultBigInt == null) {
+              result *= radix
+              result -= digit
+            } else {
+              resultBigInt *= radix
+              resultBigInt -= digit
+            }
           }
         }
       }
       i += 1
     }
-    if (negative)
-      Some(result)
-    else
-      Some(-result)
+
+    if (resultBigInt == null) {
+      if (negative)
+        Some(BigInt(result))
+      else
+        Some(BigInt(-result))
+    } else {
+      if (negative)
+        Some(resultBigInt)
+      else
+        Some(resultBigInt)
+    }
   }
 
   private[ast] def toDouble(value: String): Option[Double] = {
