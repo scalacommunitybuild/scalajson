@@ -73,8 +73,8 @@ object JNumber {
 final case class JNumber(value: String) extends JValue {
   override def toStandard: ast.JValue =
     value match {
-      case jNumberRegex(_ *) => new ast.JNumber(value)
-      case _ => throw new NumberFormatException(value)
+      case jNumberRegex(_*) => new ast.JNumber(value)
+      case _                => throw new NumberFormatException(value)
     }
 
   def toInt: Option[Int] = scalajson.ast.toInt(value)
