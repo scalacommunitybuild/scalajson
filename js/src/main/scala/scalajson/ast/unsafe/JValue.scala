@@ -86,8 +86,8 @@ object JNumber {
 final case class JNumber(value: String) extends JValue {
   override def toStandard: ast.JValue =
     value match {
-      case jNumberRegex(_ *) => new ast.JNumber(value)
-      case _ => throw new NumberFormatException(value)
+      case jNumberRegex(_*) => new ast.JNumber(value)
+      case _                => throw new NumberFormatException(value)
     }
 
   def this(value: Double) = {
@@ -95,9 +95,9 @@ final case class JNumber(value: String) extends JValue {
   }
 
   override def toJsAny: js.Any = value.toDouble match {
-    case n if n.isNaN => null
+    case n if n.isNaN      => null
     case n if n.isInfinity => null
-    case n => n
+    case n                 => n
   }
 }
 
@@ -229,11 +229,11 @@ final case class JObject(value: js.Array[JField] = js.Array()) extends JValue {
                               else {
                                 result = 31 * result + elem.field.##
                                 elem.value match {
-                                  case unsafe.JNull => unsafe.JNull.##
-                                  case unsafe.JString(s) => s.##
-                                  case unsafe.JBoolean(b) => b.##
-                                  case unsafe.JNumber(i) => i.##
-                                  case unsafe.JArray(a) => a.##
+                                  case unsafe.JNull        => unsafe.JNull.##
+                                  case unsafe.JString(s)   => s.##
+                                  case unsafe.JBoolean(b)  => b.##
+                                  case unsafe.JNumber(i)   => i.##
+                                  case unsafe.JArray(a)    => a.##
                                   case unsafe.JObject(obj) => obj.##
                                 }
                               })
@@ -301,11 +301,11 @@ final case class JArray(value: js.Array[JValue] = js.Array()) extends JValue {
       result = 31 * result + (if (elem == null) 0
                               else {
                                 elem match {
-                                  case unsafe.JNull => unsafe.JNull.##
-                                  case unsafe.JString(s) => s.##
-                                  case unsafe.JBoolean(b) => b.##
-                                  case unsafe.JNumber(i) => i.##
-                                  case unsafe.JArray(a) => a.##
+                                  case unsafe.JNull        => unsafe.JNull.##
+                                  case unsafe.JString(s)   => s.##
+                                  case unsafe.JBoolean(b)  => b.##
+                                  case unsafe.JNumber(i)   => i.##
+                                  case unsafe.JArray(a)    => a.##
                                   case unsafe.JObject(obj) => obj.##
                                 }
                               })

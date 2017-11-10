@@ -54,8 +54,8 @@ object JNumber {
     */
   def apply(value: Float): JValue = value match {
     case n if java.lang.Float.isNaN(n) => JNull
-    case n if n.isInfinity => JNull
-    case _ => new JNumber(value.toString)
+    case n if n.isInfinity             => JNull
+    case _                             => new JNumber(value.toString)
   }
 
   def apply(value: BigDecimal): JNumber = new JNumber(value.toString())
@@ -65,9 +65,9 @@ object JNumber {
     * @return Will return a [[JNull]] if value is a Nan or Infinity
     */
   def apply(value: Double): JValue = value match {
-    case n if n.isNaN => JNull
+    case n if n.isNaN      => JNull
     case n if n.isInfinity => JNull
-    case _ => new JNumber(value.toString)
+    case _                 => new JNumber(value.toString)
   }
 
   def apply(value: Integer): JNumber = new JNumber(value.toString)
@@ -79,8 +79,8 @@ object JNumber {
 
   def fromString(value: String): Option[JNumber] =
     value match {
-      case jNumberRegex(_ *) => Some(new JNumber(value))
-      case _ => None
+      case jNumberRegex(_*) => Some(new JNumber(value))
+      case _                => None
     }
 }
 
@@ -105,8 +105,8 @@ final case class JNumber private[ast] (value: String) extends JValue {
 
   def copy(value: String): JNumber =
     value match {
-      case jNumberRegex(_ *) => new JNumber(value)
-      case _ => throw new NumberFormatException(value)
+      case jNumberRegex(_*) => new JNumber(value)
+      case _                => throw new NumberFormatException(value)
     }
 }
 

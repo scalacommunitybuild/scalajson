@@ -2,7 +2,7 @@ package benchmark
 
 import org.scalameter._
 
-import scala.json.ast
+import scalajson.ast
 
 object Generators {
   def jBoolean: Gen[ast.JBoolean] =
@@ -69,7 +69,7 @@ object Generators {
         case 1 => jString.asInstanceOf[Gen[ast.JValue]]
         case 2 => jNumber.asInstanceOf[Gen[ast.JValue]]
         case 3 => jArray.asInstanceOf[Gen[ast.JValue]]
-        case 4 => JArray.asInstanceOf[Gen[ast.JValue]]
+        case 4 => jString.asInstanceOf[Gen[ast.JValue]]
       }
     }
 }
