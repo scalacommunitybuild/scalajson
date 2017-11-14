@@ -2,6 +2,7 @@ package benchmark
 
 import org.scalameter._
 
+import scala.collection.immutable.VectorMap
 import scalajson.ast
 
 object Generators {
@@ -53,7 +54,7 @@ object Generators {
       randomJValue <- jValue
     } yield {
 
-      val b = Map.newBuilder[String, ast.JValue]
+      val b = VectorMap.newBuilder[String, ast.JValue]
 
       (0 until size).foreach { _ =>
         b += ((string, randomJValue))
