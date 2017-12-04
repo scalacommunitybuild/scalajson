@@ -698,25 +698,18 @@ package object ast {
     }
   }
 
-  private[ast] def toDouble(value: String): Option[Double] = {
-    try {
-      val asDouble = value.toDouble
-      if (BigDecimal(value, MathContext.UNLIMITED) == BigDecimal(
-            asDouble,
-            MathContext.UNLIMITED))
-        Some(asDouble)
-      else
-        None
-    } catch {
-      case _: java.lang.NumberFormatException => None
-    }
-  }
+  @inline private[ast] def toDouble(value: String): Double =
+    value.toDouble
+
+  @inline private[ast] def toFloat(value: String): Float =
+    value.toFloat
 
   private[ast] def toBigDecimal(value: String): Option[BigDecimal] = {
     try {
       Some(BigDecimal(value, MathContext.UNLIMITED))
     } catch {
-      case _: java.lang.NumberFormatException => None
+      case _: NumberFormatException | _: ArithmeticException =>
+        None
     }
   }
 }

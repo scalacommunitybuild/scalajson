@@ -83,7 +83,9 @@ final case class JNumber(value: String) extends JValue {
 
   def toLong: Option[Long] = scalajson.ast.toLong(value)
 
-  def toDouble: Option[Double] = scalajson.ast.toDouble(value)
+  def toDouble: Double = scalajson.ast.toDouble(value)
+
+  def toFloat: Double = scalajson.ast.toFloat(value)
 
   def toBigDecimal: Option[BigDecimal] = scalajson.ast.toBigDecimal(value)
 }
