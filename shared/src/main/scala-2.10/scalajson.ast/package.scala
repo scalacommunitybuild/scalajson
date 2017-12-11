@@ -1,5 +1,7 @@
 package scalajson
 
+import java.math.MathContext
+
 import scala.util.matching.Regex
 
 package object ast {
@@ -342,5 +344,372 @@ package object ast {
         pa == (if (negb) pb - eb else pb + eb)
       }
     } else pa == pb
+  }
+
+  @inline private[ast] def radix: Int = 10
+
+  private[ast] def toInt(value: String): Option[Int] = {
+    @inline def maxLengthConstant: Int = 10
+    var limit: Int = -Integer.MAX_VALUE
+    var decimalFlag = false
+    var result: Int = 0
+    var resultBigInt: BigInt = null
+    var negative = false
+    var multmin: Int = 0
+    var char: Char = 0
+    var i = 0
+    var eFlag = false
+    var trailingZeroes: Int = 0
+    var negativeEFlag: Boolean = false
+    var resultNegativeEFlag: Int = 0
+    var digitLength: Int = 0
+    multmin = limit / radix
+    if (value.charAt(0) == '-') {
+      limit = Integer.MIN_VALUE
+      negative = true
+      i += 1
+    }
+
+    while (i < value.length) {
+      char = value.charAt(i)
+      if (char == '.')
+        decimalFlag = true
+      else if ((char | 0x20) == 'e') {
+        eFlag = true
+        val charNext = value.charAt(i + 1)
+        if (charNext == '-')
+          negativeEFlag = true
+        if (negativeEFlag || charNext == '+') {
+          i += 1
+        }
+      } else {
+        if (!(eFlag || decimalFlag))
+          digitLength += 1
+
+        val digit = Character.digit(char, radix)
+
+        if (digit == 0)
+          if (!decimalFlag)
+            trailingZeroes += 1
+          else if (!decimalFlag)
+            trailingZeroes = 0
+
+        if (digit != 0 && (decimalFlag || eFlag))
+          if (!negativeEFlag)
+            return None
+          else {
+            if (trailingZeroes != 0) {
+              resultNegativeEFlag *= radix
+              resultNegativeEFlag += digit
+              if (trailingZeroes >= resultNegativeEFlag) {
+                var i2: Int = 0
+                while (i2 < resultNegativeEFlag) {
+                  if (resultBigInt == null)
+                    result = result / radix
+                  else
+                    resultBigInt = resultBigInt / radix
+                  i2 += 1
+                }
+              } else
+                return None
+            }
+          }
+
+        val maxLenCheck = digitLength <= maxLengthConstant
+
+        if (resultBigInt == null) {
+          if (result < multmin && maxLenCheck && !eFlag)
+            return None
+        } else {
+          if (resultBigInt < multmin && maxLenCheck && !eFlag)
+            return None
+        }
+
+        if (!(digit == 0 && (decimalFlag || eFlag))) {
+
+          if (!negativeEFlag) {
+            if (digitLength == maxLengthConstant - 1) {
+              var result2: Int = result
+              result2 *= radix
+
+              if (!negative && result2 < 0 || negative && result2 > 0) {
+                resultBigInt = BigInt(result)
+              }
+            }
+
+            if (resultBigInt == null) {
+              result *= radix
+              if (result < limit + digit && maxLenCheck)
+                return None
+              result -= digit
+            } else {
+              resultBigInt *= radix
+              if (resultBigInt < limit + digit && maxLenCheck)
+                return None
+              resultBigInt -= digit
+            }
+          }
+        }
+      }
+      i += 1
+    }
+    if (resultBigInt == null) {
+      if (result < limit)
+        None
+      else {
+        if (negative)
+          Some(result)
+        else
+          Some(-result)
+      }
+    } else {
+      if (resultBigInt < limit)
+        None
+      else {
+        if (negative)
+          Some(resultBigInt.toInt)
+        else
+          Some(-resultBigInt.toInt)
+      }
+    }
+  }
+
+  private[ast] def toLong(value: String): Option[Long] = {
+    @inline def maxLengthConstant: Int = 19
+    var limit: Long = -Long.MaxValue
+    var decimalFlag = false
+    var result: Long = 0
+    var resultBigInt: BigInt = null
+    var negative = false
+    var multmin: Long = 0
+    var char: Char = 0
+    var i = 0
+    var eFlag = false
+    var trailingZeroes: Int = 0
+    var negativeEFlag: Boolean = false
+    var resultNegativeEFlag: Long = 0
+    var digitLength: Int = 0
+    multmin = limit / radix
+    if (value.charAt(0) == '-') {
+      limit = Long.MinValue
+      negative = true
+      i += 1
+    }
+
+    while (i < value.length) {
+      char = value.charAt(i)
+      if (char == '.')
+        decimalFlag = true
+      else if ((char | 0x20) == 'e') {
+        eFlag = true
+        val charNext = value.charAt(i + 1)
+        if (charNext == '-')
+          negativeEFlag = true
+        if (negativeEFlag || charNext == '+') {
+          i += 1
+        }
+      } else {
+        if (!(eFlag || decimalFlag))
+          digitLength += 1
+
+        val digit = Character.digit(char, radix)
+
+        if (digit == 0)
+          if (!decimalFlag)
+            trailingZeroes += 1
+          else if (!decimalFlag)
+            trailingZeroes = 0
+
+        if (digit != 0 && (decimalFlag || eFlag))
+          if (!negativeEFlag)
+            return None
+          else {
+            if (trailingZeroes != 0) {
+              resultNegativeEFlag *= radix
+              resultNegativeEFlag += digit
+              if (trailingZeroes >= resultNegativeEFlag) {
+                var i2: Int = 0
+                while (i2 < resultNegativeEFlag) {
+                  if (resultBigInt == null)
+                    result = result / radix
+                  else
+                    resultBigInt = resultBigInt / radix
+                  i2 += 1
+                }
+              } else
+                return None
+            }
+          }
+
+        val maxLenCheck = digitLength <= maxLengthConstant
+
+        if (resultBigInt == null) {
+          if (result < multmin && maxLenCheck && !eFlag)
+            return None
+        } else {
+          if (resultBigInt < multmin && maxLenCheck && !eFlag)
+            return None
+        }
+
+        if (!(digit == 0 && (decimalFlag || eFlag))) {
+
+          if (!negativeEFlag) {
+            if (digitLength == maxLengthConstant - 1) {
+              var result2: Long = result
+              result2 *= radix
+
+              if (!negative && result2 < 0 || negative && result2 > 0) {
+                resultBigInt = BigInt(result)
+              }
+            }
+
+            if (resultBigInt == null) {
+              result *= radix
+              if (result < limit + digit && maxLenCheck)
+                return None
+              result -= digit
+            } else {
+              resultBigInt *= radix
+              if (resultBigInt < limit + digit && maxLenCheck)
+                return None
+              resultBigInt -= digit
+            }
+          }
+        }
+      }
+      i += 1
+    }
+    if (resultBigInt == null) {
+      if (result < limit)
+        None
+      else {
+        if (negative)
+          Some(result)
+        else
+          Some(-result)
+      }
+    } else {
+      if (resultBigInt < limit)
+        None
+      else {
+        if (negative)
+          Some(resultBigInt.toLong)
+        else
+          Some(-resultBigInt.toLong)
+      }
+    }
+  }
+
+  private[ast] def toBigInt(value: String): Option[BigInt] = {
+    var decimalFlag = false
+    @inline def maxLengthConstant: Int = 10
+    var result: Int = 0 // assume that values are initially small when we convert to bigInt
+    var resultBigInt: BigInt = null
+    var negative = false
+    var char: Char = 0
+    var i = 0
+    var eFlag = false
+    var trailingZeroes: Int = 0
+    var negativeEFlag: Boolean = false
+    var resultNegativeEFlag: Int = 0
+    var digitLength: Int = 0
+    if (value.charAt(0) == '-') {
+      negative = true
+      i += 1
+    }
+
+    while (i < value.length) {
+      char = value.charAt(i)
+      if (char == '.')
+        decimalFlag = true
+      else if ((char | 0x20) == 'e') {
+        eFlag = true
+        val charNext = value.charAt(i + 1)
+        if (charNext == '-')
+          negativeEFlag = true
+        if (negativeEFlag || charNext == '+') {
+          i += 1
+        }
+      } else {
+        if (!(eFlag || decimalFlag))
+          digitLength += 1
+
+        val digit = Character.digit(char, radix)
+
+        if (digit == 0)
+          if (!decimalFlag)
+            trailingZeroes += 1
+          else if (!decimalFlag)
+            trailingZeroes = 0
+
+        if (digit != 0 && (decimalFlag || eFlag))
+          if (!negativeEFlag)
+            return None
+          else {
+            if (trailingZeroes != 0) {
+              resultNegativeEFlag *= radix
+              resultNegativeEFlag += digit
+              if (trailingZeroes >= resultNegativeEFlag) {
+                var i2: Int = 0
+                while (i2 < resultNegativeEFlag) {
+                  result = result / radix
+                  i2 += 1
+                }
+              } else
+                return None
+            }
+          }
+
+        if (!(digit == 0 && (decimalFlag || eFlag))) {
+
+          if (!negativeEFlag) {
+            if (digitLength == maxLengthConstant - 1) {
+              var result2: Long = result
+              result2 *= radix
+
+              if (!negative && result2 < 0 || negative && result2 > 0) {
+                resultBigInt = BigInt(result)
+              }
+            }
+
+            if (resultBigInt == null) {
+              result *= radix
+              result -= digit
+            } else {
+              resultBigInt *= radix
+              resultBigInt -= digit
+            }
+          }
+        }
+      }
+      i += 1
+    }
+
+    if (resultBigInt == null) {
+      if (negative)
+        Some(BigInt(result))
+      else
+        Some(BigInt(-result))
+    } else {
+      if (negative)
+        Some(resultBigInt)
+      else
+        Some(resultBigInt)
+    }
+  }
+
+  @inline private[ast] def toDouble(value: String): Double =
+    value.toDouble
+
+  @inline private[ast] def toFloat(value: String): Float =
+    value.toFloat
+
+  private[ast] def toBigDecimal(value: String): Option[BigDecimal] = {
+    try {
+      Some(BigDecimal(value, MathContext.UNLIMITED))
+    } catch {
+      case _: NumberFormatException | _: ArithmeticException =>
+        None
+    }
   }
 }

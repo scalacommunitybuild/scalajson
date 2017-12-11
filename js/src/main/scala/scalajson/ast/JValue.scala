@@ -98,13 +98,6 @@ object JNumber {
   */
 final case class JNumber private[ast] (value: String) extends JValue {
 
-  /**
-    * Javascript specification for numbers specify a [[scala.Double]], so this is the default export method to `Javascript`
-    *
-    * @param value
-    */
-  def this(value: Double) = this(value.toString)
-
   override def toUnsafe: unsafe.JValue = unsafe.JNumber(value)
 
   override def toJsAny: js.Any = value.toDouble match {
@@ -128,6 +121,18 @@ final case class JNumber private[ast] (value: String) extends JValue {
       case jNumberRegex(_*) => new JNumber(value)
       case _                => throw new NumberFormatException(value)
     }
+
+  def toInt: Option[Int] = scalajson.ast.toInt(value)
+
+  def toBigInt: Option[BigInt] = scalajson.ast.toBigInt(value)
+
+  def toLong: Option[Long] = scalajson.ast.toLong(value)
+
+  def toDouble: Double = scalajson.ast.toDouble(value)
+
+  def toFloat: Float = scalajson.ast.toFloat(value)
+
+  def toBigDecimal: Option[BigDecimal] = scalajson.ast.toBigDecimal(value)
 }
 
 /** Represents a JSON Boolean value, which can either be a

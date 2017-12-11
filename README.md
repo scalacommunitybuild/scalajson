@@ -91,6 +91,28 @@ in an undefined manner.
 Do note that according to the JSON spec, whether to order keys for a `JObject` is not specified. Also note that `Map` 
 disregards ordering for equality, however `Array`/`js.Array` equality takes ordering into account.
 
+## Number conversions
+ScalaJSON `JNumber` provides conversions to various number types with the following conventions
+
+* `toInt`: Safe conversion to `Int` which accounts for values such as `1.0` and `100.00e-2` (which both evaluate to `1`).
+Also safely detects over/underflow.
+* `toLong`: Safe conversion to `Long` which accounts for values such as `1.0` and `100.00e-2` (which both evaluate to `1`).
+Also  safely detects over/underflow.
+* `toDouble`: Converts to a `Double` assuming the same semantics of `Double` (i.e. precision loss is expected).
+* `toFloat`: Converts to a `Float` assuming the same semantics of `Float` (i.e. precision loss is expected).
+* `toBigInt`: Converts to a `BigInt` which accounts for values such as `1.0` and `100.00e-2` (which evaluates to `1`).
+Can construct a `BigInt`for as much as memory as the system has (if your system runs out of memory this is considered
+undefined behaviour).
+* `toBigDecimal`: Converts to a `BigDecimal` with all of the caveats of `BigDecimal` construction. The `BigDecimal` is
+constructed with `MathContext.UNLIMITED` precision.
+
+With the `.toFloat` and `.toDouble` methods, if you don't want any loss in precision, its advisable to convert to
+`BigDecimal` first and then work from there, i.e. when working with `Decimal`/`Float`, its implied that you will
+have loss of precision.
+
+Remember that in all cases if these methods are not applicable, you can always use the `.value` field to get the
+original string representation of the number.
+
 ## Scala.js
 ScalaJSON also provides support for [Scala.js](https://github.com/scala-js/scala-js).
 The usage of Scala.js mirrors the usage of Scala on the JVM however Scala.js also implements
@@ -102,6 +124,10 @@ precision (represented internally as a `String`), calls to `.toJsAny` can lose p
 underlying number (numbers in Javascript are represented as double precision floating point number).
 You can use the `.value` method on a `scalajson.ast.JNumber`/`scalajson.ast.unsafe.JNumber` to
 get the raw string value as a solution to this problem.
+
+Further, `toFloat` on `JNumber` (see [Number Conversions](#number-conversions) ) can have different semantics on Scala.js, depending on whether you have
+strict-floats enabled in your application. Please see the [Scala.js semantics page](https://www.scala-js.org/doc/semantics.html)
+for more information.
 
 ## jNumberRegex
 `scalajson.JNumber` uses `jNumberRegex` to validate whether a number is a valid
