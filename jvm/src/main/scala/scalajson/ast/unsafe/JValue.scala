@@ -175,6 +175,11 @@ final case class JObject(value: Array[JField] = Array.empty) extends JValue {
 
   override def hashCode: Int =
     java.util.Arrays.deepHashCode(value.asInstanceOf[Array[AnyRef]])
+
+  override def toString =
+    productIterator
+      .map(scala.runtime.ScalaRunTime.stringOf)
+      .mkString(productPrefix + "(", ",", ")")
 }
 
 object JArray {
@@ -221,4 +226,9 @@ final case class JArray(value: Array[JValue] = Array.empty) extends JValue {
 
   override def hashCode: Int =
     java.util.Arrays.deepHashCode(value.asInstanceOf[Array[AnyRef]])
+
+  override def toString =
+    productIterator
+      .map(scala.runtime.ScalaRunTime.stringOf)
+      .mkString(productPrefix + "(", ",", ")")
 }

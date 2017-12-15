@@ -9,6 +9,7 @@ class JObject extends Spec {
     s2"""
   The unsafe.JArray value should
     convert toStandard $toStandard
+    have a useful toString ${_toString}
   """
 
   def toStandard = prop { jObject: scalajson.ast.unsafe.JObject =>
@@ -17,5 +18,9 @@ class JObject extends Spec {
     }.toMap
     jObject.toStandard == scalajson.ast.JObject(values)
   }
+
+  def _toString =
+    "" + JObject(JField("a", JObject(JField("b", JFalse)))) ===
+      "JObject(Array(JField(a,JObject(Array(JField(b,JFalse))))))"
 
 }
