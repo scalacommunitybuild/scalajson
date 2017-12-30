@@ -21,6 +21,6 @@ class JObject extends Spec {
 
   def _toString =
     "" + JObject(JField("a", JObject(JField("b", JFalse)))) ===
-      "JObject(Array(JField(a,JObject(Array(JField(b,JFalse))))))"
+      "JObject([JField(a,JObject([JField(b,JFalse)]))])"
 
 }

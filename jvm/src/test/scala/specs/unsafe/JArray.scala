@@ -19,6 +19,6 @@ class JArray extends Spec {
 
   def _toString =
     "" + JArray(JTrue, JArray(JFalse)) ===
-      "JArray(Array(JTrue, JArray(Array(JFalse))))"
+      "JArray([JTrue, JArray([JFalse])])"
 
 }
