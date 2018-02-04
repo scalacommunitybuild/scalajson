@@ -12,5 +12,10 @@ class JArray extends Spec {
         jArray.toStandard == scalajson.ast.JArray(values)
       }
     }
+
+    "have a useful toString" in {
+      "" + JArray(JTrue, JArray(JFalse)) ===
+        "JArray([JTrue, JArray([JFalse])])"
+    }
   }
 }

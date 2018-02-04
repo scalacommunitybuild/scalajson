@@ -15,6 +15,11 @@ class JObject extends Spec {
         jObject.toStandard == scalajson.ast.JObject(values)
       }
     }
+
+    "have a useful toString" in {
+      "" + JObject(JField("a", JObject(JField("b", JFalse)))) ===
+        "JObject([JField(a,JObject([JField(b,JFalse)]))])"
+    }
   }
 
 }
