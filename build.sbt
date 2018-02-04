@@ -8,15 +8,13 @@ import sbtcrossproject.crossProject
 val currentScalaVersion = "2.11.12"
 val scala210Version = "2.10.6"
 val scala212Version = "2.12.4"
-val scalaCheckVersion = "1.13.4"
-val specs2Version = "3.9.1"
+val scalaCheckVersion = "1.13.5"
+val scalaTestVersion = "3.0.4"
 
 scalaVersion in ThisBuild := currentScalaVersion
 crossScalaVersions in ThisBuild := Seq(currentScalaVersion,
                                        scala212Version,
                                        scala210Version)
-
-scalafmtVersion in ThisBuild := "1.3.0"
 
 autoAPIMappings := true
 
@@ -130,8 +128,7 @@ lazy val scalaJson = crossProject(JSPlatform, JVMPlatform)
   .jvmSettings(
     // Add JVM-specific settings here
     libraryDependencies ++= Seq(
-      "org.specs2" %% "specs2-core" % specs2Version % Test,
-      "org.specs2" %% "specs2-scalacheck" % specs2Version % Test,
+      "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
       "org.scalacheck" %% "scalacheck" % scalaCheckVersion % Test
     ),
     scalacOptions in Test ++= Seq("-Yrangepos"),
@@ -141,10 +138,11 @@ lazy val scalaJson = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(
     // Add JS-specific settings here
     libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test,
-      "com.lihaoyi" %%% "utest" % "0.4.4" % Test
+      "org.scalatest" %%% "scalatest" % scalaTestVersion % Test,
+      "org.scalacheck" %%% "scalacheck" % scalaCheckVersion % Test
     ),
-    testFrameworks += new TestFramework("utest.runner.Framework")
+    testFrameworks += TestFrameworks.ScalaTest,
+    scalacOptions in Test ++= Seq("-Yrangepos")
   )
 
 lazy val benchmark = crossProject(JSPlatform, JVMPlatform)
