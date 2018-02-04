@@ -21,6 +21,8 @@ object EqualityImplicits {
           false
       case scalajson.ast.JNumber(value) =>
         if (js.typeOf(bAny) == "number") {
+          // All numbers in Javascript are actually double, so do a tolerant
+          // equal with an epsilon
           doubleEq.areEqual(value.toDouble, bAny.asInstanceOf[Double])
         } else
           false
