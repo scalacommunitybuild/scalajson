@@ -281,7 +281,18 @@ final case class JArray(value: js.Array[JValue] = js.Array()) extends JValue {
     }
   }
 
-  override def toJsAny: js.Any = value
+  override def toJsAny: js.Any = {
+    val jsArray = js.Array[js.Any]()
+    val length = value.length
+    if (length != 0) {
+      var index = 0
+      while (index < length) {
+        jsArray.push(value(index).toJsAny)
+        index += 1
+      }
+    }
+    jsArray
+  }
 
   override def equals(obj: scala.Any): Boolean = {
     obj match {
