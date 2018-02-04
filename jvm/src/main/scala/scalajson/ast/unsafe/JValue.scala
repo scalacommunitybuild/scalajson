@@ -177,7 +177,8 @@ final case class JObject(value: Array[JField] = Array.empty) extends JValue {
     java.util.Arrays.deepHashCode(value.asInstanceOf[Array[AnyRef]])
 
   override def toString =
-    "JObject(" + java.util.Arrays.toString(value.asInstanceOf[Array[AnyRef]]) + ")"
+    "JObject(" + java.util.Arrays
+      .toString(value.asInstanceOf[Array[AnyRef]]) + ")"
 }
 
 object JArray {
@@ -226,5 +227,6 @@ final case class JArray(value: Array[JValue] = Array.empty) extends JValue {
     java.util.Arrays.deepHashCode(value.asInstanceOf[Array[AnyRef]])
 
   override def toString =
-    "JArray(" + java.util.Arrays.toString(value.asInstanceOf[Array[AnyRef]]) + ")"
+    "JArray(" + java.util.Arrays
+      .toString(value.asInstanceOf[Array[AnyRef]]) + ")"
 }
