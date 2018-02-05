@@ -6,7 +6,7 @@ import PgpKeys.publishSigned
 import sbtcrossproject.crossProject
 
 val currentScalaVersion = "2.11.12"
-val scala210Version = "2.10.6"
+val scala210Version = "2.10.7"
 val scala212Version = "2.12.4"
 val scalaCheckVersion = "1.13.5"
 val scalaTestVersion = "3.0.4"
