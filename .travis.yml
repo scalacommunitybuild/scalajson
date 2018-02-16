@@ -11,6 +11,9 @@ matrix:
   - scala: 2.12.4
     jdk: oraclejdk8
     env: RUN_MIMA=true
+  - scala: 2.13.0-M3
+    jdk: oraclejdk8
+    env: RUN_MIMA=false
 
 script:
   - sbt clean coverage test coverageReport
@@ -27,7 +30,7 @@ before_cache:
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" -type f -delete
 cache:
   directories:
-    - $HOME/.sbt/0.13/dependency
+    - $HOME/.sbt/1.0/dependency
     - $HOME/.sbt/boot/scala*
     - $HOME/.sbt/launchers
     - $HOME/.ivy2/cache

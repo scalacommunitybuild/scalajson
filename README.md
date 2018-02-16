@@ -10,7 +10,7 @@ typical use and another that is designed for performance/corner cases.
 
 ## Usage
 
-Built for Scala 2.10.x, 2.11.x and 2.12.x
+Built for Scala 2.10.x, 2.11.x, 2.12.x, and 2.13.x milestones.
 
 ```sbt
 "org.scala-lang.platform" %% "scalajson" % "1.0.0-M4"
