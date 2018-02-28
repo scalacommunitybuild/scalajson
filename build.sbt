@@ -89,7 +89,7 @@ lazy val commonSettings = Seq(
     "https://opensource.org/licenses/BSD-3-Clause"))
 )
 
-lazy val scalaJson = crossProject(JSPlatform, JVMPlatform)
+lazy val scalaJson = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("."))
   .settings(
     commonSettings,
@@ -144,6 +144,9 @@ lazy val scalaJson = crossProject(JSPlatform, JVMPlatform)
     testFrameworks += TestFrameworks.ScalaTest,
     scalacOptions in Test ++= Seq("-Yrangepos")
   )
+  .nativeSettings(
+    crossScalaVersions := Seq(currentScalaVersion)
+  )
 
 lazy val benchmark = crossProject(JSPlatform, JVMPlatform)
   .in(file("benchmark"))
@@ -160,3 +163,4 @@ lazy val scalaJsonJSTest = benchmark.js
 
 lazy val scalaJsonJVM = scalaJson.jvm
 lazy val scalaJsonJS = scalaJson.js
+lazy val scalaJsonNative = scalaJson.native
