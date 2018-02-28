@@ -8,11 +8,13 @@ import sbtcrossproject.crossProject
 val currentScalaVersion = "2.11.12"
 val scala210Version = "2.10.7"
 val scala212Version = "2.12.4"
+val scala213Version = "2.13.0-M3"
 val scalaCheckVersion = "1.13.5"
-val scalaTestVersion = "3.0.4"
+val scalaTestVersion = "3.0.5-M1"  // only version avail for Scala 2.13.0-M3; otherwise same as 3.0.4
 
 scalaVersion in ThisBuild := currentScalaVersion
 crossScalaVersions in ThisBuild := Seq(currentScalaVersion,
+                                       scala213Version,
                                        scala212Version,
                                        scala210Version)
 
@@ -148,12 +150,21 @@ lazy val scalaJson = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     crossScalaVersions := Seq(currentScalaVersion)
   )
 
+lazy val scalameterVersion = settingKey[String]("version of ScalaMeter dependency")
+scalameterVersion in ThisBuild := (CrossVersion.partialVersion(scalaVersion.value) match {
+  // this snapshot is the only thing available for 2.13.0-M3 at present
+  case Some ((2, n)) if n == 13 => "0.10-SNAPSHOT"
+  case _ => "0.8.2"
+})
+
 lazy val benchmark = crossProject(JSPlatform, JVMPlatform)
   .in(file("benchmark"))
   .jvmSettings(
     testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
+    // need snapshot resolver because ScalaMeter is only available for 2.13.0-M3 as a snapshot
+    resolvers += Resolver.sonatypeRepo("snapshots"),
     libraryDependencies ++= Seq(
-      "com.storm-enroute" %% "scalameter" % "0.8.2" % Test
+      "com.storm-enroute" %% "scalameter" % scalameterVersion.value % Test
     )
   )
   .dependsOn(scalaJson)
