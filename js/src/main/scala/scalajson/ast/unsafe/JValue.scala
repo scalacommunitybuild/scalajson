@@ -24,6 +24,7 @@ sealed abstract class JValue extends Serializable with Product {
     * string representation is not a correct number. Also when converting a [[ast.JObject]]
     * to a [[ast.JObject]], its possible to lose data if you have duplicate keys.
     *
+    * @tparam C An immutable Map abstraction, by default its [[scala.collection.immutable.Map]]
     * @see https://www.ietf.org/rfc/rfc4627.txt
     * @return
     */
