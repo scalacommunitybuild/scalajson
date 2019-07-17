@@ -1,7 +1,6 @@
 package specs
 
 import scalajson.ast._
-import org.scalatest._
 
 class JNumber extends Spec {
 
