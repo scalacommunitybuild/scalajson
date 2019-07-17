@@ -2,8 +2,8 @@ name := "scalajson"
 
 import PgpKeys.publishSigned
 
-// shadow sbt-scalajs' crossProject and CrossType until Scala.js 1.0.0 is released
-import sbtcrossproject.crossProject
+// shadow sbt-scalajs' crossProject and CrossType from Scala.js 0.6.x
+import sbtcrossproject.CrossPlugin.autoImport.{ crossProject, CrossType }
 
 val currentScalaVersion = "2.11.12"
 val scala210Version = "2.10.7"
